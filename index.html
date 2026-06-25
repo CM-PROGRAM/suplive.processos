@@ -530,6 +530,86 @@ header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0
       <div class="date-header" id="anu-date"></div>
       <div id="anu-tasks"></div>
 
+      <!-- CONFERENCIA DE ENTRADAS -->
+      <div style="margin-top:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;" id="conf-entradas-wrap">
+        <!-- Header -->
+        <div style="background:var(--bg-surface);border-bottom:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div style="width:26px;height:26px;border-radius:6px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:13px;">📋</div>
+          <span style="font-size:13px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;flex:1;">CONFERÊNCIA DE ENTRADAS</span>
+          <span id="conf-count-badge" style="background:var(--accent-glow);border:1px solid var(--accent-dim);border-radius:10px;color:var(--accent);font-size:10px;font-family:var(--font-mono);font-weight:700;padding:1px 8px;">0</span>
+          <div style="display:flex;align-items:center;gap:6px;background:var(--bg-active);border:1px solid var(--border);border-radius:6px;padding:4px 10px;min-width:160px;max-width:260px;">
+            <span style="font-size:11px;color:var(--text-muted);">🔍</span>
+            <input id="conf-search" type="text" placeholder="Buscar SKU, produto, marca..." oninput="renderConferencia()"
+              style="background:none;border:none;outline:none;color:var(--text-primary);font-size:11px;font-family:var(--font-sans);width:100%;">
+          </div>
+          <button class="btn btn-sm" id="btn-new-conf" onclick="openConfModal(null)" style="font-size:11px;white-space:nowrap;display:none;">+ Novo Produto</button>
+        </div>
+        <!-- Tabela scroll horizontal -->
+        <div style="overflow-x:auto;">
+          <table id="conf-table" style="width:100%;border-collapse:collapse;font-size:12px;min-width:1200px;">
+            <thead>
+              <tr style="background:var(--bg-surface);">
+                <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;left:0;z-index:2;background:var(--bg-surface);">ULT. ATUAL.</th>
+                <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">SKU</th>
+                <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">EAN</th>
+                <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);min-width:220px;">PRODUTO</th>
+                <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">MARCA</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">IMAGENS</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">SHP PRIME</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">SHP PRIME 2X</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">RD MKTP</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">MAGALU (VIX)</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">MAGALU (4VITA)</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">DROG PACHECO</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">DROG S. PAULO</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">AÇÕES</th>
+              </tr>
+            </thead>
+            <tbody id="conf-tbody"></tbody>
+          </table>
+        </div>
+        <div id="conf-empty" style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px;font-family:var(--font-mono);">Nenhum produto cadastrado ainda.</div>
+      </div>
+
+      <!-- MODAL conferencia -->
+      <div id="conf-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);align-items:center;justify-content:center;overflow-y:auto;padding:20px;z-index:1600;">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;width:600px;max-width:96vw;position:relative;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+            <div id="conf-modal-title" style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);">Novo Produto</div>
+            <button onclick="closeConfModal()" style="background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;line-height:1;">×</button>
+          </div>
+          <!-- Dados do produto -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+            <div class="input-group"><label>SKU</label><input type="text" id="conf-sku" placeholder="Ex: LE15241" autocomplete="off"></div>
+            
+            <div class="input-group"><label>EAN</label><input type="text" id="conf-ean" placeholder="0737870152415" autocomplete="off"></div>
+            <div class="input-group" style="grid-column:1/-1;"><label>Produto</label><input type="text" id="conf-produto" placeholder="Nome completo do produto" autocomplete="off"></div>
+            <div class="input-group" style="grid-column:1/3;"><label>Marca</label>
+              <select id="conf-marca">
+                <option value="">— Selecionar —</option>
+              </select>
+            </div>
+          </div>
+          <!-- Status por plataforma -->
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:10px;">Status por Plataforma</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div class="input-group"><label>Imagens</label><select id="conf-s-imagens" class="conf-status-sel"></select></div>
+            <div class="input-group"><label>SHP Primevitaminas</label><select id="conf-s-shp1" class="conf-status-sel"></select></div>
+            <div class="input-group"><label>SHP Primevitaminas 2X</label><select id="conf-s-shp2" class="conf-status-sel"></select></div>
+            <div class="input-group"><label>RD Marketplace</label><select id="conf-s-rd" class="conf-status-sel"></select></div>
+            <div class="input-group"><label>Magalu (VIX)</label><select id="conf-s-mgvix" class="conf-status-sel"></select></div>
+            <div class="input-group"><label>Magalu (4VITA)</label><select id="conf-s-mg4v" class="conf-status-sel"></select></div>
+            <div class="input-group"><label>Drog. Pacheco</label><select id="conf-s-pacheco" class="conf-status-sel"></select></div>
+            <div class="input-group"><label>Drog. São Paulo</label><select id="conf-s-saopaulo" class="conf-status-sel"></select></div>
+          </div>
+          <input type="hidden" id="conf-edit-id">
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px;">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="closeConfModal()">Cancelar</button>
+            <button type="button" class="btn btn-sm" onclick="saveConf()">Salvar Produto</button>
+          </div>
+        </div>
+      </div>
+
       </div><!-- /tab-anuncios -->
 
     <!-- DEVOLUÇÕES -->
@@ -1055,6 +1135,8 @@ function defaultState(){
     weekHistory:{},
     vendasWpp:{},
     pedidosWpp:[],
+    drogData:{pacheco:[],saopaulo:[]},
+    conferencia:[],
     lastReset:todayStr()
   };
 }
@@ -1116,6 +1198,10 @@ function loadLocal(){
     if(!s.tasks.devolucoes) s.tasks.devolucoes=[];
     if(!Array.isArray(s.tasks.atendimentos)) s.tasks.atendimentos=[];
     if(!Array.isArray(s.tasks.rastreios)) s.tasks.rastreios=[];
+    if(!s.drogData) s.drogData={pacheco:[],saopaulo:[]};
+    if(!Array.isArray(s.drogData.pacheco)) s.drogData.pacheco=[];
+    if(!Array.isArray(s.drogData.saopaulo)) s.drogData.saopaulo=[];
+    if(!Array.isArray(s.conferencia)) s.conferencia=[];
     // Restaurar execs:[] (Firebase/JSON omite arrays vazios)
     if(s.tasks.plataformas && Array.isArray(s.tasks.plataformas)){
       s.tasks.plataformas.forEach(g=>{
@@ -1148,8 +1234,8 @@ function loadLocal(){
     }
     // Migrate anuncios if old Conferir group still present
     if(s.tasks&&s.tasks.anuncios&&Array.isArray(s.tasks.anuncios)){
-      if(!s.tasks.anuncios.some(g=>g.id==='anu_conf')
-         || !s.tasks.anuncios.some(g=>g.id==='anu_geral')
+      if(!s.tasks.anuncios.some(g=>g.id==='anu_geral')
+         || s.tasks.anuncios.some(g=>g.id==='anu_conf')
          || s.tasks.anuncios.some(g=>g.id==='anu_geral'&&g.items?.some(i=>i.id==='anu_vl'&&!i.btns))
          || s.tasks.anuncios.some(g=>g.id==='anu_geral'&&g.items?.some(i=>i.id==='anu_vx'&&!i.btns)))
         s.tasks.anuncios=initAnu();
@@ -1284,6 +1370,10 @@ function applyRemoteState(data){
   if(!data.tasks.devolucoes) data.tasks.devolucoes = [];
   if(!Array.isArray(data.tasks.atendimentos)) data.tasks.atendimentos = [];
   if(!Array.isArray(data.tasks.rastreios)) data.tasks.rastreios = [];
+  if(!data.drogData) data.drogData = {pacheco:[], saopaulo:[]};
+  if(!Array.isArray(data.drogData.pacheco)) data.drogData.pacheco = [];
+  if(!Array.isArray(data.drogData.saopaulo)) data.drogData.saopaulo = [];
+  if(!Array.isArray(data.conferencia)) data.conferencia = [];
   // Firebase omite arrays vazios — restaurar execs:[] para tasks com repeats>1
   if(data.tasks.plataformas && Array.isArray(data.tasks.plataformas)){
     data.tasks.plataformas.forEach(g=>{
@@ -1314,8 +1404,8 @@ function applyRemoteState(data){
       data.tasks.envios=initEnv();
   }
   if(data.tasks.anuncios&&Array.isArray(data.tasks.anuncios)){
-    if(!data.tasks.anuncios.some(g=>g.id==='anu_conf')
-       || !data.tasks.anuncios.some(g=>g.id==='anu_geral')
+    if(!data.tasks.anuncios.some(g=>g.id==='anu_geral')
+       || data.tasks.anuncios.some(g=>g.id==='anu_conf')
        || data.tasks.anuncios.some(g=>g.id==='anu_geral'&&g.items?.some(i=>i.id==='anu_vl'&&!i.btns))
        || data.tasks.anuncios.some(g=>g.id==='anu_geral'&&g.items?.some(i=>i.id==='anu_vx'&&!i.btns)))
       data.tasks.anuncios=initAnu();
@@ -1467,7 +1557,9 @@ function startLocalSync(){
     // Não sobrescreve se Firebase está ativo (evita conflito de fontes)
     if(db && fbConnected) return;
     const fresh = loadLocal();
-    if(JSON.stringify(fresh.tasks) !== JSON.stringify(appState.tasks)){
+    if(JSON.stringify(fresh.tasks) !== JSON.stringify(appState.tasks)
+       || JSON.stringify(fresh.conferencia) !== JSON.stringify(appState.conferencia)
+       || JSON.stringify(fresh.drogData) !== JSON.stringify(appState.drogData)){
       appState = fresh; renderAll();
     }
   }, 3000);
@@ -1716,9 +1808,6 @@ function initEnv(){return[
 ];}
 
 function initAnu(){return[
-  {id:'anu_conf',group:'CONFERENCIA GERAL',icon:'📋',items:[
-    Object.assign(t('anu1','Entrada Produtos','','https://docs.google.com/spreadsheets/d/1WY7gYiKDDXAVwzMDPsWuS38kC7wnPOY6LoBmzzue89E/edit?gid=1479986674#gid=1479986674','Planilha'),{owner:'cmandrade'})
-  ]},
   {id:'anu_geral',group:'ANUNCIOS GERAL',icon:'🖼️',items:[
     Object.assign(t('anu_sn','SHOPEE — Suplenium','','https://seller.shopee.com.br/portal/product/list/live/all?operationSortBy=recommend_v2','Produtos - Ativos'),{owner:'cmandrade'}),
     Object.assign(t('anu_pv','SHOPEE — Primevitaminas','','https://seller.shopee.com.br/portal/product/list/live/all?operationSortBy=recommend_v2','Produtos - Ativos'),{owner:'cmandrade'}),
@@ -1804,7 +1893,7 @@ function buildTabs(){
   const tabs=[
     {id:'whatsapp',   icon:'💬', label:'Vendas WhatsApp',      perm:'whatsapp'},
     {id:'plataformas',icon:'🛒', label:"Marketplace's",        perm:'plataformas'},
-    {id:'drogarias',  icon:'📋', label:'Relat. Baixas DPSP',      perm:'baixas'},
+    {id:'drogarias',  icon:'📋', label:'Relat. Baixas DPSP',       perm:'baixas'},
     {id:'envios',     icon:'📦', label:'Rastreios',             perm:'envios'},
     {id:'devolucoes', icon:'↩',  label:'Devoluções',            perm:'devolucoes'},
     {id:'atendimentos',icon:'📞',label:'Atendimentos',          perm:'atendimentos'},
@@ -1864,6 +1953,10 @@ function renderAll(){
   const ds=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
   ['wpp','plt','env','anu'].forEach(k=>{const el=document.getElementById(k+'-date');if(el)el.textContent=ds;});
   renderWpp();renderPlt();renderEnv();renderAnu();
+  // Sincroniza dados da aba Baixas DPSP com o state remoto
+  _applyDrogFromState();
+  // Sincroniza Conferência de Entradas (fora de tasks, precisa de chamada explícita)
+  try{ renderConferencia(); }catch(e){}
   // Dev, Tarefas and Admin are lazy-rendered on tab click only
 }
 
@@ -2495,6 +2588,7 @@ function toggleEnv(id){
 }
 
 /* ===== ANU ===== */
+let _anuCollapsed = {};
 function renderAnu(){
   const container=document.getElementById('anu-tasks');
   const groups=appState.tasks.anuncios;
@@ -2505,6 +2599,7 @@ function renderAnu(){
     const allDoneG=doneG===g.items.length;
     if(allDoneG){card.style.border='1px solid var(--green-dim)';card.style.boxShadow='0 0 0 2px var(--green-glow)';}
     const header=document.createElement('div');header.className='task-group-header';
+    header.style.cursor='pointer';header.style.userSelect='none';
     if(allDoneG)header.style.background='var(--green-glow)';
     const iconEl=document.createElement('div');iconEl.className='task-group-icon';
     if(allDoneG){iconEl.style.background='var(--green-dim)';iconEl.textContent='✓';}else{iconEl.textContent=g.icon;}
@@ -2513,19 +2608,37 @@ function renderAnu(){
     else { const _aBadge=document.createElement('span'); _aBadge.textContent=g.group; applyPltBadge(_aBadge,g.group); titleSpan.appendChild(_aBadge); }
     const countSpan=document.createElement('span');countSpan.className='task-group-count';
     countSpan.textContent=(doneG===g.items.length?'100':Math.round((doneG/g.items.length)*100))+'%';
+    // Chevron toggle
+    const chevron=document.createElement('span');
+    chevron.style.cssText='font-size:14px;color:var(--text-muted);transition:transform .2s;margin-left:6px;line-height:1;flex-shrink:0;';
+    const collapsed=!!_anuCollapsed[g.id];
+    chevron.textContent='▾';
+    chevron.style.transform=collapsed?'rotate(-90deg)':'rotate(0deg)';
     if(g.link){
       const a=document.createElement('a');a.href=g.link;a.target='_blank';a.className='btn-link';
       a.style.marginRight='8px';a.innerHTML='↗ '+(g.linkLabel||'Abrir');
+      a.onclick=e=>e.stopPropagation();
       header.appendChild(iconEl);header.appendChild(titleSpan);header.appendChild(a);header.appendChild(countSpan);
     } else {
       header.appendChild(iconEl);header.appendChild(titleSpan);header.appendChild(countSpan);
     }
+    header.appendChild(chevron);
     card.appendChild(header);
     const pb=document.createElement('div');pb.className='progress-bar';
     const pf=document.createElement('div');pf.className='progress-fill';
     if(allDoneG)pf.classList.add('green');
     pf.style.width=Math.round((doneG/g.items.length)*100)+'%';
     pb.appendChild(pf);card.appendChild(pb);
+    // Body wrapper (collapsible)
+    const body=document.createElement('div');
+    body.style.display=collapsed?'none':'block';
+    header.onclick=()=>{
+      _anuCollapsed[g.id]=!_anuCollapsed[g.id];
+      body.style.display=_anuCollapsed[g.id]?'none':'block';
+      chevron.style.transform=_anuCollapsed[g.id]?'rotate(-90deg)':'rotate(0deg)';
+    };
+    header.onmouseover=()=>{header.style.background=allDoneG?'var(--green-glow)':'var(--bg-hover)';};
+    header.onmouseout=()=>{header.style.background=allDoneG?'var(--green-glow)':'';};
     g.items.forEach(tk=>{
       const row=document.createElement('div');row.className='task-row';
       const dot=document.createElement('div');dot.className='status-dot '+(tk.done?'done':'pending');
@@ -2559,10 +2672,239 @@ function renderAnu(){
         anuOwnerKeys.forEach(k=>{const u=appState.users[k];if(!u)return;const ob=document.createElement('div');ob.style.cssText=`width:20px;height:20px;border-radius:50%;background:${u.color||'#888'}33;border:1px solid ${u.color||'#888'};color:${u.color||'#888'};font-size:8px;font-weight:700;font-family:var(--font-mono);display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:-0.5px;`;ob.textContent=u.initials||'?';ob.title='Responsável: '+u.name;anuBadge.appendChild(ob);});
       }
       row.appendChild(anuBadge);
-      row.appendChild(dot);row.appendChild(txtw);row.appendChild(actions);card.appendChild(row);
+      row.appendChild(dot);row.appendChild(txtw);row.appendChild(actions);body.appendChild(row);
     });
+    card.appendChild(body);
     container.appendChild(card);
   });
+  renderConferencia();
+}
+
+
+/* ===== CONFERÊNCIA DE ENTRADAS ===== */
+const CONF_PLATS = [
+  {key:'imagens',   label:'Imagens'},
+  {key:'shp1',      label:'SHP Prime'},
+  {key:'shp2',      label:'SHP Prime 2X'},
+  {key:'rd',        label:'RD Mktp'},
+  {key:'mgvix',     label:'Magalu (VIX)'},
+  {key:'mg4v',      label:'Magalu (4VITA)'},
+  {key:'pacheco',   label:'Drog. Pacheco'},
+  {key:'saopaulo',  label:'Drog. S. Paulo'},
+];
+// Opções e estilos para IMAGENS (coluna especial)
+const CONF_IMG_OPTS = ['','Feito','Pendente','Atualizar','Revisar'];
+const CONF_IMG_STYLE = {
+  'Feito':    {bg:'rgba(34,197,94,0.15)',  border:'var(--green-dim)',  color:'var(--green)'},
+  'Pendente': {bg:'rgba(239,68,68,0.15)',  border:'var(--red-dim)',    color:'var(--red)'},
+  'Atualizar':{bg:'rgba(139,92,246,0.15)', border:'#5b21b6',           color:'#a78bfa'},
+  'Revisar':  {bg:'rgba(245,158,11,0.15)', border:'var(--amber-dim)', color:'var(--amber)'},
+};
+
+// Opções e estilos para PLATAFORMAS
+const CONF_STATUS_OPTS = ['','Cadastrar','Não cadastrar','Feito','Proibido','Revisar'];
+const CONF_STATUS_STYLE = {
+  'Cadastrar':    {bg:'rgba(56,189,248,0.15)',  border:'#0369a1',           color:'#38bdf8'},
+  'Não cadastrar':{bg:'rgba(30,58,138,0.20)',   border:'#1e3a8a',           color:'#93c5fd'},
+  'Feito':        {bg:'rgba(34,197,94,0.15)',   border:'var(--green-dim)',  color:'var(--green)'},
+  'Proibido':     {bg:'rgba(239,68,68,0.15)',   border:'var(--red-dim)',    color:'var(--red)'},
+  'Revisar':      {bg:'rgba(245,158,11,0.15)',  border:'var(--amber-dim)', color:'var(--amber)'},
+};
+
+// Marcas com cores fixas
+const CONF_MARCAS = [
+  {nome:'Life Extension',            cor:'#1e3a8a'},
+  {nome:'MRM Nutrition',             cor:'#4c1d95'},
+  {nome:'Natrol',                    cor:'#7c3aed'},
+  {nome:'Now Foods',                 cor:'#ea580c'},
+  {nome:'KN Nutrition',              cor:'#4ade80'},
+  {nome:"Puritan's Pride",           cor:'#38bdf8'},
+  {nome:'Nutrata',                   cor:'#e3e5e8'},
+  {nome:'Dragon Elite',              cor:'#111111'},
+  {nome:'Rogaine',                   cor:'#9ca3af'},
+  {nome:'Hi-Tech Pharmaceuticals',   cor:'#fbbf24'},
+  {nome:'Androtech Research',        cor:'#d97706'},
+  {nome:'Swanson',                   cor:'#166534'},
+];
+
+function _confStatusBadge(val){
+  if(!val) return '<span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">—</span>';
+  const s = CONF_STATUS_STYLE[val]||{bg:'var(--bg-active)',border:'var(--border)',color:'var(--text-muted)'};
+  return `<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;background:${s.bg};border:1px solid ${s.border};color:${s.color};white-space:nowrap;">${val}</span>`;
+}
+
+function _confStatusSelect(key, curVal, prodId){
+  const isImg = key === 'imagens';
+  const optsArr = isImg ? CONF_IMG_OPTS : CONF_STATUS_OPTS;
+  const styleMap = isImg ? CONF_IMG_STYLE : CONF_STATUS_STYLE;
+  const s = curVal ? (styleMap[curVal]||{}) : {};
+  const bg = s.bg||'var(--bg-active)';
+  const col = s.color||'var(--text-muted)';
+  let opts = optsArr.map(o=>`<option value="${o}" ${o===curVal?'selected':''}>${o||'— selecionar —'}</option>`).join('');
+  return `<select data-pid="${prodId}" data-plt="${key}" onchange="confStatusChange(this)"
+    style="background:${bg};border:1px solid var(--border);border-radius:6px;color:${col};font-family:var(--font-sans);font-size:10px;font-weight:600;padding:3px 6px;outline:none;cursor:pointer;width:100%;">${opts}</select>`;
+}
+
+function confStatusChange(sel){
+  const pid = sel.getAttribute('data-pid');
+  const plt = sel.getAttribute('data-plt');
+  const val = sel.value;
+  const prod = (appState.conferencia||[]).find(p=>p.id===pid);
+  if(!prod) return;
+  if(!prod.status) prod.status = {};
+  prod.status[plt] = val;
+  prod.ultAtual = new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+  // Apply live color to the select itself
+  const _isImg = plt === 'imagens';
+  const _sm = _isImg ? CONF_IMG_STYLE : CONF_STATUS_STYLE;
+  const s = val ? (_sm[val]||{}) : {};
+  sel.style.background = s.bg||'var(--bg-active)';
+  sel.style.color = s.color||'var(--text-muted)';
+  saveState(appState);
+}
+
+function renderConferencia(){
+  const isMaster = currentUser && currentUser.master;
+  const tbody  = document.getElementById('conf-tbody');
+  const empty  = document.getElementById('conf-empty');
+  const badge  = document.getElementById('conf-count-badge');
+  const btnNew = document.getElementById('btn-new-conf');
+  if(!tbody) return;
+  if(btnNew) btnNew.style.display = isMaster ? '' : 'none';
+
+  const q = ((document.getElementById('conf-search')||{}).value||'').toLowerCase().trim();
+  let rows = (appState.conferencia||[]);
+  if(q) rows = rows.filter(r=>
+    (r.sku||'').toLowerCase().includes(q)||
+    (r.produto||'').toLowerCase().includes(q)||
+    (r.marca||'').toLowerCase().includes(q)||
+    (r.ean||'').toLowerCase().includes(q)
+  );
+
+  if(badge) badge.textContent = (appState.conferencia||[]).length;
+
+  if(!rows.length){
+    tbody.innerHTML='';
+    if(empty) empty.style.display='block';
+    return;
+  }
+  if(empty) empty.style.display='none';
+
+  // MARCA badge color helper
+  function marcaBadge(marca){
+    const found = CONF_MARCAS.find(m=>m.nome===marca);
+    const cor = found ? found.cor : '#555';
+    // Text color: white for dark bg, dark for light bg
+    const isLight = ['#e3e5e8','#4ade80','#38bdf8','#fbbf24'].includes(cor);
+    const textCol = isLight ? '#111' : '#fff';
+    return `<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;background:${cor};color:${textCol};white-space:nowrap;">${marca||'—'}</span>`;
+  }
+
+  tbody.innerHTML = rows.map(r=>{
+    const st = r.status||{};
+    const actions = isMaster
+      ? `<div style="display:flex;gap:4px;justify-content:center;">
+          <button onclick="openConfModal('${r.id}')" class="btn-link btn-sm" title="Editar">✏</button>
+          <button onclick="deleteConf('${r.id}')" class="btn-link btn-sm btn-danger" title="Excluir">✕</button>
+        </div>`
+      : '';
+    return `<tr style="border-bottom:1px solid var(--border);" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background=''">
+      <td style="padding:7px 10px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);white-space:nowrap;">${r.ultAtual||'—'}</td>
+      <td style="padding:7px 10px;font-family:var(--font-mono);font-size:11px;color:var(--text-primary);white-space:nowrap;font-weight:600;">${r.sku||'—'}</td>
+      <td style="padding:7px 10px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);white-space:nowrap;">${r.ean||'—'}</td>
+      <td style="padding:7px 10px;font-size:12px;color:var(--text-primary);min-width:200px;">${r.produto||'—'}</td>
+      <td style="padding:7px 10px;white-space:nowrap;">${marcaBadge(r.marca)}</td>
+      ${CONF_PLATS.map(p=>`<td style="padding:5px 8px;text-align:center;min-width:82px;">${_confStatusSelect(p.key, st[p.key]||'', r.id)}</td>`).join('')}
+      <td style="padding:7px 8px;text-align:center;white-space:nowrap;">${actions}</td>
+    </tr>`;
+  }).join('');
+}
+
+function openConfModal(id){
+  // Populate marca select
+  const marcaSel = document.getElementById('conf-marca');
+  if(marcaSel){
+    marcaSel.innerHTML = '<option value="">— Selecionar —</option>' +
+      CONF_MARCAS.map(m=>`<option value="${m.nome}">${m.nome}</option>`).join('');
+    marcaSel.value='';
+  }
+  // Populate imagens select
+  const imgSel = document.getElementById('conf-s-imagens');
+  if(imgSel){
+    imgSel.innerHTML = CONF_IMG_OPTS.map(o=>`<option value="${o}">${o||'— selecionar —'}</option>`).join('');
+    imgSel.value='';
+  }
+  // Populate platform status selects
+  document.querySelectorAll('.conf-status-sel:not(#conf-s-imagens)').forEach(sel=>{
+    sel.innerHTML = CONF_STATUS_OPTS.map(o=>`<option value="${o}">${o||'— selecionar —'}</option>`).join('');
+    sel.value='';
+  });
+  // Clear text fields
+  ['conf-sku','conf-ean','conf-produto','conf-marca','conf-edit-id'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('conf-modal-title').textContent = id ? 'Editar Produto' : 'Novo Produto';
+
+  if(id){
+    const prod = (appState.conferencia||[]).find(p=>p.id===id);
+    if(prod){
+      document.getElementById('conf-sku').value     = prod.sku||'';
+      
+      document.getElementById('conf-ean').value     = prod.ean||'';
+      document.getElementById('conf-produto').value = prod.produto||'';
+      document.getElementById('conf-marca').value   = prod.marca||'';
+      document.getElementById('conf-edit-id').value = prod.id;
+      const st = prod.status||{};
+      CONF_PLATS.forEach(p=>{
+        const sel=document.getElementById('conf-s-'+p.key);
+        if(sel) sel.value = st[p.key]||'';
+      });
+    }
+  }
+  document.getElementById('conf-modal-overlay').style.display='flex';
+}
+
+function closeConfModal(){
+  document.getElementById('conf-modal-overlay').style.display='none';
+}
+
+function saveConf(){
+  const sku     = document.getElementById('conf-sku').value.trim();
+  
+  const ean     = document.getElementById('conf-ean').value.trim();
+  const produto = document.getElementById('conf-produto').value.trim();
+  const marca   = document.getElementById('conf-marca').value.trim();
+  const editId  = document.getElementById('conf-edit-id').value;
+  if(!sku && !produto){ showToast('Preencha ao menos SKU ou Produto','error'); return; }
+
+  const status = {};
+  CONF_PLATS.forEach(p=>{
+    const sel=document.getElementById('conf-s-'+p.key);
+    if(sel && sel.value) status[p.key]=sel.value;
+  });
+
+  const hoje = new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+  if(!appState.conferencia) appState.conferencia=[];
+
+  if(editId){
+    const idx = appState.conferencia.findIndex(p=>p.id===editId);
+    if(idx>=0) appState.conferencia[idx] = {id:editId, sku, ean, produto, marca, status, ultAtual:hoje};
+    showToast('✓ Produto atualizado','success');
+  } else {
+    appState.conferencia.push({id:'conf_'+Date.now(), sku, ean, produto, marca, status, ultAtual:hoje});
+    showToast('✓ Produto cadastrado','success');
+  }
+  saveState(appState);
+  closeConfModal();
+  renderConferencia();
+}
+
+function deleteConf(id){
+  if(!window.confirm('Excluir este produto? Esta ação não pode ser desfeita.')) return;
+  appState.conferencia=(appState.conferencia||[]).filter(p=>p.id!==id);
+  saveState(appState);
+  renderConferencia();
+  showToast('🗑 Produto excluído','success');
 }
 
 /* ===== EXEC TASK (repeats) ===== */
@@ -3314,7 +3656,45 @@ function devEstornado(id){
 
 
 /* ===== BAIXAS DROGARIAS ===== */
+// _drogData é espelho em memória do appState.drogData — sempre sincronizado via Firebase
 let _drogData = { pacheco:[], saopaulo:[] };
+
+// Reconstrói os _idx sequenciais (necessário após carregar do state)
+function _rebuildDrogIdx(){
+  let i=0;
+  _drogData.pacheco.forEach(r=>{ r._idx=i++; });
+  _drogData.saopaulo.forEach(r=>{ r._idx=i++; });
+}
+
+// Lê _drogData do appState (chamado pelo sync remoto)
+function _applyDrogFromState(){
+  if(!appState.drogData) return;
+  _drogData.pacheco  = Array.isArray(appState.drogData.pacheco)  ? appState.drogData.pacheco  : [];
+  _drogData.saopaulo = Array.isArray(appState.drogData.saopaulo) ? appState.drogData.saopaulo : [];
+  _rebuildDrogIdx();
+  _refreshDrogUI();
+}
+
+// Persiste _drogData no appState e dispara saveState
+function _saveDrogData(){
+  appState.drogData = { pacheco: _drogData.pacheco, saopaulo: _drogData.saopaulo };
+  saveState(appState);
+}
+
+// Atualiza UI da aba Baixas DPSP sem recriar dados
+function _refreshDrogUI(){
+  ['pacheco','saopaulo'].forEach(p=>{
+    const statusEl = document.getElementById('status-'+p);
+    if(!statusEl) return;
+    const cnt = _drogData[p].length;
+    if(cnt > 0){
+      statusEl.textContent = '\u2705 '+cnt+' pedidos carregados';
+      statusEl.style.color = 'var(--green)';
+    }
+  });
+  const all = [..._drogData.pacheco, ..._drogData.saopaulo];
+  if(all.length){ renderDrogStats(); renderDrogTable(); }
+}
 
 function loadDrogaria(input, plataforma){
   const file = input.files[0];
@@ -3384,14 +3764,17 @@ function loadDrogaria(input, plataforma){
           }
         }
         if(!id && !clienteFull) continue;
-        records.push({plataforma:label, id, data:dataCompra, status, cliente, rastreio, consultado:false, _idx:(_drogData.pacheco.length+_drogData.saopaulo.length+records.length)});
+        records.push({plataforma:label, id, data:dataCompra, status, cliente, rastreio, consultado:false, _idx:0});
       }
 
       _drogData[plataforma] = records;
+      _rebuildDrogIdx();
       statusEl.textContent  = `✅ ${records.length} pedidos carregados`;
       statusEl.style.color  = 'var(--green)';
       renderDrogStats();
       renderDrogTable();
+      // Persiste e sincroniza via Firebase
+      _saveDrogData();
     } catch(err){
       statusEl.textContent = '❌ Erro ao ler arquivo: '+err.message;
       statusEl.style.color = 'var(--accent)';
@@ -3498,6 +3881,7 @@ function resetDrogarias(){
   const wrap  = document.getElementById('drog-table-wrap');
   if(stats) stats.style.display='none';
   if(wrap)  wrap.style.display='none';
+  _saveDrogData();
   showToast('🗑 Dados resetados', '');
 }
 
@@ -3506,6 +3890,7 @@ function toggleDrogConsultado(idx){
   const rec = all.find(r=>r._idx===idx);
   if(!rec) return;
   rec.consultado = !rec.consultado;
+  _saveDrogData();
   renderDrogTable();
 }
 
@@ -4472,7 +4857,22 @@ function doSearch(q){
 function getAllAssignableItems(){
   const items=[];
 
-  // WhatsApp excluído da atribuição — contabilizado por pedidos do dia
+  // ── Vendas WhatsApp ───────────────────────────────────────
+  (appState.tasks.whatsapp||[]).forEach(g=>{
+    g.items.forEach(i=>{
+      items.push({
+        tab:'whatsapp', tabLabel:'Vendas WhatsApp',
+        groupId:g.id, groupLabel:g.group, groupIcon:g.icon||'💬',
+        itemId:i.id, itemText:i.text, itemSub:i.sub||'',
+        get owner(){ return i.owner||''; }, set owner(v){ i.owner=v; },
+        get owners(){ return i.owners&&i.owners.length?i.owners:(i.owner?[i.owner]:[]); },
+        set owners(v){ i.owners=v; i.owner=v[0]||''; },
+        get link(){ return i.link||''; }, set link(v){ i.link=v; },
+        get linkLabel(){ return i.linkLabel||''; },
+        get btns(){ return i.btns||[]; }
+      });
+    });
+  });
 
   // ── Plataformas ───────────────────────────────────────────
   (appState.tasks.plataformas||[]).forEach(g=>{
@@ -5217,6 +5617,7 @@ function buildRstCard(r, isEntregue){
   }
   infoRow('Dt. Pedido',r.data);
   infoRow('Pedido Base',r.nped);
+  infoRow('Marketplace',r.marketplace);
   infoRow('Transp.',r.transp);
   infoRow('Cliente',r.cliente);
 
@@ -5259,7 +5660,7 @@ function openRstModal(id){
   ['rst-data','rst-nped','rst-cliente','rst-codigo','rst-link','rst-edit-id'].forEach(fid=>{
     const el=document.getElementById(fid); if(el) el.value='';
   });
-  ['rst-plt','rst-status','rst-transp','rst-marketplace'].forEach(fid=>{
+  ['rst-plt','rst-marketplace','rst-status','rst-transp'].forEach(fid=>{
     const el=document.getElementById(fid); if(el) el.value='';
   });
 
@@ -5269,9 +5670,9 @@ function openRstModal(id){
       document.getElementById('rst-data').value   = r.data||'';
       document.getElementById('rst-nped').value   = r.nped||'';
       document.getElementById('rst-plt').value    = r.plataforma||'';
+      document.getElementById('rst-marketplace').value = r.marketplace||'';
       document.getElementById('rst-status').value = r.status||'';
       document.getElementById('rst-transp').value = r.transp||'';
-      document.getElementById('rst-marketplace').value = r.marketplace||'';
       document.getElementById('rst-cliente').value= r.cliente||'';
       document.getElementById('rst-codigo').value = r.codigo||'';
       document.getElementById('rst-link').value   = r.link||'';
@@ -5324,13 +5725,13 @@ function saveRst(){
   const data      = document.getElementById('rst-data').value.trim();
   const nped      = document.getElementById('rst-nped').value.trim();
   const plataforma= document.getElementById('rst-plt').value;
+  const marketplace= document.getElementById('rst-marketplace').value;
   const status    = document.getElementById('rst-status').value;
   const transp    = document.getElementById('rst-transp').value;
-  const marketplace = document.getElementById('rst-marketplace').value;
   const cliente   = document.getElementById('rst-cliente').value.trim();
   const codigo    = document.getElementById('rst-codigo').value.trim();
   let link        = document.getElementById('rst-link').value.trim();
-  if(link.startsWith('file:')) link='';
+  if(link.startsWith('file:')) link=''; // Ignora autofill indevido do navegador (caminho local)
   const editId    = document.getElementById('rst-edit-id').value;
 
   if(!nped||!plataforma||!status){
@@ -6003,6 +6404,7 @@ function closeModal(){document.getElementById('modal-overlay').classList.remove(
 document.getElementById('modal-confirm-btn').onclick=()=>{closeModal();if(modalCb)modalCb();};
 document.getElementById('modal-overlay').onclick=e=>{if(e.target===e.currentTarget)closeModal();};
 document.getElementById('rst-modal-overlay').onclick=e=>{if(e.target===e.currentTarget)closeRstModal();};
+document.getElementById('conf-modal-overlay').onclick=e=>{if(e.target===e.currentTarget)closeConfModal();};
 
 // Listener para quando Firebase CDN terminar de carregar
 document.addEventListener('firebase-ready', function(){
