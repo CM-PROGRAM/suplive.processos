@@ -4,14 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Suplelive — Controle de Tarefas</title>
-<meta name="description" content="Suplelive.on — Controle de Tarefas">
-<meta name="theme-color" content="#0d0d0d">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Suplelive">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap');
 :root {
@@ -486,6 +478,20 @@ header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0
                 <option>Melhor Envio</option>
               </select>
             </div>
+            <div class="input-group"><label>Marketplace</label>
+              <select id="rst-marketplace">
+                <option value="">— Selecionar —</option>
+                <option>SHOPEE - Suplenium</option>
+                <option>SHOPEE - Primevitaminas</option>
+                <option>MERC. LIVRE - Vitalife</option>
+                <option>MERC. LIVRE - VXShop</option>
+                <option>DROG. SÃO PAULO - ForVita</option>
+                <option>DROG. PACHECO - ForVita</option>
+                <option>MAGALU - 4Vita</option>
+                <option>WEB CONTINENTAL - 4Vita</option>
+                <option>RD MARKETPLACE - Vix Suplementos</option>
+              </select>
+            </div>
             <div class="input-group"><label>Status</label>
               <select id="rst-status">
                 <option value="">— Selecionar —</option>
@@ -609,7 +615,7 @@ header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0
     <!-- BAIXAS DROGARIAS -->
     <div class="tab-panel" id="tab-drogarias">
       <div class="section-header">
-        <span class="section-title">Baixas Drogarias — DPSP</span>
+        <span class="section-title">Relat. Baixas DPSP</span>
         <span class="master-badge">MASTER ONLY</span>
       </div>
 
@@ -669,15 +675,6 @@ header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0
           <a id="drog-onedrive-link" href="https://onedrive.live.com/personal/2f01cd22f588b701/_layouts/15/doc2.aspx?resid=582358ac-cc67-402e-ac8a-3f3a1ab9de7b&cid=2f01cd22f588b701" target="_blank" class="btn-link btn-sm">↗ Abrir OneDrive</a>
           <button class="btn btn-sm" onclick="resetDrogarias()" style="white-space:nowrap;background:var(--red);color:#fff;border-color:var(--red);">🗑 Resetar</button>
         </div>
-      </div>
-
-      <!-- SYNC INFO BANNER -->
-      <div id="drog-sync-banner" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:10px 16px;margin-bottom:12px;display:none;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;"></span>
-          <span id="drog-sync-who" style="font-size:11px;font-family:var(--font-mono);color:var(--text-secondary);"></span>
-        </div>
-        <span id="drog-sync-time" style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);"></span>
       </div>
 
       <!-- SUMMARY STATS -->
@@ -1799,7 +1796,7 @@ function doLogout(){
 function initApp(){
   _actLoginTs = Date.now();
   // buildTabs() cria o footer com avatar/nome/relógio/sair dinamicamente
-  buildTabs();renderAll();startClock();startFirebaseSync();initActivityListener();startDrogariasSync();
+  buildTabs();renderAll();startClock();startFirebaseSync();initActivityListener();
 
 }
 
@@ -1807,7 +1804,7 @@ function buildTabs(){
   const tabs=[
     {id:'whatsapp',   icon:'💬', label:'Vendas WhatsApp',      perm:'whatsapp'},
     {id:'plataformas',icon:'🛒', label:"Marketplace's",        perm:'plataformas'},
-    {id:'drogarias',  icon:'📋', label:'Baixas Drogarias',       perm:'baixas'},
+    {id:'drogarias',  icon:'📋', label:'Relat. Baixas DPSP',      perm:'baixas'},
     {id:'envios',     icon:'📦', label:'Rastreios',             perm:'envios'},
     {id:'devolucoes', icon:'↩',  label:'Devoluções',            perm:'devolucoes'},
     {id:'atendimentos',icon:'📞',label:'Atendimentos',          perm:'atendimentos'},
@@ -3316,76 +3313,9 @@ function devEstornado(id){
 
 
 
-/* ===== BAIXAS DROGARIAS — SYNC FIREBASE ===== */
-let _drogData       = { pacheco:[], saopaulo:[] };
-let _drogListener   = null;
-const FB_DROG_PATH  = 'suplelive/drogarias';
+/* ===== BAIXAS DROGARIAS ===== */
+let _drogData = { pacheco:[], saopaulo:[] };
 
-/* ── Salva dados de uma plataforma no Firebase ──────────────── */
-function _drogSaveToFirebase(){
-  if(!db || !fbConnected){ return; }
-  const payload = {
-    pacheco:  _drogData.pacheco,
-    saopaulo: _drogData.saopaulo,
-    _importedBy:  currentUser ? currentUser.name : '—',
-    _importedAt:  Date.now()
-  };
-  db.ref(FB_DROG_PATH).set(payload).catch(err=>{
-    console.error('[DROG] Erro ao salvar Firebase:', err.message);
-    showToast('Erro ao sincronizar Baixas: '+err.message,'error');
-  });
-}
-
-/* ── Aplica dados vindos do Firebase (listener ou reset) ─────── */
-function _drogApplyRemote(data){
-  if(!data){ _drogData={pacheco:[],saopaulo:[]}; }
-  else {
-    _drogData.pacheco  = Array.isArray(data.pacheco)  ? data.pacheco  : [];
-    _drogData.saopaulo = Array.isArray(data.saopaulo) ? data.saopaulo : [];
-  }
-  // Atualiza status de upload para usuários que não importaram
-  ['pacheco','saopaulo'].forEach(p=>{
-    const statusEl = document.getElementById('status-'+p);
-    if(!statusEl) return;
-    const count = _drogData[p].length;
-    if(count>0){
-      statusEl.textContent = `✅ ${count} pedidos carregados`;
-      statusEl.style.color = 'var(--green)';
-    } else {
-      statusEl.textContent = '';
-    }
-  });
-  // Banner de quem importou + quando
-  const banner  = document.getElementById('drog-sync-banner');
-  const whoEl   = document.getElementById('drog-sync-who');
-  const timeEl  = document.getElementById('drog-sync-time');
-  const allRows = [..._drogData.pacheco,..._drogData.saopaulo];
-  if(banner){
-    if(allRows.length && data && data._importedBy){
-      banner.style.display='flex';
-      if(whoEl) whoEl.textContent = `📥 Importado por ${data._importedBy}`;
-      if(timeEl && data._importedAt){
-        const d = new Date(data._importedAt);
-        timeEl.textContent = d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-      }
-    } else {
-      banner.style.display='none';
-    }
-  }
-  renderDrogStats();
-  renderDrogTable();
-}
-
-/* ── Inicia listener Firebase para Baixas Drogarias ─────────── */
-function startDrogariasSync(){
-  if(!db || !fbConnected){ return; }
-  if(_drogListener){ db.ref(FB_DROG_PATH).off('value', _drogListener); }
-  _drogListener = db.ref(FB_DROG_PATH).on('value', snap=>{
-    _drogApplyRemote(snap.val());
-  }, err=>{ console.error('[DROG] listener error:', err); });
-}
-
-/* ── Import do arquivo xlsx ──────────────────────────────────── */
 function loadDrogaria(input, plataforma){
   const file = input.files[0];
   if(!file) return;
@@ -3404,6 +3334,7 @@ function loadDrogaria(input, plataforma){
 
       if(rows.length < 2){ statusEl.textContent='❌ Planilha vazia ou inválida'; statusEl.style.color='var(--accent)'; return; }
 
+      // Auto-detect header row and column indices
       const COL_MAPS = {
         id:      ['marketplace id','marketplaceid','id do pedido','pedido id','order id','id pedido','(dadopedido) marketplace id'],
         data:    ['data da compra','data compra','(dadopedido) data da compra','data do pedido','data pedido','created at','data criação','criação'],
@@ -3428,53 +3359,39 @@ function loadDrogaria(input, plataforma){
         statusEl.style.color='var(--accent)'; return;
       }
 
-      // Preserva consultados da plataforma que já estavam no Firebase
-      const oldConsultados = {};
-      (_drogData[plataforma]||[]).forEach(r=>{ if(r.consultado) oldConsultados[r.id]=true; });
-
-      const baseIdx = plataforma==='pacheco' ? 0 : 50000;
       const records = [];
       for(let r=headerIdx+1; r<rows.length; r++){
         const row = rows[r];
         const id      = (row[colIdx.id]||'').toString().trim();
         const status  = (row[colIdx.status]||'').toString().trim();
         const clienteFull = (row[colIdx.cliente]||'').toString().trim();
-        const parts   = clienteFull.split(/\s+/);
+        // Apenas primeiro nome + sobrenome (Ex: Marcos Verri)
+        const parts = clienteFull.split(/\s+/);
         const cliente = parts.length>=2 ? parts[0]+' '+parts[1] : clienteFull;
         const rastreio= colIdx.rastreio>=0?(row[colIdx.rastreio]||'').toString().trim():'';
+        // Data da Compra — suporte a número serial Excel e string
         let dataCompra = '';
         if(colIdx.data>=0){
           const raw = row[colIdx.data];
           if(raw !== '' && raw !== null && raw !== undefined){
             if(typeof raw === 'number'){
+              // Converte número serial Excel para data
               const d = new Date(Math.round((raw - 25569)*86400*1000));
               dataCompra = d.toLocaleDateString('pt-BR');
-            } else { dataCompra = raw.toString().trim(); }
+            } else {
+              dataCompra = raw.toString().trim();
+            }
           }
         }
         if(!id && !clienteFull) continue;
-        records.push({plataforma:label, id, data:dataCompra, status, cliente, rastreio,
-          consultado: oldConsultados[id]||false,
-          _idx: baseIdx + records.length
-        });
+        records.push({plataforma:label, id, data:dataCompra, status, cliente, rastreio, consultado:false, _idx:(_drogData.pacheco.length+_drogData.saopaulo.length+records.length)});
       }
 
       _drogData[plataforma] = records;
-      statusEl.textContent  = `✅ ${records.length} pedidos — sincronizando...`;
-      statusEl.style.color  = 'var(--amber)';
-
-      // Salva no Firebase → listener vai renderizar automaticamente em todos
-      if(db && fbConnected){
-        _drogSaveToFirebase();
-        showToast(`📡 ${records.length} pedidos de ${label} enviados em tempo real`, 'success');
-      } else {
-        // Offline: renderiza só localmente
-        statusEl.textContent = `✅ ${records.length} pedidos (offline)`;
-        statusEl.style.color = 'var(--green)';
-        renderDrogStats();
-        renderDrogTable();
-        showToast(`⚠ Offline — dados visíveis só nesta sessão`, 'warn');
-      }
+      statusEl.textContent  = `✅ ${records.length} pedidos carregados`;
+      statusEl.style.color  = 'var(--green)';
+      renderDrogStats();
+      renderDrogTable();
     } catch(err){
       statusEl.textContent = '❌ Erro ao ler arquivo: '+err.message;
       statusEl.style.color = 'var(--accent)';
@@ -3500,10 +3417,10 @@ function getDrogAllRows(){
 
 function renderDrogStats(){
   const allRows = [..._drogData.pacheco, ..._drogData.saopaulo];
+  if(!allRows.length) return;
   const statsEl = document.getElementById('drog-stats');
   const grid    = document.getElementById('drog-stats-grid');
   if(!statsEl||!grid) return;
-  if(!allRows.length){ statsEl.style.display='none'; return; }
   statsEl.style.display='block';
 
   const statusList = ['Enviado','Entregue','Cancelado','Devolução','Não Aprovado','Pago'];
@@ -3511,17 +3428,13 @@ function renderDrogStats(){
   const counts = {};
   allRows.forEach(r=>{ counts[r.status]=(counts[r.status]||0)+1; });
 
-  const consultados = allRows.filter(r=>r.consultado).length;
-  const cards = [
-    {status:'Total',count:allRows.length,color:'var(--text-primary)'},
-    {status:'Consultados',count:consultados,color:'var(--green)'}
-  ];
+  const cards = [{status:'Total',count:allRows.length,color:'var(--text-primary)'}];
   statusList.forEach(s=>{ if(counts[s]) cards.push({status:s,count:counts[s],color:colors[s]||'var(--text-muted)'}); });
   Object.keys(counts).forEach(s=>{ if(!statusList.includes(s)&&s) cards.push({status:s,count:counts[s],color:'var(--text-muted)'}); });
 
   grid.innerHTML = cards.map(c=>`
     <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;text-align:center;cursor:pointer;"
-      onclick="document.getElementById('drog-filter-status').value='${c.status==='Total'||c.status==='Consultados'?'':c.status}';renderDrogTable()">
+      onclick="document.getElementById('drog-filter-status').value='${c.status==='Total'?'':c.status}';renderDrogTable()">
       <div style="font-size:22px;font-weight:700;color:${c.color};font-family:var(--font-sans);letter-spacing:-0.03em;">${c.count}</div>
       <div style="font-size:9px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-top:4px;">${c.status}</div>
     </div>`).join('');
@@ -3549,11 +3462,11 @@ function renderDrogTable(){
   if(title) title.textContent = rows.length+' pedidos';
 
   if(!rows.length){
-    tbody.innerHTML=`<tr><td colspan="7" style="padding:28px;text-align:center;color:var(--text-muted);font-family:var(--font-mono);font-size:12px;">Nenhum pedido encontrado</td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="6" style="padding:28px;text-align:center;color:var(--text-muted);font-family:var(--font-mono);font-size:12px;">Nenhum pedido encontrado</td></tr>`;
     return;
   }
 
-  tbody.innerHTML = rows.map((r)=>`
+  tbody.innerHTML = rows.map((r,i)=>`
     <tr id="drow-${r._idx}" style="border-bottom:1px solid var(--border);${r.consultado?'background:rgba(34,197,94,0.06)':''}" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='${r.consultado?'rgba(34,197,94,0.06)':'transparent'}'">
       <td style="padding:9px 14px;white-space:nowrap;">
         <span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:4px;${r.plataforma.includes('Pacheco')?'background:#e00000;color:#fff':'background:#00aaff;color:#fff'}">${r.plataforma.includes('Pacheco')?'Pacheco':'São Paulo'}</span>
@@ -3564,7 +3477,7 @@ function renderDrogTable(){
       <td style="padding:9px 14px;color:var(--text-secondary);font-size:13px;">${r.cliente||'—'}</td>
       <td style="padding:9px 14px;font-family:var(--font-mono);font-size:11px;color:var(--text-muted);">${r.rastreio||'—'}</td>
       <td style="padding:9px 14px;text-align:center;">
-        <button onclick="toggleDrogConsultado(${r._idx},'${r.plataforma.includes('Pacheco')?'pacheco':'saopaulo'}')"
+        <button onclick="toggleDrogConsultado(${r._idx})"
           style="border:none;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;padding:4px 12px;transition:all .2s;${r.consultado?'background:var(--green);color:#fff;':'background:var(--bg-active);border:1px solid var(--border);color:var(--text-muted);'}">
           ${r.consultado?'✓ Consultado':'Marcar'}
         </button>
@@ -3573,7 +3486,7 @@ function renderDrogTable(){
 }
 
 function resetDrogarias(){
-  if(!window.confirm('Resetar todas as informações importadas? Isso apaga para todos os usuários.')) return;
+  if(!window.confirm('Resetar todas as informações importadas?')) return;
   _drogData = {pacheco:[], saopaulo:[]};
   ['pacheco','saopaulo'].forEach(p=>{
     const statusEl = document.getElementById('status-'+p);
@@ -3581,42 +3494,19 @@ function resetDrogarias(){
     if(statusEl){ statusEl.textContent=''; }
     if(fileEl)  { fileEl.value=''; }
   });
-  const stats  = document.getElementById('drog-stats');
-  const wrap   = document.getElementById('drog-table-wrap');
-  const banner = document.getElementById('drog-sync-banner');
-  if(stats)  stats.style.display='none';
-  if(wrap)   wrap.style.display='none';
-  if(banner) banner.style.display='none';
-  // Apaga no Firebase → propaga para todos
-  if(db && fbConnected){
-    db.ref(FB_DROG_PATH).remove().catch(err=>console.error('[DROG] reset error:',err));
-    showToast('🗑 Dados resetados para todos os usuários', '');
-  } else {
-    showToast('🗑 Dados resetados (offline)', '');
-  }
+  const stats = document.getElementById('drog-stats');
+  const wrap  = document.getElementById('drog-table-wrap');
+  if(stats) stats.style.display='none';
+  if(wrap)  wrap.style.display='none';
+  showToast('🗑 Dados resetados', '');
 }
 
-function toggleDrogConsultado(idx, plataforma){
-  const arr = _drogData[plataforma];
-  if(!arr) return;
-  const rec = arr.find(r=>r._idx===idx);
+function toggleDrogConsultado(idx){
+  const all = [..._drogData.pacheco, ..._drogData.saopaulo];
+  const rec = all.find(r=>r._idx===idx);
   if(!rec) return;
   rec.consultado = !rec.consultado;
-  // Atualiza no Firebase via update no campo exato
-  if(db && fbConnected){
-    const recIdx = arr.indexOf(rec);
-    const update = {};
-    update[`${plataforma}/${recIdx}/consultado`] = rec.consultado;
-    db.ref(FB_DROG_PATH).update(update).catch(err=>{
-      console.error('[DROG] toggle error:', err.message);
-    });
-    // Renderiza local imediato (o listener vai confirmar)
-    renderDrogTable();
-    renderDrogStats();
-  } else {
-    renderDrogTable();
-    renderDrogStats();
-  }
+  renderDrogTable();
 }
 
 function gerarPlanilhaBaixas(){
@@ -4296,7 +4186,7 @@ function renderUsersGrid(){
   grid.innerHTML='';
   const tabDefs=[
     {id:'whatsapp',label:'Vendas WhatsApp'},{id:'plataformas',label:"Marketplace's"},
-    {id:'baixas',label:'Baixas Drogarias'},
+    {id:'baixas',label:'Relat. Baixas DPSP'},
     {id:'envios',label:'Rastreios'},{id:'devolucoes',label:'Devoluções'},
     {id:'atendimentos',label:'Atendimentos'},{id:'anuncios',label:'Produtos'},
     {id:'tarefas',label:'Taref. Colaboradores'},{id:'admin',label:'Adm. Master'}
@@ -5369,7 +5259,7 @@ function openRstModal(id){
   ['rst-data','rst-nped','rst-cliente','rst-codigo','rst-link','rst-edit-id'].forEach(fid=>{
     const el=document.getElementById(fid); if(el) el.value='';
   });
-  ['rst-plt','rst-status','rst-transp'].forEach(fid=>{
+  ['rst-plt','rst-status','rst-transp','rst-marketplace'].forEach(fid=>{
     const el=document.getElementById(fid); if(el) el.value='';
   });
 
@@ -5381,6 +5271,7 @@ function openRstModal(id){
       document.getElementById('rst-plt').value    = r.plataforma||'';
       document.getElementById('rst-status').value = r.status||'';
       document.getElementById('rst-transp').value = r.transp||'';
+      document.getElementById('rst-marketplace').value = r.marketplace||'';
       document.getElementById('rst-cliente').value= r.cliente||'';
       document.getElementById('rst-codigo').value = r.codigo||'';
       document.getElementById('rst-link').value   = r.link||'';
@@ -5435,10 +5326,11 @@ function saveRst(){
   const plataforma= document.getElementById('rst-plt').value;
   const status    = document.getElementById('rst-status').value;
   const transp    = document.getElementById('rst-transp').value;
+  const marketplace = document.getElementById('rst-marketplace').value;
   const cliente   = document.getElementById('rst-cliente').value.trim();
   const codigo    = document.getElementById('rst-codigo').value.trim();
   let link        = document.getElementById('rst-link').value.trim();
-  if(link.startsWith('file:')) link=''; // Ignora autofill indevido do navegador (caminho local)
+  if(link.startsWith('file:')) link='';
   const editId    = document.getElementById('rst-edit-id').value;
 
   if(!nped||!plataforma||!status){
@@ -5450,13 +5342,13 @@ function saveRst(){
     const idx=arr.findIndex(r=>r.id===editId);
     if(idx>=0){
       const ex=arr[idx];
-      arr[idx]={id:editId,data,nped,plataforma,status,transp,cliente,codigo,link,
+      arr[idx]={id:editId,data,nped,plataforma,marketplace,status,transp,cliente,codigo,link,
         criadoPor:ex.criadoPor||'',criadoEm:ex.criadoEm||'',
         atualizadoPor:currentUser.name,atualizadoEm:nowTimeStr()};
     }
     showToast('✓ Rastreio atualizado','success');
   } else {
-    arr.push({id:'rst_'+Date.now(),data,nped,plataforma,status,transp,cliente,codigo,link,
+    arr.push({id:'rst_'+Date.now(),data,nped,plataforma,marketplace,status,transp,cliente,codigo,link,
       criadoPor:currentUser.name,criadoEm:nowTimeStr()});
     showToast(status==='Entregue' ? '✓ Rastreio cadastrado — veja na pasta Entregues' : '✓ Rastreio cadastrado','success');
   }
@@ -6116,21 +6008,9 @@ document.getElementById('rst-modal-overlay').onclick=e=>{if(e.target===e.current
 document.addEventListener('firebase-ready', function(){
   initFirebase();
   // Só conecta o Firebase — NÃO recarrega appState (perderia dados em memória)
-  if(currentUser && db && fbConnected){ startFirebaseSync(); startDrogariasSync(); }
+  if(currentUser && db && fbConnected){ startFirebaseSync(); }
 });
 
-</script>
-<!-- PWA Service Worker -->
-<script>
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('sw.js').then(reg=>{
-      console.log('[PWA] Service Worker registrado:', reg.scope);
-    }).catch(err=>{
-      console.warn('[PWA] SW não registrado:', err);
-    });
-  });
-}
 </script>
 </body>
 </html>
