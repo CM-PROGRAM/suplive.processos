@@ -27,6 +27,8 @@
   --radius:8px;--radius-lg:13px;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
+/* Sticky columns hover fix */
+#conf-tbody tr:hover td[style*="position:sticky"]{background:var(--bg-hover) !important;}
 body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 body{background:var(--bg-base);color:var(--text-primary);font-family:var(--font-sans);min-height:100vh;}
 html{overflow-x:hidden;}
@@ -539,56 +541,72 @@ header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0
       <div id="anu-tasks"></div>
 
       <!-- CONFERENCIA DE ENTRADAS -->
-      <div style="margin-top:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;" id="conf-entradas-wrap">
-        <!-- Header + thead sticky wrapper -->
-        <div id="conf-sticky-header" style="z-index:50;background:var(--bg-card);">
-          <!-- Header -->
-          <div style="background:var(--bg-surface);border-bottom:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <div style="width:26px;height:26px;border-radius:6px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:13px;">📋</div>
-            <span style="font-size:13px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;flex:1;">CONFERÊNCIA DE ENTRADAS</span>
-            <span id="conf-count-badge" style="background:var(--accent-glow);border:1px solid var(--accent-dim);border-radius:10px;color:var(--accent);font-size:10px;font-family:var(--font-mono);font-weight:700;padding:1px 8px;">0</span>
-            <div style="display:flex;align-items:center;gap:6px;background:var(--bg-active);border:1px solid var(--border);border-radius:6px;padding:4px 10px;min-width:160px;max-width:260px;">
-              <span style="font-size:11px;color:var(--text-muted);">🔍</span>
-              <input id="conf-search" type="text" placeholder="Buscar SKU, produto, marca..." oninput="renderConferencia()"
-                style="background:none;border:none;outline:none;color:var(--text-primary);font-size:11px;font-family:var(--font-sans);width:100%;">
-            </div>
-            <button class="btn btn-sm" id="btn-new-conf" onclick="openConfModal(null)" style="font-size:11px;white-space:nowrap;display:none;">+ Novo Produto</button>
+      <div style="margin-top:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);" id="conf-entradas-wrap">
+        <!-- Barra de título fixa -->
+        <div id="conf-sticky-header" style="background:var(--bg-surface);border-bottom:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div style="width:26px;height:26px;border-radius:6px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:13px;">📋</div>
+          <span style="font-size:13px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;flex:1;">CONFERÊNCIA DE ENTRADAS</span>
+          <span id="conf-count-badge" style="background:var(--accent-glow);border:1px solid var(--accent-dim);border-radius:10px;color:var(--accent);font-size:10px;font-family:var(--font-mono);font-weight:700;padding:1px 8px;">0</span>
+          <div style="display:flex;align-items:center;gap:6px;background:var(--bg-active);border:1px solid var(--border);border-radius:6px;padding:4px 10px;min-width:160px;max-width:260px;">
+            <span style="font-size:11px;color:var(--text-muted);">🔍</span>
+            <input id="conf-search" type="text" placeholder="Buscar SKU, produto, marca..." oninput="renderConferencia()"
+              style="background:none;border:none;outline:none;color:var(--text-primary);font-size:11px;font-family:var(--font-sans);width:100%;">
           </div>
-          <!-- Thead sticky (espelha scroll horizontal da tabela) -->
-          <div id="conf-thead-scroll" style="overflow-x:auto;overflow-y:hidden;scrollbar-width:none;">
-            <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:1200px;">
-              <thead>
-                <tr style="background:var(--bg-surface);">
-                  <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;background:var(--bg-surface);">ULT. ATUAL.</th>
-                  <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">SKU</th>
-                  <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">EAN</th>
-                  <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);min-width:220px;">PRODUTO</th>
-                  <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">MARCA</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">IMAGENS</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">ATACADO</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">LOJA INT.</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">M.L VITALIFE</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">M.L VITALIFE 2X</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">M.L VXSHOP</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">M.L VXSHOP 2X</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">SHP SUPLENIUM</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">SHP SUPLENIUM 2X</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">SHP PRIMEVITAMINAS</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">SHP PRIMEVITAMINAS 2X</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">RD MARKETPLACE</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">MAGALU (VIX)</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">MAGALU (4VITA)</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">DROG PACHECO</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">DROG S. PAULO</th>
-                  <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap;">AÇÕES</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
+          <button class="btn btn-sm" id="btn-new-conf" onclick="openConfModal(null)" style="font-size:11px;white-space:nowrap;display:none;">+ Novo Produto</button>
         </div>
-        <!-- Tabela scroll horizontal -->
-        <div id="conf-body-scroll" style="overflow-x:auto;" onscroll="document.getElementById('conf-thead-scroll').scrollLeft=this.scrollLeft">
-          <table id="conf-table" style="width:100%;border-collapse:collapse;font-size:12px;min-width:1200px;">
+        <!-- UMA única tabela com scroll horizontal — thead sticky dentro do scroll -->
+        <div id="conf-body-scroll" style="overflow-x:auto;overflow-y:auto;max-height:70vh;">
+          <table id="conf-table" style="width:100%;border-collapse:collapse;font-size:12px;min-width:1400px;table-layout:fixed;">
+            <colgroup>
+              <col style="width:72px;">   <!-- ULT. ATUAL. -->
+              <col style="width:90px;">   <!-- SKU -->
+              <col style="width:110px;">  <!-- EAN -->
+              <col style="width:220px;">  <!-- PRODUTO -->
+              <col style="width:130px;">  <!-- MARCA -->
+              <col style="width:90px;">   <!-- IMAGENS -->
+              <col style="width:90px;">   <!-- ATACADO -->
+              <col style="width:80px;">   <!-- LOJA INT. -->
+              <col style="width:90px;">   <!-- M.L VITALIFE -->
+              <col style="width:105px;">  <!-- M.L VITALIFE 2X -->
+              <col style="width:90px;">   <!-- M.L VXSHOP -->
+              <col style="width:100px;">  <!-- M.L VXSHOP 2X -->
+              <col style="width:100px;">  <!-- SHP SUPLENIUM -->
+              <col style="width:110px;">  <!-- SHP SUPLENIUM 2X -->
+              <col style="width:120px;">  <!-- SHP PRIMEVITAMINAS -->
+              <col style="width:135px;">  <!-- SHP PRIMEVITAMINAS 2X -->
+              <col style="width:110px;">  <!-- RD MARKETPLACE -->
+              <col style="width:95px;">   <!-- MAGALU (VIX) -->
+              <col style="width:100px;">  <!-- MAGALU (4VITA) -->
+              <col style="width:100px;">  <!-- DROG PACHECO -->
+              <col style="width:100px;">  <!-- DROG S. PAULO -->
+              <col style="width:70px;">   <!-- AÇÕES -->
+            </colgroup>
+            <thead id="conf-thead">
+              <tr style="background:var(--bg-surface);">
+                <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;left:0;background:var(--bg-surface);z-index:4;">ULT. ATUAL.</th>
+                <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;left:72px;background:var(--bg-surface);z-index:4;">SKU</th>
+                <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;left:162px;background:var(--bg-surface);z-index:4;">EAN</th>
+                <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);position:sticky;top:0;left:272px;background:var(--bg-surface);z-index:4;">PRODUTO</th>
+                <th style="padding:8px 10px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;left:492px;background:var(--bg-surface);z-index:4;border-right:2px solid var(--border-light);">MARCA</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">IMAGENS</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">ATACADO</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">LOJA INT.</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">M.L VITALIFE</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">M.L VITALIFE 2X</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">M.L VXSHOP</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">M.L VXSHOP 2X</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">SHP SUPLENIUM</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">SHP SUPLENIUM 2X</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">SHP PRIMEVITAMINAS</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">SHP PRIMEVITAMINAS 2X</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">RD MARKETPLACE</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">MAGALU (VIX)</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">MAGALU (4VITA)</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">DROG PACHECO</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">DROG S. PAULO</th>
+                <th style="padding:8px 10px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--bg-surface);z-index:3;">AÇÕES</th>
+              </tr>
+            </thead>
             <tbody id="conf-tbody"></tbody>
           </table>
         </div>
@@ -691,29 +709,53 @@ header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0
     <!-- TAREFAS USUÁRIOS -->
     <div class="tab-panel" id="tab-tarefas">
       <div class="section-header">
-        <span class="section-title">Tarefas Usuários</span>
-      </div>
-      <div id="tarefas-users" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:20px;"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;min-width:0;">
-        <div style="min-width:0;overflow:hidden;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;">
-            <div class="section-title">⏳ Em Aberto</div>
-            <select id="tf-filter-aberto" onchange="renderTarefas()" style="background:var(--bg-active);border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);font-size:11px;font-family:var(--font-sans);padding:3px 7px;cursor:pointer;outline:none;">
-              <option value="">Todos usuários</option>
-            </select>
-          </div>
-          <div id="tarefas-abertas"></div>
-        </div>
-        <div style="min-width:0;overflow:hidden;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;">
-            <div class="section-title">✅ Concluídas</div>
-            <select id="tf-filter-concluido" onchange="renderTarefas()" style="background:var(--bg-active);border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);font-size:11px;font-family:var(--font-sans);padding:3px 7px;cursor:pointer;outline:none;">
-              <option value="">Todos usuários</option>
-            </select>
-          </div>
-          <div id="tarefas-concluidas"></div>
+        <span class="section-title">Atribuição de Tarefas</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <select id="atv-filter-colab" onchange="renderAtividades()" style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-sans);font-size:12px;padding:5px 10px;outline:none;cursor:pointer;">
+            <option value="">Todos os colaboradores</option>
+          </select>
+          <select id="atv-filter-prior" onchange="renderAtividades()" style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-sans);font-size:12px;padding:5px 10px;outline:none;cursor:pointer;">
+            <option value="">Todas prioridades</option>
+            <option value="urgente">🔴 Urgente</option>
+            <option value="alta">🟡 Alta</option>
+            <option value="normal">⚪ Normal</option>
+          </select>
+          <button id="btn-nova-atv" class="btn btn-sm" onclick="openAtvModal(null)" style="display:none;white-space:nowrap;">+ Nova Tarefa</button>
         </div>
       </div>
+
+      <!-- Kanban board -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;min-width:0;" id="atv-kanban">
+
+        <!-- Coluna: A Fazer -->
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 12px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);border-top:3px solid var(--amber);">
+            <span style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);flex:1;">📋 A Fazer</span>
+            <span id="atv-count-aberta" style="background:rgba(245,158,11,.15);border:1px solid var(--amber);border-radius:10px;color:var(--amber);font-size:10px;font-family:var(--font-mono);font-weight:700;padding:1px 8px;">0</span>
+          </div>
+          <div id="atv-col-aberta" style="display:flex;flex-direction:column;gap:10px;min-height:60px;"></div>
+        </div>
+
+        <!-- Coluna: Em Andamento -->
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 12px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);border-top:3px solid var(--blue);">
+            <span style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);flex:1;">⚡ Em Andamento</span>
+            <span id="atv-count-andamento" style="background:rgba(59,130,246,.15);border:1px solid var(--blue);border-radius:10px;color:var(--blue);font-size:10px;font-family:var(--font-mono);font-weight:700;padding:1px 8px;">0</span>
+          </div>
+          <div id="atv-col-andamento" style="display:flex;flex-direction:column;gap:10px;min-height:60px;"></div>
+        </div>
+
+        <!-- Coluna: Concluída -->
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 12px;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);border-top:3px solid var(--green);">
+            <span style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);flex:1;">✅ Concluídas</span>
+            <span id="atv-count-concluida" style="background:rgba(34,197,94,.15);border:1px solid var(--green-dim);border-radius:10px;color:var(--green);font-size:10px;font-family:var(--font-mono);font-weight:700;padding:1px 8px;">0</span>
+          </div>
+          <div id="atv-col-concluida" style="display:flex;flex-direction:column;gap:10px;min-height:60px;"></div>
+        </div>
+
+      </div>
+      <div id="atv-empty" style="display:none;padding:48px;text-align:center;color:var(--text-muted);font-size:13px;font-family:var(--font-mono);">Nenhuma tarefa cadastrada ainda.</div>
     </div>
 
     <!-- BAIXAS DROGARIAS -->
@@ -902,6 +944,50 @@ header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0
       </div>
     </div>
 
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOVA TAREFA -->
+<div id="atv-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);align-items:center;justify-content:center;overflow-y:auto;padding:20px;z-index:1600;">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;width:520px;max-width:96vw;position:relative;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div id="atv-modal-title" style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);">Nova Tarefa</div>
+      <button onclick="closeAtvModal()" style="background:none;border:none;color:var(--text-muted);font-size:22px;cursor:pointer;line-height:1;">×</button>
+    </div>
+    <div style="display:grid;gap:12px;">
+      <div class="input-group">
+        <label>Título</label>
+        <input type="text" id="atv-titulo" placeholder="Ex: Atualizar planilha de preços" autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label>Descrição</label>
+        <textarea id="atv-descricao" rows="3" placeholder="Descreva o que precisa ser feito..." style="resize:vertical;"></textarea>
+      </div>
+      <div class="input-group">
+        <label>Colaborador responsável</label>
+        <select id="atv-responsavel" style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-sans);font-size:14px;padding:11px 14px;outline:none;width:100%;cursor:pointer;"></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="input-group">
+          <label>Data de vencimento</label>
+          <input type="date" id="atv-vencimento">
+        </div>
+        <div class="input-group">
+          <label>Prioridade</label>
+          <select id="atv-prioridade" style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-sans);font-size:14px;padding:11px 14px;outline:none;width:100%;cursor:pointer;">
+            <option value="normal">⚪ Normal</option>
+            <option value="alta">🟡 Alta</option>
+            <option value="urgente">🔴 Urgente</option>
+          </select>
+        </div>
+      </div>
+      <input type="hidden" id="atv-edit-id">
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        <button class="btn btn-ghost btn-sm" onclick="closeAtvModal()" style="flex:1;padding:10px;">Cancelar</button>
+        <button class="btn btn-sm" onclick="saveAtividade()" style="flex:2;padding:10px;">Salvar Tarefa</button>
       </div>
     </div>
   </div>
@@ -1142,7 +1228,7 @@ function nowTimeStr(){ return new Date().toLocaleTimeString('pt-BR',{hour:'2-dig
 function defaultState(){
   return {
     users:{
-      cmandrade:{name:'CM Andrade',pass:'suple2024',master:true,color:'#22c55e',initials:'CM',perms:['whatsapp','plataformas','baixas','envios','anuncios','devolucoes','atendimentos','tarefas','admin']},
+      cmandrade:{name:'CM Andrade',pass:'suple2024',master:true,color:'#22c55e',initials:'CM',perms:['whatsapp','plataformas','baixas','envios','anuncios','devolucoes','atendimentos','tarefas','atividades','admin']},
       gustavo:{name:'Gustavo',pass:'gusta123',master:false,color:'#e8edf8',initials:'G',perms:['plataformas','envios']},
       matheusm:{name:'Matheus M',pass:'matheus123',master:false,color:'#3b82f6',initials:'MM',perms:['whatsapp']},
       carlosred:{name:'Carlos Red',pass:'carlos123',master:false,color:'#c0392b',initials:'CR',perms:['whatsapp','devolucoes']}
@@ -1161,6 +1247,7 @@ function defaultState(){
     pedidosWpp:[],
     drogData:{pacheco:[],saopaulo:[]},
     conferencia:[],
+    atividades:[],
     lastReset:todayStr()
   };
 }
@@ -1398,6 +1485,7 @@ function applyRemoteState(data){
   if(!Array.isArray(data.drogData.pacheco)) data.drogData.pacheco = [];
   if(!Array.isArray(data.drogData.saopaulo)) data.drogData.saopaulo = [];
   if(!Array.isArray(data.conferencia)) data.conferencia = [];
+  if(!Array.isArray(data.atividades)) data.atividades = [];
   // Firebase omite arrays vazios — restaurar execs:[] para tasks com repeats>1
   if(data.tasks.plataformas && Array.isArray(data.tasks.plataformas)){
     data.tasks.plataformas.forEach(g=>{
@@ -1922,7 +2010,7 @@ function buildTabs(){
     {id:'devolucoes', icon:'↩',  label:'Devoluções',            perm:'devolucoes'},
     {id:'atendimentos',icon:'📞',label:'Atendimentos',          perm:'atendimentos'},
     {id:'anuncios',   icon:'🏷', label:'Produtos',              perm:'anuncios'},
-    {id:'tarefas',    icon:'✅', label:'Taref. Colaboradores',  perm:'tarefas'},
+    {id:'tarefas',    icon:'📌', label:'Atribuição Tarefas',   perm:'tarefas'},
     {id:'admin',      icon:'⚙', label:'Adm. Master',           perm:'admin'}
   ];
   const nav=document.getElementById('tabs-nav');
@@ -1944,7 +2032,7 @@ function buildTabs(){
         switchTab(tb.id);
         if(tb.id==='devolucoes'){ try{renderDev();}catch(e){console.warn('renderDev:',e);} setTimeout(()=>{try{renderDevStats();}catch(e){}},80); }
         if(tb.id==='atendimentos'){ try{renderAte();}catch(e){console.warn('renderAte:',e);} setTimeout(()=>{try{renderAteStats();}catch(e){}},80); }
-        if(tb.id==='tarefas'){ try{populateTfFilters();renderTarefas();}catch(e){console.warn('renderTarefas:',e);} }
+        if(tb.id==='tarefas'){ try{renderAtividades();}catch(e){console.warn('renderAtividades:',e);} }
         if(tb.id==='admin'){ try{ renderAdmin(); renderUsersGrid(); }catch(e){ console.warn('admin render:',e); } }
       };
       nav.appendChild(btn);
@@ -2843,11 +2931,11 @@ function renderConferencia(){
         </div>`
       : '';
     return `<tr style="border-bottom:1px solid var(--border);" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background=''">
-      <td style="padding:7px 10px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);white-space:nowrap;">${r.ultAtual||'—'}</td>
-      <td style="padding:7px 10px;font-family:var(--font-mono);font-size:11px;color:var(--text-primary);white-space:nowrap;font-weight:600;">${r.sku||'—'}</td>
-      <td style="padding:7px 10px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);white-space:nowrap;">${r.ean||'—'}</td>
-      <td style="padding:7px 10px;font-size:12px;color:var(--text-primary);min-width:200px;">${r.produto||'—'}</td>
-      <td style="padding:7px 10px;white-space:nowrap;">${marcaBadge(r.marca)}</td>
+      <td style="padding:7px 10px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);white-space:nowrap;position:sticky;left:0;background:var(--bg-card);z-index:2;">${r.ultAtual||'—'}</td>
+      <td style="padding:7px 10px;font-family:var(--font-mono);font-size:11px;color:var(--text-primary);white-space:nowrap;font-weight:600;position:sticky;left:72px;background:var(--bg-card);z-index:2;">${r.sku||'—'}</td>
+      <td style="padding:7px 10px;font-family:var(--font-mono);font-size:10px;color:var(--text-muted);white-space:nowrap;position:sticky;left:162px;background:var(--bg-card);z-index:2;">${r.ean||'—'}</td>
+      <td style="padding:7px 10px;font-size:12px;color:var(--text-primary);position:sticky;left:272px;background:var(--bg-card);z-index:2;">${r.produto||'—'}</td>
+      <td style="padding:7px 10px;white-space:nowrap;position:sticky;left:492px;background:var(--bg-card);z-index:2;border-right:2px solid var(--border-light);">${marcaBadge(r.marca)}</td>
       ${CONF_PLATS.map(p=>`<td style="padding:5px 8px;text-align:center;min-width:82px;">${_confStatusSelect(p.key, st[p.key]||'', r.id)}</td>`).join('')}
       <td style="padding:7px 8px;text-align:center;white-space:nowrap;">${actions}</td>
     </tr>`;
@@ -6440,61 +6528,228 @@ document.getElementById('modal-overlay').onclick=e=>{if(e.target===e.currentTarg
 document.getElementById('rst-modal-overlay').onclick=e=>{if(e.target===e.currentTarget)closeRstModal();};
 document.getElementById('conf-modal-overlay').onclick=e=>{if(e.target===e.currentTarget)closeConfModal();};
 
-// Header fixo da Conferência de Entradas
-(function(){
-  const contentArea = document.querySelector('.content-area');
-  const stickyHeader = document.getElementById('conf-sticky-header');
-  const wrap = document.getElementById('conf-entradas-wrap');
-  const bodyScroll = document.getElementById('conf-body-scroll');
-  const headScroll = document.getElementById('conf-thead-scroll');
-  if(!contentArea||!stickyHeader||!wrap||!bodyScroll||!headScroll) return;
-
-  // Sync scroll horizontal
-  let syncing=false;
-  bodyScroll.addEventListener('scroll',function(){
-    if(syncing)return;syncing=true;
-    headScroll.scrollLeft=bodyScroll.scrollLeft;
-    syncing=false;
-  });
-  headScroll.addEventListener('scroll',function(){
-    if(syncing)return;syncing=true;
-    bodyScroll.scrollLeft=headScroll.scrollLeft;
-    syncing=false;
-  });
-
-  // Sticky via fixed ao rolar
-  const HEADER_H = 50; // altura do header global do app
-  function updateSticky(){
-    const wrapRect = wrap.getBoundingClientRect();
-    const headerH = stickyHeader.offsetHeight;
-    if(wrapRect.top < HEADER_H && wrapRect.bottom > HEADER_H + headerH){
-      // Fixar
-      stickyHeader.style.position='fixed';
-      stickyHeader.style.top=HEADER_H+'px';
-      stickyHeader.style.left=wrapRect.left+'px';
-      stickyHeader.style.width=wrapRect.width+'px';
-      stickyHeader.style.boxShadow='0 2px 8px rgba(0,0,0,.4)';
-      bodyScroll.style.marginTop=headerH+'px';
-    } else {
-      // Soltar
-      stickyHeader.style.position='';
-      stickyHeader.style.top='';
-      stickyHeader.style.left='';
-      stickyHeader.style.width='';
-      stickyHeader.style.boxShadow='';
-      bodyScroll.style.marginTop='';
-    }
-  }
-  contentArea.addEventListener('scroll', updateSticky);
-  window.addEventListener('resize', updateSticky);
-})();
-
 // Listener para quando Firebase CDN terminar de carregar
 document.addEventListener('firebase-ready', function(){
   initFirebase();
   // Só conecta o Firebase — NÃO recarrega appState (perderia dados em memória)
   if(currentUser && db && fbConnected){ startFirebaseSync(); }
 });
+
+// ═══════════════════════════════════════════════════════
+// ATRIBUIÇÃO DE TAREFAS — Kanban Board
+// ═══════════════════════════════════════════════════════
+
+const ATV_PRIOR = {
+  urgente: { label:'🔴 Urgente', color:'#ef4444', bg:'rgba(239,68,68,.12)', border:'rgba(239,68,68,.35)' },
+  alta:    { label:'🟡 Alta',    color:'#f59e0b', bg:'rgba(245,158,11,.12)', border:'rgba(245,158,11,.35)' },
+  normal:  { label:'⚪ Normal',  color:'#6d7580', bg:'rgba(109,117,128,.10)', border:'rgba(109,117,128,.25)' }
+};
+
+function atvDiasRestantes(vencimento){
+  if(!vencimento) return null;
+  const hoje=new Date(); hoje.setHours(0,0,0,0);
+  const venc=new Date(vencimento+'T00:00:00');
+  return Math.round((venc-hoje)/86400000);
+}
+
+function atvDiasLabel(dias,status){
+  if(status==='concluida') return {text:'✅ Concluída',color:'var(--green)'};
+  if(dias===null) return null;
+  if(dias<0)  return {text:`⚠ ${Math.abs(dias)}d atrasada`,color:'var(--red)'};
+  if(dias===0) return {text:'⏰ Vence hoje!',color:'var(--amber)'};
+  if(dias===1) return {text:'⏳ Vence amanhã',color:'var(--amber)'};
+  return {text:`📅 ${dias} dias restantes`,color:'var(--text-muted)'};
+}
+
+function renderAtividades(){
+  if(!appState.atividades) appState.atividades=[];
+
+  const btnNova=document.getElementById('btn-nova-atv');
+  if(btnNova) btnNova.style.display=currentUser.master?'inline-flex':'none';
+
+  const fColab=document.getElementById('atv-filter-colab');
+  const fPrior=document.getElementById('atv-filter-prior');
+  if(fColab && fColab.options.length<=1){
+    fColab.innerHTML='<option value="">Todos os colaboradores</option>';
+    Object.entries(appState.users).forEach(([k,u])=>{
+      const o=document.createElement('option');o.value=k;o.textContent=u.name;fColab.appendChild(o);
+    });
+  }
+
+  const filterColab=fColab?fColab.value:'';
+  const filterPrior=fPrior?fPrior.value:'';
+
+  ['aberta','andamento','concluida'].forEach(s=>{
+    const col=document.getElementById('atv-col-'+s);if(col)col.innerHTML='';
+    const cnt=document.getElementById('atv-count-'+s);if(cnt)cnt.textContent='0';
+  });
+
+  const hoje=new Date();hoje.setHours(0,0,0,0);
+  const counts={aberta:0,andamento:0,concluida:0};
+  let total=0;
+
+  appState.atividades.forEach(a=>{
+    if(filterColab && a.responsavel!==filterColab) return;
+    if(filterPrior && a.prioridade!==filterPrior) return;
+
+    const user=appState.users[a.responsavel];
+    const prior=ATV_PRIOR[a.prioridade]||ATV_PRIOR.normal;
+    const dias=atvDiasRestantes(a.vencimento);
+    const diasLabel=atvDiasLabel(dias,a.status);
+    const colKey=a.status||'aberta';
+    const col=document.getElementById('atv-col-'+colKey);
+    if(!col) return;
+
+    counts[colKey]=(counts[colKey]||0)+1;
+    total++;
+
+    const uColor=user?(user.color||'#888'):'#888';
+    const uInit=user?(user.initials||(user.name.split(' ')[0]||'').substring(0,2).toUpperCase()):'?';
+    const uName=user?user.name:'Não atribuído';
+    const vencFmt=a.vencimento?new Date(a.vencimento+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}):'—';
+    const prazoHtml=diasLabel?`<span style="font-size:10px;color:${diasLabel.color};font-family:var(--font-mono);">${diasLabel.text}</span>`:'';
+
+    const statusBadge=a.status==='concluida'
+      ?`<span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);background:rgba(34,197,94,.12);border:1px solid var(--green-dim);border-radius:4px;padding:2px 7px;">Concluída</span>`
+      :a.status==='andamento'
+      ?`<span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--blue);background:rgba(59,130,246,.12);border:1px solid var(--blue);border-radius:4px;padding:2px 7px;">Em Andamento</span>`
+      :dias!==null&&dias<0
+      ?`<span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--red);background:rgba(239,68,68,.12);border:1px solid var(--red);border-radius:4px;padding:2px 7px;">Atrasada</span>`
+      :`<span style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--amber);background:rgba(245,158,11,.12);border:1px solid var(--amber);border-radius:4px;padding:2px 7px;">A Fazer</span>`;
+
+    const isMine=a.responsavel===currentUser.key;
+    const canAct=currentUser.master||isMine;
+    let acoes='';
+    if(canAct){
+      if(a.status==='aberta')
+        acoes=`<button onclick="atvMoveStatus('${a.id}','andamento')" style="background:rgba(59,130,246,.15);border:1px solid var(--blue);border-radius:5px;color:var(--blue);font-size:10px;font-weight:700;padding:4px 10px;cursor:pointer;font-family:var(--font-sans);">▶ Iniciar</button>`;
+      else if(a.status==='andamento')
+        acoes=`<button onclick="atvMoveStatus('${a.id}','concluida')" style="background:rgba(34,197,94,.15);border:1px solid var(--green-dim);border-radius:5px;color:var(--green);font-size:10px;font-weight:700;padding:4px 10px;cursor:pointer;font-family:var(--font-sans);">✓ Concluir</button>`;
+      else if(a.status==='concluida'&&currentUser.master)
+        acoes=`<button onclick="atvMoveStatus('${a.id}','aberta')" style="background:rgba(245,158,11,.12);border:1px solid var(--amber);border-radius:5px;color:var(--amber);font-size:10px;font-weight:700;padding:4px 10px;cursor:pointer;font-family:var(--font-sans);">↩ Reabrir</button>`;
+    }
+
+    const editBtn=currentUser.master
+      ?`<button onclick="openAtvModal('${a.id}')" style="background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'" title="Editar">✎</button>
+        <button onclick="deleteAtividade('${a.id}')" style="background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-muted)'" title="Excluir">🗑</button>`
+      :'';
+
+    const card=document.createElement('div');
+    card.style.cssText='background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:box-shadow .15s;';
+    card.onmouseover=()=>card.style.boxShadow='0 4px 16px rgba(0,0,0,.3)';
+    card.onmouseout=()=>card.style.boxShadow='';
+    card.innerHTML=`
+      <div style="height:3px;background:${prior.color};"></div>
+      <div style="padding:12px 14px;">
+        <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;line-height:1.3;margin-bottom:5px;">${a.titulo||'Sem título'}</div>
+            ${statusBadge}
+          </div>
+          <div style="display:flex;gap:2px;flex-shrink:0;">${editBtn}</div>
+        </div>
+        ${a.descricao?`<div style="font-size:12px;color:var(--text-muted);line-height:1.45;margin-bottom:10px;padding:8px 10px;background:var(--bg-surface);border-radius:6px;border-left:2px solid var(--border);">${a.descricao}</div>`:''}
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+          <span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;font-family:var(--font-mono);background:${prior.bg};border:1px solid ${prior.border};color:${prior.color};">${prior.label}</span>
+          ${prazoHtml}
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);flex-wrap:wrap;gap:6px;">
+          <div style="display:flex;align-items:center;gap:7px;">
+            <div style="width:22px;height:22px;border-radius:50%;background:${uColor}22;border:1px solid ${uColor};color:${uColor};font-size:8px;font-weight:700;font-family:var(--font-mono);display:flex;align-items:center;justify-content:center;flex-shrink:0;">${uInit}</div>
+            <div>
+              <div style="font-size:11px;font-weight:600;color:var(--text-primary);">${uName}</div>
+              <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">Vence: ${vencFmt}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;">${acoes}</div>
+        </div>
+      </div>`;
+    col.appendChild(card);
+  });
+
+  Object.entries(counts).forEach(([s,n])=>{
+    const el=document.getElementById('atv-count-'+s);if(el)el.textContent=n;
+  });
+  const empty=document.getElementById('atv-empty');
+  if(empty) empty.style.display=total===0?'block':'none';
+}
+
+function atvMoveStatus(id,novoStatus){
+  if(!appState.atividades) return;
+  const a=appState.atividades.find(x=>x.id===id);if(!a)return;
+  a.status=novoStatus;
+  if(novoStatus==='concluida'){a.concluidoEm=new Date().toLocaleDateString('pt-BR');a.concluidoPor=currentUser.name;}
+  saveState(appState);renderAtividades();
+  showToast('Tarefa → '+{aberta:'A Fazer',andamento:'Em Andamento',concluida:'Concluída'}[novoStatus],'success');
+}
+
+function deleteAtividade(id){
+  if(!currentUser.master){showToast('Apenas o master pode excluir','warn');return;}
+  showConfirm('Excluir tarefa','Deseja excluir esta tarefa? Essa ação não pode ser desfeita.',()=>{
+    appState.atividades=(appState.atividades||[]).filter(x=>x.id!==id);
+    saveState(appState);renderAtividades();showToast('Tarefa excluída','success');
+  });
+}
+
+function openAtvModal(id){
+  if(!currentUser.master){showToast('Apenas o master pode criar/editar tarefas','warn');return;}
+  const sel=document.getElementById('atv-responsavel');
+  if(sel){
+    sel.innerHTML='<option value="">Selecionar colaborador...</option>';
+    Object.entries(appState.users).forEach(([k,u])=>{
+      const o=document.createElement('option');o.value=k;o.textContent=u.name;sel.appendChild(o);
+    });
+  }
+  const overlay=document.getElementById('atv-modal-overlay');
+  const titleEl=document.getElementById('atv-modal-title');
+  if(id){
+    const a=(appState.atividades||[]).find(x=>x.id===id);if(!a)return;
+    document.getElementById('atv-titulo').value=a.titulo||'';
+    document.getElementById('atv-descricao').value=a.descricao||'';
+    if(sel)sel.value=a.responsavel||'';
+    document.getElementById('atv-vencimento').value=a.vencimento||'';
+    document.getElementById('atv-prioridade').value=a.prioridade||'normal';
+    document.getElementById('atv-edit-id').value=id;
+    if(titleEl)titleEl.textContent='Editar Tarefa';
+  } else {
+    document.getElementById('atv-titulo').value='';
+    document.getElementById('atv-descricao').value='';
+    if(sel)sel.value='';
+    document.getElementById('atv-vencimento').value='';
+    document.getElementById('atv-prioridade').value='normal';
+    document.getElementById('atv-edit-id').value='';
+    if(titleEl)titleEl.textContent='Nova Tarefa';
+  }
+  overlay.style.display='flex';
+}
+
+function closeAtvModal(){
+  const o=document.getElementById('atv-modal-overlay');if(o)o.style.display='none';
+}
+
+function saveAtividade(){
+  const titulo=document.getElementById('atv-titulo').value.trim();
+  const descricao=document.getElementById('atv-descricao').value.trim();
+  const responsavel=document.getElementById('atv-responsavel').value;
+  const vencimento=document.getElementById('atv-vencimento').value;
+  const prioridade=document.getElementById('atv-prioridade').value;
+  const editId=document.getElementById('atv-edit-id').value;
+  if(!titulo){showToast('Informe o título da tarefa','warn');return;}
+  if(!responsavel){showToast('Selecione o colaborador responsável','warn');return;}
+  if(!vencimento){showToast('Informe a data de vencimento','warn');return;}
+  if(!Array.isArray(appState.atividades))appState.atividades=[];
+  if(editId){
+    const idx=appState.atividades.findIndex(x=>x.id===editId);
+    if(idx>-1)appState.atividades[idx]={...appState.atividades[idx],titulo,descricao,responsavel,vencimento,prioridade};
+    showToast('Tarefa atualizada','success');
+  } else {
+    appState.atividades.push({id:'atv_'+Date.now(),titulo,descricao,responsavel,vencimento,prioridade,status:'aberta',criadoEm:new Date().toLocaleDateString('pt-BR'),criadoPor:currentUser.name});
+    showToast('Tarefa criada','success');
+  }
+  saveState(appState);closeAtvModal();renderAtividades();
+}
+
+document.getElementById('atv-modal-overlay').onclick=e=>{if(e.target===e.currentTarget)closeAtvModal();};
 
 </script>
 </body>
