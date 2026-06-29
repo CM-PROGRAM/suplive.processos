@@ -2,6 +2,8 @@
 <html lang="pt-BR">
 <head>
 <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTgzMjJhIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2I3MWMxYyIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSBGdW5kbyBhcnJlZG9uZGFkbyBlc3RpbG8gRGlzY29yZCAtLT4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiByeT0iMjIiIGZpbGw9InVybCgjYmcpIi8+CiAgPCEtLSBCcmlsaG8gc3V0aWwgbm8gdG9wbyAtLT4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiByeD0iMjIiIHJ5PSIyMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA2KSIvPgogIDwhLS0gTGV0cmEgUyBib2xkIGNlbnRyYWxpemFkYSAtLT4KICA8dGV4dCB4PSI1MCIgeT0iNzEiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjaywgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI5MDAiIGZvbnQtc2l6ZT0iNjIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iLTIiPlM8L3RleHQ+Cjwvc3ZnPg==">
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYmciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZTgzMjJhIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3R5bGU9InN0b3AtY29sb3I6I2I3MWMxYyIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPCEtLSBGdW5kbyBhcnJlZG9uZGFkbyBlc3RpbG8gRGlzY29yZCAtLT4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiByeT0iMjIiIGZpbGw9InVybCgjYmcpIi8+CiAgPCEtLSBCcmlsaG8gc3V0aWwgbm8gdG9wbyAtLT4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjUwIiByeD0iMjIiIHJ5PSIyMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA2KSIvPgogIDwhLS0gTGV0cmEgUyBib2xkIGNlbnRyYWxpemFkYSAtLT4KICA8dGV4dCB4PSI1MCIgeT0iNzEiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjaywgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI5MDAiIGZvbnQtc2l6ZT0iNjIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBsZXR0ZXItc3BhY2luZz0iLTIiPlM8L3RleHQ+Cjwvc3ZnPg==">
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -478,7 +480,15 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
 
 <div id="splash">
   <div class="splash-logo">
-    <div class="brand">Suple<span class="brand-live">live.</span></div>
+    <div style="display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="width:68px;height:68px;flex-shrink:0;display:block;filter:drop-shadow(0 2px 12px rgba(232,50,42,0.7));">
+  <defs><linearGradient id="sbg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#e8322a"/><stop offset="100%" style="stop-color:#b71c1c"/></linearGradient></defs>
+  <rect width="100" height="100" rx="22" ry="22" fill="url(#sbg)"/>
+  <rect width="100" height="50" rx="22" ry="22" fill="rgba(255,255,255,0.07)"/>
+  <text x="50" y="71" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="62" fill="white" text-anchor="middle">S</text>
+</svg>
+      <div class="brand">Suple<span class="brand-live">live.</span></div>
+    </div>
     <div class="tagline">Processos</div>
   </div>
   <div class="login-box">
@@ -499,9 +509,17 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
 <div id="app">
   <header style="justify-content:space-between;padding:0 20px;">
     <div style="width:40px;"></div>
-    <div class="header-brand" style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-      <div>Suple<span class="brand-live">live.</span></div>
-      <div style="font-size:11px;background:linear-gradient(90deg,rgba(148,163,184,0.3),rgba(148,163,184,0.8),rgba(148,163,184,0.3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:6px;text-transform:uppercase;font-family:var(--font-mono);font-weight:400;">Processos</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="width:42px;height:42px;flex-shrink:0;display:block;filter:drop-shadow(0 2px 10px rgba(232,50,42,0.6));" class="logo-icon">
+  <defs><linearGradient id="sbg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#e8322a"/><stop offset="100%" style="stop-color:#b71c1c"/></linearGradient></defs>
+  <rect width="100" height="100" rx="22" ry="22" fill="url(#sbg2)"/>
+  <rect width="100" height="50" rx="22" ry="22" fill="rgba(255,255,255,0.07)"/>
+  <text x="50" y="71" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="62" fill="white" text-anchor="middle">S</text>
+</svg>
+      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:1px;">
+        <div class="header-brand">Suple<span class="brand-live">live.</span></div>
+        <div style="font-size:11px;background:linear-gradient(90deg,rgba(148,163,184,0.3),rgba(148,163,184,0.8),rgba(148,163,184,0.3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:6px;text-transform:uppercase;font-family:var(--font-mono);font-weight:400;">Processos</div>
+      </div>
     </div>
     <!-- Sino de notificações -->
     <div style="position:relative;">
@@ -563,19 +581,25 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
         </div>
       </div>
 
-      <!-- PAINEL DE VENDAS -->
-      <div style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius-lg);margin-top:14px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.07);">
-        <!-- Header sempre visível -->
-        <div style="background:linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.01));border-bottom:1px solid var(--glass-border);padding:11px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <div style="width:26px;height:26px;border-radius:6px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:13px;">📋</div>
-          <span style="font-size:13px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;flex:1;">PAINEL DE VENDAS</span>
-          <span id="wpp-ped-total-val" style="font-size:13px;font-weight:700;color:var(--green);font-family:var(--font-mono);">R$ 0,00</span>
-          <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">total semana</span>
-          <span id="wpp-ped-count-badge" style="background:var(--accent-glow);border:1px solid var(--accent-dim);border-radius:10px;color:var(--accent);font-size:10px;font-family:var(--font-mono);font-weight:700;padding:1px 8px;">0</span>
+      <!-- HISTÓRICO DE VENDAS -->
+      <div style="background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border:1px solid var(--glass-border);border-radius:var(--radius-lg);margin-top:14px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.06);">
+        <div onclick="toggleHistoricoWpp()" style="background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01));border-bottom:1px solid var(--glass-border);padding:11px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;cursor:pointer;user-select:none;">
+          <div style="width:26px;height:26px;border-radius:6px;background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.3);display:flex;align-items:center;justify-content:center;font-size:13px;">📅</div>
+          <span style="font-size:13px;font-weight:700;color:var(--text-primary);letter-spacing:-0.02em;flex:1;">HISTÓRICO DE VENDAS</span>
+          <span id="historico-wpp-total" style="font-size:12px;font-weight:700;color:#8b5cf6;font-family:var(--font-mono);">R$ 0,00</span>
+          <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">60 dias</span>
+          <span id="historico-wpp-chevron" style="color:var(--text-muted);font-size:14px;transition:transform .2s;margin-left:4px;">▾</span>
         </div>
-        <!-- Lista de pedidos (sempre visível) -->
-        <div id="wpp-ped-list" style="max-height:320px;overflow-y:auto;"></div>
-        <div id="wpp-ped-empty" style="padding:24px;text-align:center;color:var(--text-muted);font-size:12px;font-family:var(--font-mono);display:none;">Nenhuma venda registrada ainda hoje.</div>
+        <div id="historico-wpp-body">
+          <div style="padding:10px 16px;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <button onclick="filtroHistoricoWpp('semana-atual')" id="hist-f-semana-atual" style="font-size:11px;font-weight:600;font-family:var(--font-sans);padding:4px 12px;border-radius:20px;border:1px solid rgba(139,92,246,0.5);background:rgba(139,92,246,0.2);color:#a78bfa;cursor:pointer;">Esta semana</button>
+            <button onclick="filtroHistoricoWpp('semana-passada')" id="hist-f-semana-passada" style="font-size:11px;font-weight:600;font-family:var(--font-sans);padding:4px 12px;border-radius:20px;border:1px solid var(--glass-border);background:transparent;color:var(--text-muted);cursor:pointer;">Semana passada</button>
+            <button onclick="filtroHistoricoWpp('30dias')" id="hist-f-30dias" style="font-size:11px;font-weight:600;font-family:var(--font-sans);padding:4px 12px;border-radius:20px;border:1px solid var(--glass-border);background:transparent;color:var(--text-muted);cursor:pointer;">Últimos 30 dias</button>
+            <button onclick="filtroHistoricoWpp('todos')" id="hist-f-todos" style="font-size:11px;font-weight:600;font-family:var(--font-sans);padding:4px 12px;border-radius:20px;border:1px solid var(--glass-border);background:transparent;color:var(--text-muted);cursor:pointer;">60 dias</button>
+          </div>
+          <div id="historico-wpp-list" style="max-height:480px;overflow-y:auto;"></div>
+          <div id="historico-wpp-empty" style="display:none;padding:24px;text-align:center;color:var(--text-muted);font-size:12px;font-family:var(--font-mono);">Nenhuma venda encontrada neste período.</div>
+        </div>
       </div>
     </div>
 
@@ -604,8 +628,11 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
           <div>
             <label style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;">Pagamento *</label>
             <select id="modal-ped-pag" style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-sans);font-size:14px;padding:10px 13px;outline:none;width:100%;box-sizing:border-box;cursor:pointer;">
-              <option value="Pix">Pix</option>
-              <option value="Crédito">Crédito</option>
+              <option value="Pix Manoel">Pix Manoel</option>
+              <option value="Pix Vix Comercio">Pix Vix Comercio</option>
+              <option value="Pix 4Vita">Pix 4Vita</option>
+              <option value="C. de Crédito Infinity Pay">C. de Crédito Infinity Pay</option>
+              <option value="C. de Crédito Merc. Pago">C. de Crédito Merc. Pago</option>
             </select>
           </div>
         </div>
@@ -755,6 +782,13 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
             <div class="input-group" style="grid-column:1/-1;"><label>Cliente</label><input type="text" id="rst-cliente" placeholder="Nome completo do cliente" autocomplete="new-password" data-lpignore="true"></div>
             <div class="input-group" style="grid-column:1/-1;"><label>Código de Rastreio</label><input type="text" id="rst-codigo" placeholder="Ex: LGI-ME262833CI4BR" autocomplete="new-password" data-lpignore="true"></div>
             <div class="input-group" style="grid-column:1/-1;"><label>Link de Rastreio</label><input type="text" id="rst-link" name="rst-link-field-nofill" placeholder="https://app.loggi.com/rastreador/..." autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other"></div>
+            <div class="input-group" style="grid-column:1/-1;">
+              <label style="display:flex;align-items:center;justify-content:space-between;">
+                <span>Observações</span>
+                <span id="rst-obs-count" style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">150 restantes</span>
+              </label>
+              <textarea id="rst-obs" rows="3" maxlength="150" placeholder="Observações sobre este rastreio..." oninput="document.getElementById('rst-obs-count').textContent=(150-this.value.length)+' restantes'" style="width:100%;box-sizing:border-box;background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius);color:var(--text-primary);font-size:13px;font-family:var(--font-sans);padding:10px 12px;outline:none;resize:none;transition:border-color .15s;line-height:1.5;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-light)'"></textarea>
+            </div>
           </div>
           <input type="hidden" id="rst-edit-id">
           <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:18px;">
@@ -954,7 +988,7 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
             <option value="alta">🟡 Alta</option>
             <option value="normal">⚪ Normal</option>
           </select>
-          <button id="btn-nova-atv" class="btn btn-sm" onclick="openAtvModal(null)" style="display:none;white-space:nowrap;">+ Nova Tarefa</button>
+          <button id="btn-nova-atv" class="btn btn-sm" onclick="openAtvModal(null)" style="display:none;white-space:nowrap;">+ Criar</button>
         </div>
       </div>
 
@@ -1271,9 +1305,16 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
         </div>
       </div>
       <input type="hidden" id="atv-edit-id">
+      <div class="input-group" id="atv-comentario-wrap" style="display:none;">
+        <label style="display:flex;align-items:center;justify-content:space-between;">
+          <span>💬 Comentário do responsável</span>
+          <span id="atv-comentario-count" style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);">150 restantes</span>
+        </label>
+        <textarea id="atv-comentario" rows="2" maxlength="150" placeholder="Adicione um comentário ou atualização..." oninput="document.getElementById('atv-comentario-count').textContent=(150-this.value.length)+' restantes'" style="resize:none;"></textarea>
+      </div>
       <div style="display:flex;gap:8px;margin-top:4px;">
         <button class="btn btn-ghost btn-sm" onclick="closeAtvModal()" style="flex:1;padding:10px;">Cancelar</button>
-        <button class="btn btn-sm" onclick="saveAtividade()" style="flex:2;padding:10px;">Salvar Tarefa</button>
+        <button class="btn btn-sm" id="atv-save-btn" onclick="saveAtividade()" style="flex:2;padding:10px;">Salvar Tarefa</button>
       </div>
     </div>
   </div>
@@ -1371,15 +1412,11 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
       <div class="input-group"><label>Link Atendimento</label><input type="text" id="ate-link" placeholder="https://..."></div>
       <div class="input-group">
         <label style="display:flex;align-items:center;justify-content:space-between;">
-          <span>Resumo do Caso</span>
-          <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);" id="ate-topicos-count">0 tópico(s)</span>
+          <span>Descrição Última Atualização</span>
+          <span id="ate-ultima-data" style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);"></span>
         </label>
-        <div id="ate-topicos-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;"></div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <input type="text" id="ate-topico-hora" maxlength="5" placeholder="DD/MM" oninput="this.value=this.value.replace(/[^0-9\/]/g,'').substring(0,5)" style="width:52px;background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius);color:var(--accent);font-size:11px;font-family:var(--font-mono);padding:8px 6px;text-align:center;outline:none;flex-shrink:0;transition:border-color .15s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-light)'">
-          <input type="text" id="ate-topico-input" maxlength="150" placeholder="Resumo da etapa... (Enter para adicionar)" style="flex:1;background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius);color:var(--text-primary);font-size:12px;font-family:var(--font-sans);padding:8px 10px;outline:none;transition:border-color .15s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-light)'" onkeydown="if(event.key==='Enter'){event.preventDefault();ateAddTopico();}">
-          <button type="button" onclick="ateAddTopico()" style="background:var(--bg-active);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-secondary);font-size:18px;line-height:1;padding:4px 10px;cursor:pointer;">+</button>
-        </div>
+        <textarea id="ate-ultima-desc" rows="4" maxlength="150" placeholder="Descreva o que aconteceu nesta atualização..." oninput="document.getElementById('ate-ultima-desc-count').textContent=(150-this.value.length)+' restantes'" style="width:100%;box-sizing:border-box;background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius);color:var(--text-primary);font-size:13px;font-family:var(--font-sans);padding:10px 12px;outline:none;resize:none;transition:border-color .15s;line-height:1.5;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-light)'"></textarea>
+        <div style="text-align:right;font-size:10px;color:var(--text-muted);font-family:var(--font-mono);margin-top:3px;"><span id="ate-ultima-desc-count">150 restantes</span></div>
       </div>
       <div class="input-group"><label>Plataforma</label>
         <select id="ate-plataforma" onchange="toggleAteRastreio()">
@@ -2596,7 +2633,7 @@ function renderWpp(){
     setTimeout(()=>abrirModalVenda(),300);
   }
   // Render lista de pedidos
-  renderPedidosWpp();
+  renderHistoricoWpp();
 }
 
 function abrirModalVenda(){
@@ -2610,7 +2647,7 @@ function abrirModalVenda(){
   const err=document.getElementById('modal-venda-error');
   if(num) num.value='';
   if(val) val.value='';
-  if(pag) pag.value='Pix';
+  if(pag) pag.value='Pix Manoel';
   if(err) err.style.display='none';
   overlay.style.display='flex';
   setTimeout(()=>{ if(num) num.focus(); },100);
@@ -2682,7 +2719,8 @@ function fecharVendaWpp(){
 }
 
 function excluirUltimaVendaWpp(){
-  if(!currentUser||!currentUser.master){showToast('Apenas o master pode excluir registros','error');return;}
+  const _canWpp1=currentUser&&(currentUser.master||(currentUser.perms||[]).includes('whatsapp'));
+  if(!_canWpp1){showToast('Acesso restrito','error');return;}
   const d=todayStr();
   if(!appState.vendasWpp) appState.vendasWpp={};
   const atual=appState.vendasWpp[d]||0;
@@ -2741,19 +2779,20 @@ function addPedidoWpp(){
   const cutStr=cutoff.getFullYear()+'-'+String(cutoff.getMonth()+1).padStart(2,'0')+'-'+String(cutoff.getDate()).padStart(2,'0');
   appState.pedidosWpp=appState.pedidosWpp.filter(p=>p.data>=cutStr);
   saveState(appState);
-  numEl.value='';valorEl.value='';pagEl.value='Pix';
+  numEl.value='';valorEl.value='';pagEl.value='Pix Manoel';
   numEl.focus();
-  renderPedidosWpp();
+  renderHistoricoWpp();
   showToast('✓ Pedido #'+num+' registrado — R$ '+valor.toLocaleString('pt-BR',{minimumFractionDigits:2}),'success');
 }
 
 function deletePedidoWpp(id){
-  if(!currentUser||!currentUser.master){showToast('Apenas o master pode excluir pedidos','error');return;}
+  const _canWpp2=currentUser&&(currentUser.master||(currentUser.perms||[]).includes('whatsapp'));
+  if(!_canWpp2){showToast('Acesso restrito','error');return;}
   const ok=window.confirm('Excluir este pedido? Esta ação não pode ser desfeita.');
   if(!ok) return;
   appState.pedidosWpp=(appState.pedidosWpp||[]).filter(p=>p.id!==id);
   saveState(appState);
-  renderPedidosWpp();
+  renderHistoricoWpp();
   showToast('🗑 Pedido excluído','warn');
 }
 
@@ -2773,6 +2812,7 @@ function renderPedidosWpp(){
   if(!list) return;
 
   const isMaster=currentUser&&currentUser.master;
+  const canWpp=isMaster||(currentUser&&(currentUser.perms||[]).includes('whatsapp'));
   const today=todayStr();
   // Mostrar apenas vendas de hoje
   const todayPeds=(appState.pedidosWpp||[]).filter(p=>p.data===today).slice().reverse();
@@ -2791,12 +2831,15 @@ function renderPedidosWpp(){
   if(empty) empty.style.display='none';
 
   const PAG_COLORS={
-    'Pix':    {bg:'rgba(34,197,94,.12)',  border:'rgba(34,197,94,0.4)',  color:'var(--green)'},
-    'Crédito':{bg:'rgba(59,130,246,.12)', border:'rgba(59,130,246,0.4)', color:'var(--blue)'}
+    'Pix Manoel':               {bg:'rgba(34,197,94,.12)',   border:'rgba(34,197,94,0.4)',   color:'var(--green)'},
+    'Pix Vix Comercio':         {bg:'rgba(16,185,129,.12)',  border:'rgba(16,185,129,0.4)',  color:'#10b981'},
+    'Pix 4Vita':                {bg:'rgba(52,211,153,.12)',  border:'rgba(52,211,153,0.4)',  color:'#34d399'},
+    'C. de Crédito Infinity Pay':{bg:'rgba(59,130,246,.12)', border:'rgba(59,130,246,0.4)', color:'var(--blue)'},
+    'C. de Crédito Merc. Pago': {bg:'rgba(139,92,246,.12)', border:'rgba(139,92,246,0.4)',  color:'#8b5cf6'}
   };
 
   todayPeds.forEach((p,idx)=>{
-    const pc=PAG_COLORS[p.pag]||PAG_COLORS['Pix'];
+    const pc=PAG_COLORS[p.pag]||PAG_COLORS['Pix Manoel'];
     const row=document.createElement('div');
     row.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--glass-border);transition:background .12s;';
     row.onmouseover=()=>row.style.background='rgba(255,255,255,0.04)';
@@ -2833,7 +2876,7 @@ function renderPedidosWpp(){
     row.appendChild(pagBadge);
     row.appendChild(hora);
 
-    if(isMaster){
+    if(canWpp){
       const delBtn=document.createElement('button');
       delBtn.style.cssText='background:none;border:1px solid rgba(239,68,68,0.3);border-radius:50px;color:var(--text-muted);cursor:pointer;font-size:10px;padding:2px 8px;transition:all .15s;flex-shrink:0;';
       delBtn.textContent='✕';delBtn.title='Excluir';
@@ -2874,6 +2917,206 @@ function toggleWppItem(groupId,itemId){
 }
 
 function concludeDay(){showToast('Dia concluído! Dados arquivados.','success');}
+
+/* ===== HISTÓRICO DE VENDAS ===== */
+let _historicoFiltro = 'semana-atual';
+
+function toggleHistoricoWpp(){
+  const body = document.getElementById('historico-wpp-body');
+  const chevron = document.getElementById('historico-wpp-chevron');
+  if(!body) return;
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if(chevron) chevron.style.transform = open ? 'rotate(-90deg)' : '';
+  if(!open) renderHistoricoWpp();
+}
+
+function filtroHistoricoWpp(periodo){
+  _historicoFiltro = periodo;
+  // Reset estilos
+  ['semana-atual','semana-passada','30dias','todos'].forEach(id=>{
+    const btn = document.getElementById('hist-f-'+id);
+    if(!btn) return;
+    if(id === periodo){
+      btn.style.background = 'rgba(139,92,246,0.2)';
+      btn.style.borderColor = 'rgba(139,92,246,0.5)';
+      btn.style.color = '#a78bfa';
+    } else {
+      btn.style.background = 'transparent';
+      btn.style.borderColor = 'var(--glass-border)';
+      btn.style.color = 'var(--text-muted)';
+    }
+  });
+  renderHistoricoWpp();
+}
+
+function getWeekRange(offsetWeeks){
+  const now = new Date();
+  const day = now.getDay();
+  const diffToMon = day === 0 ? 6 : day - 1;
+  const mon = new Date(now);
+  mon.setDate(now.getDate() - diffToMon - (offsetWeeks * 7));
+  const sun = new Date(mon);
+  sun.setDate(mon.getDate() + 6);
+  const fmt = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  return { start: fmt(mon), end: fmt(sun) };
+}
+
+function renderHistoricoWpp(){
+  const list = document.getElementById('historico-wpp-list');
+  const empty = document.getElementById('historico-wpp-empty');
+  const totalEl = document.getElementById('historico-wpp-total');
+  if(!list) return;
+
+  const peds = appState.pedidosWpp || [];
+
+  // Calcular total geral 60 dias para o header
+  const total60 = peds.reduce((a,p) => a + (p.valor||0), 0);
+  if(totalEl) totalEl.textContent = 'R$ ' + total60.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  // Filtrar por período
+  let filtrados = [];
+  const hoje = todayStr();
+  if(_historicoFiltro === 'semana-atual'){
+    const {start, end} = getWeekRange(0);
+    filtrados = peds.filter(p => p.data >= start && p.data <= end);
+  } else if(_historicoFiltro === 'semana-passada'){
+    const {start, end} = getWeekRange(1);
+    filtrados = peds.filter(p => p.data >= start && p.data <= end);
+  } else if(_historicoFiltro === '30dias'){
+    const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-30);
+    const cutStr = cutoff.getFullYear()+'-'+String(cutoff.getMonth()+1).padStart(2,'0')+'-'+String(cutoff.getDate()).padStart(2,'0');
+    filtrados = peds.filter(p => p.data >= cutStr);
+  } else {
+    filtrados = [...peds];
+  }
+
+  filtrados.sort((a,b) => b.data.localeCompare(a.data) || (b.hora||'').localeCompare(a.hora||''));
+
+  list.innerHTML = '';
+  if(filtrados.length === 0){
+    if(empty) empty.style.display = 'block';
+    return;
+  }
+  if(empty) empty.style.display = 'none';
+
+  // Agrupar por data
+  const byDate = {};
+  filtrados.forEach(p => {
+    if(!byDate[p.data]) byDate[p.data] = [];
+    byDate[p.data].push(p);
+  });
+
+  const PAG_COLORS = {
+    'Pix Manoel':               {bg:'rgba(34,197,94,.12)',   border:'rgba(34,197,94,0.4)',   color:'var(--green)'},
+    'Pix Vix Comercio':         {bg:'rgba(16,185,129,.12)',  border:'rgba(16,185,129,0.4)',  color:'#10b981'},
+    'Pix 4Vita':                {bg:'rgba(52,211,153,.12)',  border:'rgba(52,211,153,0.4)',  color:'#34d399'},
+    'C. de Crédito Infinity Pay':{bg:'rgba(59,130,246,.12)',border:'rgba(59,130,246,0.4)',  color:'var(--blue)'},
+    'C. de Crédito Merc. Pago': {bg:'rgba(139,92,246,.12)', border:'rgba(139,92,246,0.4)',  color:'#8b5cf6'},
+    'Pix':    {bg:'rgba(34,197,94,.12)', border:'rgba(34,197,94,0.4)', color:'var(--green)'},
+    'Crédito':{bg:'rgba(59,130,246,.12)',border:'rgba(59,130,246,0.4)',color:'var(--blue)'}
+  };
+
+  const isMaster = currentUser && currentUser.master;
+  const canWpp = isMaster || (currentUser && (currentUser.perms||[]).includes('whatsapp'));
+
+  Object.keys(byDate).sort((a,b)=>b.localeCompare(a)).forEach(data => {
+    const dayPeds = byDate[data];
+    const dayTotal = dayPeds.reduce((a,p)=>a+(p.valor||0),0);
+    const dateObj = new Date(data+'T12:00:00');
+    const isToday = data === hoje;
+    const dayLabel = isToday ? 'Hoje' : dateObj.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'});
+
+    // Header do dia
+    const dayHeader = document.createElement('div');
+    dayHeader.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 16px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--glass-border);position:sticky;top:0;z-index:1;';
+    dayHeader.innerHTML = `
+      <span style="font-size:11px;font-weight:700;color:${isToday?'var(--green)':'#a78bfa'};font-family:var(--font-mono);text-transform:uppercase;letter-spacing:0.5px;">${dayLabel}</span>
+      <div style="flex:1;height:1px;background:var(--glass-border);"></div>
+      <span style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">${dayPeds.length} venda${dayPeds.length!==1?'s':''}</span>
+      <span style="font-size:12px;font-weight:700;color:var(--green);font-family:var(--font-mono);">R$ ${dayTotal.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+    `;
+    list.appendChild(dayHeader);
+
+    // Pedidos do dia
+    dayPeds.forEach((p, idx) => {
+      const pc = PAG_COLORS[p.pag] || PAG_COLORS['Pix Manoel'] || {bg:'rgba(255,255,255,0.06)',border:'var(--glass-border)',color:'var(--text-secondary)'};
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background .12s;';
+      row.onmouseover = () => row.style.background = 'rgba(255,255,255,0.03)';
+      row.onmouseout  = () => row.style.background = '';
+
+      const idxEl = document.createElement('div');
+      idxEl.style.cssText = 'font-size:10px;color:var(--text-muted);font-family:var(--font-mono);min-width:20px;text-align:center;font-weight:700;';
+      idxEl.textContent = '#'+(dayPeds.length - idx);
+
+      const numEl2 = document.createElement('div');
+      numEl2.style.cssText = 'font-size:12px;font-weight:700;color:var(--text-primary);font-family:var(--font-mono);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+      numEl2.textContent = p.num;
+
+      const valEl = document.createElement('div');
+      valEl.style.cssText = 'font-size:12px;font-weight:700;color:var(--green);font-family:var(--font-mono);white-space:nowrap;';
+      valEl.textContent = 'R$ '+p.valor.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+      const pagBadge = document.createElement('span');
+      pagBadge.style.cssText = `font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:${pc.bg};border:1px solid ${pc.border};color:${pc.color};white-space:nowrap;max-width:130px;overflow:hidden;text-overflow:ellipsis;`;
+      pagBadge.textContent = p.pag;
+      pagBadge.title = p.pag;
+
+      const horaEl = document.createElement('div');
+      horaEl.style.cssText = 'font-size:10px;color:var(--text-muted);font-family:var(--font-mono);white-space:nowrap;';
+      horaEl.textContent = p.hora||'';
+
+      // Badge do usuário que registrou
+      const userBadge = document.createElement('div');
+      const _uEntry = Object.values(appState.users||{}).find(u=>u.name===p.registradoPor);
+      const initials = _uEntry ? (_uEntry.initials||'?') : (p.registradoPor||'?').substring(0,2).toUpperCase();
+      const uColor = _uEntry ? (_uEntry.color||'#6d7580') : '#6d7580';
+      userBadge.style.cssText = `width:20px;height:20px;border-radius:50%;background:${uColor}22;border:1px solid ${uColor}88;color:${uColor};font-size:8px;font-weight:700;font-family:var(--font-mono);display:flex;align-items:center;justify-content:center;flex-shrink:0;`;
+      userBadge.textContent = initials;
+      userBadge.title = p.registradoPor||'Desconhecido';
+
+      row.appendChild(idxEl);
+      row.appendChild(numEl2);
+      row.appendChild(valEl);
+      row.appendChild(pagBadge);
+      row.appendChild(userBadge);
+      row.appendChild(horaEl);
+
+      if(canWpp){
+        const editBtn = document.createElement('button');
+        editBtn.style.cssText = 'background:none;border:1px solid rgba(59,130,246,0.3);border-radius:50px;color:var(--text-muted);cursor:pointer;font-size:10px;padding:2px 8px;transition:all .15s;flex-shrink:0;';
+        editBtn.textContent = '✎'; editBtn.title = 'Editar';
+        editBtn.onmouseover = () => { editBtn.style.background='rgba(59,130,246,0.15)';editBtn.style.borderColor='var(--blue)';editBtn.style.color='#93c5fd'; };
+        editBtn.onmouseout  = () => { editBtn.style.background='none';editBtn.style.borderColor='rgba(59,130,246,0.3)';editBtn.style.color='var(--text-muted)'; };
+        const pedit = p; editBtn.onclick = () => abrirModalEditarVenda(pedit);
+        row.appendChild(editBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.style.cssText = 'background:none;border:1px solid rgba(239,68,68,0.3);border-radius:50px;color:var(--text-muted);cursor:pointer;font-size:10px;padding:2px 8px;transition:all .15s;flex-shrink:0;';
+        delBtn.textContent = '✕'; delBtn.title = 'Excluir';
+        delBtn.onmouseover = () => { delBtn.style.background='rgba(239,68,68,0.15)';delBtn.style.borderColor='var(--red)';delBtn.style.color='#fca5a5'; };
+        delBtn.onmouseout  = () => { delBtn.style.background='none';delBtn.style.borderColor='rgba(239,68,68,0.3)';delBtn.style.color='var(--text-muted)'; };
+        const pid = p.id; delBtn.onclick = () => { deletePedidoWpp(pid); renderHistoricoWpp(); };
+        row.appendChild(delBtn);
+      }
+
+
+
+      list.appendChild(row);
+    });
+  });
+
+  // Totalizador no rodapé
+  const footer = document.createElement('div');
+  const totalFiltrado = filtrados.reduce((a,p)=>a+(p.valor||0),0);
+  footer.style.cssText = 'padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--glass-border);background:rgba(255,255,255,0.02);';
+  footer.innerHTML = `
+    <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:0.5px;">${filtrados.length} venda${filtrados.length!==1?'s':''} no período</span>
+    <span style="font-size:13px;font-weight:700;color:var(--green);font-family:var(--font-mono);">R$ ${totalFiltrado.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+  `;
+  list.appendChild(footer);
+}
 
 /* ===== PLT ===== */
 
@@ -3530,7 +3773,7 @@ function renderConferencia(){
   const badge  = document.getElementById('conf-count-badge');
   const btnNew = document.getElementById('btn-new-conf');
   if(!tbody) return;
-  if(btnNew) btnNew.style.display = isMaster ? '' : 'none';
+  if(btnNew) btnNew.style.display = (isMaster || (currentUser && (currentUser.perms||[]).includes('envios'))) ? '' : 'none';
 
   const q = ((document.getElementById('conf-search')||{}).value||'').toLowerCase().trim();
   let rows = (appState.conferencia||[]);
@@ -5469,8 +5712,7 @@ function startClock(){
     const groups=appState.tasks.whatsapp;
     const anyPending=groups.some(g=>g.items.some(i=>!i.done));
     if(h>=17&&anyPending){
-      showToast('⚠ WhatsApp: ainda há tarefas pendentes!','warn');
-      pushNotify('Tarefas pendentes!','Ainda há tarefas do WhatsApp não concluídas.');
+      // Notificação de pendentes removida a pedido
     }
 
   },60000);
@@ -6352,7 +6594,7 @@ function buildRstCard(r, isEntregue){
     aEl.appendChild(okBtn);
   }
 
-  if(isMaster){
+  if(canRst){
     const delBtn=document.createElement('button');
     delBtn.className='btn-link btn-sm btn-danger';
     delBtn.title='Excluir';
@@ -6370,7 +6612,7 @@ function buildRstCard(r, isEntregue){
   }
   card.appendChild(aEl);
 
-  if(isMaster){
+  if(canRst){
     const trackParts=[];
     if(r.criadoPor) trackParts.push('Criado por: '+r.criadoPor+(r.criadoEm?' ('+r.criadoEm+')':''));
     if(r.atualizadoPor) trackParts.push('Editado por: '+r.atualizadoPor+' às '+r.atualizadoEm);
@@ -6390,6 +6632,14 @@ function buildRstCard(r, isEntregue){
   infoRow('Marketplace',r.marketplace);
   infoRow('Transp.',r.transp);
   infoRow('Cliente',r.cliente);
+
+  // Observações
+  if(r.obs){
+    const obsRow=document.createElement('div');obsRow.style.cssText='display:flex;gap:8px;align-items:flex-start;margin-top:2px;';
+    const obsL=document.createElement('span');obsL.style.cssText='font-size:10px;color:var(--text-muted);font-family:var(--font-mono);min-width:78px;flex-shrink:0;padding-top:1px;';obsL.textContent='Obs.';
+    const obsV=document.createElement('span');obsV.style.cssText='font-size:12px;color:var(--text-secondary);line-height:1.5;white-space:pre-wrap;word-break:break-word;';obsV.textContent=r.obs;
+    obsRow.appendChild(obsL);obsRow.appendChild(obsV);card.appendChild(obsRow);
+  }
 
   // Código de rastreio com link
   if(r.codigo||r.link){
@@ -6427,9 +6677,10 @@ function openRstModal(id){
   if(!ov) return;
 
   // Clear fields
-  ['rst-data','rst-nped','rst-cliente','rst-codigo','rst-link','rst-edit-id'].forEach(fid=>{
+  ['rst-data','rst-nped','rst-cliente','rst-codigo','rst-link','rst-edit-id','rst-obs'].forEach(fid=>{
     const el=document.getElementById(fid); if(el) el.value='';
   });
+  const rstObsCnt=document.getElementById('rst-obs-count'); if(rstObsCnt) rstObsCnt.textContent='150 restantes';
   ['rst-plt','rst-marketplace','rst-status','rst-transp'].forEach(fid=>{
     const el=document.getElementById(fid); if(el) el.value='';
   });
@@ -6446,6 +6697,8 @@ function openRstModal(id){
       document.getElementById('rst-cliente').value= r.cliente||'';
       document.getElementById('rst-codigo').value = r.codigo||'';
       document.getElementById('rst-link').value   = r.link||'';
+      document.getElementById('rst-obs').value    = r.obs||'';
+      const rstObsCntE=document.getElementById('rst-obs-count'); if(rstObsCntE) rstObsCntE.textContent=(150-(r.obs||'').length)+' restantes';
       document.getElementById('rst-edit-id').value= r.id;
       titleEl.textContent='Editar Rastreio';
     }
@@ -6501,6 +6754,7 @@ function saveRst(){
   const cliente   = document.getElementById('rst-cliente').value.trim();
   const codigo    = document.getElementById('rst-codigo').value.trim();
   let link        = document.getElementById('rst-link').value.trim();
+  const obs       = (document.getElementById('rst-obs')?.value||'').trim().slice(0,150);
   if(link.startsWith('file:')) link=''; // Ignora autofill indevido do navegador (caminho local)
   const editId    = document.getElementById('rst-edit-id').value;
 
@@ -6513,13 +6767,13 @@ function saveRst(){
     const idx=arr.findIndex(r=>r.id===editId);
     if(idx>=0){
       const ex=arr[idx];
-      arr[idx]={id:editId,data,nped,plataforma,marketplace,status,transp,cliente,codigo,link,
+      arr[idx]={id:editId,data,nped,plataforma,marketplace,status,transp,cliente,codigo,link,obs,
         criadoPor:ex.criadoPor||'',criadoEm:ex.criadoEm||'',
         atualizadoPor:currentUser.name,atualizadoEm:nowTimeStr()};
     }
     showToast('✓ Rastreio atualizado','success');
   } else {
-    arr.push({id:'rst_'+Date.now(),data,nped,plataforma,marketplace,status,transp,cliente,codigo,link,
+    arr.push({id:'rst_'+Date.now(),data,nped,plataforma,marketplace,status,transp,cliente,codigo,link,obs,
       criadoPor:currentUser.name,criadoEm:nowTimeStr()});
     showToast(status==='Entregue' ? '✓ Rastreio cadastrado — veja na pasta Entregues' : '✓ Rastreio cadastrado','success');
   }
@@ -6637,6 +6891,12 @@ const ATE_STATUS_CONFIG={
 let _ateTopicos=[];
 
 function ateUpdateHora(){
+  const descElN=document.getElementById('ate-ultima-desc');
+  const dataLblN=document.getElementById('ate-ultima-data');
+  if(descElN) descElN.value='';
+  if(dataLblN) dataLblN.textContent='';
+  const cntElN=document.getElementById('ate-ultima-desc-count');
+  if(cntElN) cntElN.textContent='150 restantes';
   const el=document.getElementById('ate-topico-hora');
   if(el) el.value=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
 }
@@ -6714,7 +6974,12 @@ function openAteModal(id){
       document.getElementById('ate-rastreio-link').value=d.rastreioLink||'';
       document.getElementById('ate-data').value=d.data||'';
       document.getElementById('ate-motivo').value=d.motivo||'';
-      ateLoadTopicos(d.topicos||[]);
+      const descEl=document.getElementById('ate-ultima-desc');
+      const dataLbl=document.getElementById('ate-ultima-data');
+      if(descEl) descEl.value=d.ultimaDesc||'';
+      if(dataLbl) dataLbl.textContent=d.ultimaData||'';
+      const cntEl=document.getElementById('ate-ultima-desc-count');
+      if(cntEl) cntEl.textContent=(150-(d.ultimaDesc||'').length)+' restantes';
       toggleAteRastreio();
     }
   } else {
@@ -6736,7 +7001,8 @@ function saveAte(){
   const rastreioLink=document.getElementById('ate-rastreio-link').value.trim();
   const data=document.getElementById('ate-data').value.trim();
   const motivo=document.getElementById('ate-motivo').value;
-  const topicos=ateGetTopicos();
+  const ultimaDesc=(document.getElementById('ate-ultima-desc')?.value||'').trim();
+  const ultimaData=ultimaDesc ? new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
   if(!plt||!cliente||!nped||!data||!motivo){
     showToast('Todos os campos são obrigatórios (exceto N°, Link e Descrição)','error');return;
   }
@@ -6744,7 +7010,8 @@ function saveAte(){
   const editId=document.getElementById('ate-edit-id').value;
   const rec={
     id:editId||('ate_'+Date.now()),
-    plataforma:plt,cliente,nped,natend,link,rastreioCod,rastreioLink,data,motivo,topicos,
+    plataforma:plt,cliente,nped,natend,link,rastreioCod,rastreioLink,data,motivo,
+    ultimaDesc, ultimaData,
     workflow:'aberto',
     criadoEm:editId?undefined:nowTimeStr(),
     criadoPor:editId?undefined:currentUser.name
@@ -6874,7 +7141,7 @@ function buildAteCard(d,isFinalizado){
     reBtn.onclick=function(){ateReabrir(this.getAttribute('data-ateid'));};
     aEl.appendChild(reBtn);
   }
-  if(isMaster){
+  if(canAte){
     const dBtn=document.createElement('button');dBtn.className='btn-link btn-sm btn-danger';dBtn.textContent='✕';dBtn.title='Remover';
     dBtn.setAttribute('data-ateid',d.id);
     dBtn.onclick=function(){deleteAteById(this.getAttribute('data-ateid'));};
@@ -6916,21 +7183,23 @@ function buildAteCard(d,isFinalizado){
     linkRow('Link Rastreio',d.rastreioLink,'Rastrear');
   }
 
-  if(d.topicos&&d.topicos.length){
+  if(d.ultimaDesc){
     const sec=document.createElement('div');
-    sec.style.cssText='border-top:1px solid var(--glass-border);padding-top:10px;display:flex;flex-direction:column;gap:5px;';
+    sec.style.cssText='border-top:1px solid var(--glass-border);padding-top:10px;display:flex;flex-direction:column;gap:6px;';
+    const header=document.createElement('div');
+    header.style.cssText='display:flex;align-items:center;justify-content:space-between;';
     const title=document.createElement('div');
-    title.style.cssText='font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:2px;';
-    title.textContent='📋 Resumo do Caso';
-    sec.appendChild(title);
-    d.topicos.forEach(t=>{
-      const row=document.createElement('div');row.style.cssText='display:flex;gap:8px;align-items:flex-start;';
-      const hora=document.createElement('span');hora.style.cssText='font-size:10px;font-family:var(--font-mono);color:var(--accent);white-space:nowrap;flex-shrink:0;padding-top:1px;';hora.textContent=t.hora;
-      const sep=document.createElement('span');sep.style.cssText='font-size:10px;color:var(--text-muted);flex-shrink:0;';sep.textContent='—';
-      const txt=document.createElement('span');txt.style.cssText='font-size:14px;color:var(--text-secondary);line-height:1.5;';txt.textContent=t.texto;
-      row.appendChild(hora);row.appendChild(sep);row.appendChild(txt);
-      sec.appendChild(row);
-    });
+    title.style.cssText='font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);font-family:var(--font-mono);';
+    title.textContent='📋 Última Atualização';
+    const dateTag=document.createElement('div');
+    dateTag.style.cssText='font-size:9px;color:var(--accent);font-family:var(--font-mono);';
+    dateTag.textContent=d.ultimaData||'';
+    header.appendChild(title);header.appendChild(dateTag);
+    sec.appendChild(header);
+    const txt=document.createElement('div');
+    txt.style.cssText='font-size:13px;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap;';
+    txt.textContent=d.ultimaDesc;
+    sec.appendChild(txt);
     card.appendChild(sec);
   }
 
@@ -7262,7 +7531,7 @@ function renderAtividades(){
   if(!appState.atividades) appState.atividades=[];
 
   const btnNova=document.getElementById('btn-nova-atv');
-  if(btnNova) btnNova.style.display=currentUser.master?'inline-flex':'none';
+  if(btnNova) btnNova.style.display=currentUser&&currentUser.master?'inline-flex':'none';
 
   const fColab=document.getElementById('atv-filter-colab');
   const fPrior=document.getElementById('atv-filter-prior');
@@ -7340,6 +7609,7 @@ function renderAtividades(){
           <div style="display:flex;gap:2px;flex-shrink:0;" id="atv-actions-${a.id}"></div>
         </div>
         ${a.descricao?`<div style="font-size:12px;color:var(--text-muted);line-height:1.45;margin-bottom:10px;padding:8px 10px;background:var(--bg-surface);border-radius:6px;border-left:2px solid var(--border);">${a.descricao}</div>`:''}
+        ${a.comentario?`<div style="font-size:11px;line-height:1.45;margin-bottom:10px;padding:8px 10px;background:rgba(139,92,246,0.07);border-radius:6px;border-left:2px solid rgba(139,92,246,0.5);"><span style="font-size:9px;color:#a78bfa;font-weight:700;text-transform:uppercase;letter-spacing:1px;font-family:var(--font-mono);display:block;margin-bottom:3px;">💬 ${a.comentarioAutor||''}${a.comentarioEm?' · '+a.comentarioEm:''}</span><span style="color:var(--text-secondary);">${a.comentario}</span></div>`:''}
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
           <span style="display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;font-family:var(--font-mono);background:${prior.bg};border:1px solid ${prior.border};color:${prior.color};">${prior.label}</span>
           ${prazoHtml}
@@ -7357,15 +7627,19 @@ function renderAtividades(){
       </div>`;
 
     // Botões de editar/excluir — criados via DOM para evitar conflito de aspas
-    if(currentUser.master){
-      const actWrap = card.querySelector(`#atv-actions-${a.id}`);
+    const actWrap = card.querySelector(`#atv-actions-${a.id}`);
+    const isMine2 = a.responsavel === currentUser.key;
+    if(currentUser.master || isMine2){
       const btnEdit = document.createElement('button');
-      btnEdit.title='Editar';
-      btnEdit.textContent='✎';
+      btnEdit.title = currentUser.master ? 'Editar' : 'Comentar';
+      btnEdit.textContent = currentUser.master ? '✎' : '💬';
       btnEdit.style.cssText='background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color .15s;';
       btnEdit.onmouseover=()=>btnEdit.style.color='var(--accent)';
       btnEdit.onmouseout=()=>btnEdit.style.color='var(--text-muted)';
       btnEdit.onclick=()=>openAtvModal(a.id);
+      actWrap.appendChild(btnEdit);
+    }
+    if(currentUser.master){
       const btnDel = document.createElement('button');
       btnDel.title='Excluir';
       btnDel.textContent='🗑';
@@ -7373,7 +7647,6 @@ function renderAtividades(){
       btnDel.onmouseover=()=>btnDel.style.color='var(--red)';
       btnDel.onmouseout=()=>btnDel.style.color='var(--text-muted)';
       btnDel.onclick=()=>deleteAtividade(a.id);
-      actWrap.appendChild(btnEdit);
       actWrap.appendChild(btnDel);
     }
 
@@ -7428,7 +7701,14 @@ function deleteAtividade(id){
 }
 
 function openAtvModal(id){
-  if(!currentUser.master){showToast('Apenas o master pode criar/editar tarefas','warn');return;}
+  const isMasterUser = currentUser && currentUser.master;
+  const a = id ? (appState.atividades||[]).find(x=>x.id===id) : null;
+  const isResponsavel = a && a.responsavel === currentUser.key;
+
+  // Responsável pode abrir apenas para comentar; master pode criar/editar tudo
+  if(!isMasterUser && !isResponsavel && id){showToast('Apenas o master ou o responsável podem interagir com esta tarefa','warn');return;}
+  if(!isMasterUser && !id){showToast('Apenas o master pode criar tarefas','warn');return;}
+
   const sel=document.getElementById('atv-responsavel');
   if(sel){
     sel.innerHTML='<option value="">Selecionar colaborador...</option>';
@@ -7438,15 +7718,32 @@ function openAtvModal(id){
   }
   const overlay=document.getElementById('atv-modal-overlay');
   const titleEl=document.getElementById('atv-modal-title');
-  if(id){
-    const a=(appState.atividades||[]).find(x=>x.id===id);if(!a)return;
+  const comentWrap=document.getElementById('atv-comentario-wrap');
+  const comentEl=document.getElementById('atv-comentario');
+  const comentCnt=document.getElementById('atv-comentario-count');
+  const saveBtn=document.getElementById('atv-save-btn');
+
+  // Campos editáveis somente para master
+  ['atv-titulo','atv-descricao','atv-vencimento','atv-prioridade'].forEach(fid=>{
+    const el=document.getElementById(fid);
+    if(el) el.disabled = !isMasterUser;
+    if(el) el.style.opacity = isMasterUser ? '' : '0.5';
+  });
+  if(sel){ sel.disabled=!isMasterUser; sel.style.opacity=isMasterUser?'':'0.5'; }
+
+  if(id && a){
     document.getElementById('atv-titulo').value=a.titulo||'';
     document.getElementById('atv-descricao').value=a.descricao||'';
     if(sel)sel.value=a.responsavel||'';
     document.getElementById('atv-vencimento').value=a.vencimento||'';
     document.getElementById('atv-prioridade').value=a.prioridade||'normal';
     document.getElementById('atv-edit-id').value=id;
-    if(titleEl)titleEl.textContent='Editar Tarefa';
+    if(titleEl)titleEl.textContent=isMasterUser?'Editar Tarefa':'Comentar Tarefa';
+    // Mostrar campo comentário
+    if(comentWrap) comentWrap.style.display='block';
+    if(comentEl){ comentEl.value=a.comentario||''; }
+    if(comentCnt) comentCnt.textContent=(150-(a.comentario||'').length)+' restantes';
+    if(saveBtn) saveBtn.textContent=isMasterUser?'Salvar Tarefa':'Salvar Comentário';
   } else {
     document.getElementById('atv-titulo').value='';
     document.getElementById('atv-descricao').value='';
@@ -7455,6 +7752,10 @@ function openAtvModal(id){
     document.getElementById('atv-prioridade').value='normal';
     document.getElementById('atv-edit-id').value='';
     if(titleEl)titleEl.textContent='Nova Tarefa';
+    if(comentWrap) comentWrap.style.display='none';
+    if(comentEl) comentEl.value='';
+    if(comentCnt) comentCnt.textContent='150 restantes';
+    if(saveBtn) saveBtn.textContent='Salvar Tarefa';
   }
   overlay.style.display='flex';
 }
@@ -7479,11 +7780,25 @@ function saveAtividade(){
   const vencFmt=new Date(vencimento+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
   const priorLabel={urgente:'🔴 Urgente',alta:'🟡 Alta',normal:'⚪ Normal'}[prioridade]||prioridade;
 
+  const comentario=(document.getElementById('atv-comentario')?.value||'').trim().slice(0,150);
+  const comentarioAutor=comentario?currentUser.name:'';
+  const comentarioEm=comentario?new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+
   if(editId){
     const idx=appState.atividades.findIndex(x=>x.id===editId);
     const anterior=appState.atividades[idx]||{};
-    if(idx>-1)appState.atividades[idx]={...anterior,titulo,descricao,responsavel,vencimento,prioridade};
-    showToast('Tarefa atualizada','success');
+    if(idx>-1){
+      if(currentUser.master){
+        // Master edita tudo + pode salvar comentário
+        appState.atividades[idx]={...anterior,titulo,descricao,responsavel,vencimento,prioridade,
+          ...(comentario?{comentario,comentarioAutor,comentarioEm}:{})};
+      } else {
+        // Responsável só salva comentário
+        appState.atividades[idx]={...anterior,
+          ...(comentario?{comentario,comentarioAutor,comentarioEm}:{comentario:'',comentarioAutor:'',comentarioEm:''})};
+      }
+    }
+    showToast(currentUser.master?'Tarefa atualizada':'Comentário salvo','success');
   } else {
     appState.atividades.push({
       id:'atv_'+Date.now(),titulo,descricao,responsavel,vencimento,prioridade,
@@ -7601,6 +7916,110 @@ document.addEventListener('click', e=>{
   }
 });
 
+</script>
+
+    <!-- MODAL EDITAR VENDA -->
+    <div id="modal-editar-venda-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+      <div style="background:linear-gradient(135deg,rgba(24,27,36,0.98),rgba(13,14,18,0.99));border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:28px;width:360px;max-width:94vw;box-shadow:0 20px 60px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.08);backdrop-filter:blur(24px);position:relative;">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);border-radius:var(--radius-lg) var(--radius-lg) 0 0;pointer-events:none;"></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,rgba(59,130,246,0.3),rgba(59,130,246,0.1));border:1px solid rgba(59,130,246,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">✎</div>
+          <div>
+            <div style="font-size:15px;font-weight:700;color:var(--text-primary);">Editar Venda</div>
+            <div id="edit-venda-subtitle" style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);"></div>
+          </div>
+        </div>
+        <div style="height:1px;background:var(--glass-border);margin:16px 0;"></div>
+        <input type="hidden" id="edit-venda-id">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <label style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;">Nº Pedido *</label>
+            <input type="text" id="edit-ped-num" placeholder="Ex: 35017581" style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-mono);font-size:14px;padding:10px 13px;outline:none;width:100%;box-sizing:border-box;transition:border-color .2s,box-shadow .2s;" onfocus="this.style.borderColor='rgba(59,130,246,0.6)';this.style.boxShadow='0 0 16px rgba(59,130,246,0.15)'" onblur="this.style.borderColor='var(--glass-border)';this.style.boxShadow=''">
+          </div>
+          <div>
+            <label style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;">Valor (R$) *</label>
+            <input type="text" id="edit-ped-valor" placeholder="0,00" style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-mono);font-size:14px;padding:10px 13px;outline:none;width:100%;box-sizing:border-box;transition:border-color .2s,box-shadow .2s;" onfocus="this.style.borderColor='rgba(59,130,246,0.6)';this.style.boxShadow='0 0 16px rgba(59,130,246,0.15)'" onblur="this.style.borderColor='var(--glass-border)';this.style.boxShadow=''" oninput="fmtValorModal(this)">
+          </div>
+          <div>
+            <label style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;">Forma de Pagamento *</label>
+            <select id="edit-ped-pag" style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-sans);font-size:14px;padding:10px 13px;outline:none;width:100%;box-sizing:border-box;cursor:pointer;">
+              <option value="Pix Manoel">Pix Manoel</option>
+              <option value="Pix Vix Comercio">Pix Vix Comercio</option>
+              <option value="Pix 4Vita">Pix 4Vita</option>
+              <option value="C. de Crédito Infinity Pay">C. de Crédito Infinity Pay</option>
+              <option value="C. de Crédito Merc. Pago">C. de Crédito Merc. Pago</option>
+            </select>
+          </div>
+        </div>
+        <div id="edit-venda-error" style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:#fca5a5;font-family:var(--font-mono);margin-top:12px;"></div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button onclick="fecharModalEditarVenda()" style="flex:1;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:50px;color:var(--text-muted);font-family:var(--font-sans);font-size:13px;font-weight:600;padding:11px;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='var(--text-primary)'" onmouseout="this.style.borderColor='var(--glass-border)';this.style.color='var(--text-muted)'">Cancelar</button>
+          <button onclick="salvarEdicaoVenda()" style="flex:2;background:linear-gradient(135deg,rgba(59,130,246,0.8),rgba(59,130,246,0.6));border:1px solid rgba(59,130,246,0.6);border-radius:50px;color:#fff;font-family:var(--font-sans);font-size:13px;font-weight:700;padding:11px;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(59,130,246,0.25),inset 0 1px 0 rgba(255,255,255,0.15);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">✓ Salvar Alterações</button>
+        </div>
+      </div>
+    </div>
+<script>
+function abrirModalEditarVenda(p){
+  const overlay = document.getElementById('modal-editar-venda-overlay');
+  const subtitle = document.getElementById('edit-venda-subtitle');
+  const idEl = document.getElementById('edit-venda-id');
+  const numEl = document.getElementById('edit-ped-num');
+  const valEl = document.getElementById('edit-ped-valor');
+  const pagEl = document.getElementById('edit-ped-pag');
+  const errEl = document.getElementById('edit-venda-error');
+  if(!overlay) return;
+
+  // Preencher campos
+  idEl.value = p.id;
+  numEl.value = p.num;
+  // Formatar valor
+  const cents = Math.round((p.valor||0) * 100);
+  const formatted = (cents/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  valEl.value = formatted;
+  pagEl.value = p.pag;
+  if(subtitle) subtitle.textContent = 'Pedido #'+p.num+' — '+p.hora;
+  if(errEl) errEl.style.display = 'none';
+
+  overlay.style.display = 'flex';
+  setTimeout(()=>{ numEl.focus(); numEl.select(); }, 100);
+}
+
+function fecharModalEditarVenda(){
+  const overlay = document.getElementById('modal-editar-venda-overlay');
+  if(overlay) overlay.style.display = 'none';
+}
+
+function salvarEdicaoVenda(){
+  const idEl  = document.getElementById('edit-venda-id');
+  const numEl = document.getElementById('edit-ped-num');
+  const valEl = document.getElementById('edit-ped-valor');
+  const pagEl = document.getElementById('edit-ped-pag');
+  const errEl = document.getElementById('edit-venda-error');
+
+  const id = idEl.value;
+  const num = (numEl.value||'').trim();
+  const valorStr = (valEl.value||'').trim();
+  const pag = pagEl.value;
+
+  function showErr(msg){ errEl.textContent=msg; errEl.style.display='block'; }
+
+  if(!num){ showErr('⚠ Informe o Nº do Pedido.'); numEl.focus(); return; }
+  if(!valorStr){ showErr('⚠ Informe o Valor.'); valEl.focus(); return; }
+  const valor = parseFloat(valorStr.replace(/\./g,'').replace(',','.'))||0;
+  if(valor <= 0){ showErr('⚠ Valor inválido.'); valEl.focus(); return; }
+
+  const idx = (appState.pedidosWpp||[]).findIndex(p => p.id === id);
+  if(idx === -1){ showErr('⚠ Venda não encontrada.'); return; }
+
+  appState.pedidosWpp[idx].num   = num;
+  appState.pedidosWpp[idx].valor = valor;
+  appState.pedidosWpp[idx].pag   = pag;
+
+  saveState(appState);
+  fecharModalEditarVenda();
+  renderHistoricoWpp();
+  showToast('✓ Venda #'+num+' atualizada!','success');
+}
 </script>
 </body>
 </html>
