@@ -1521,6 +1521,7 @@ function initFirebase(){
 const SK = 'suplelive_v28';
 const FB_PATH = 'suplelive/state';
 const FB_ACT_PATH = 'suplelive/activity';
+const FB_EXT_TASKS_PATH = 'suplelive/atividadesExternas'; // Entrada de tarefas via n8n (POST externo)
 let currentUser = null, syncTimer = null, fbListener = null;
 let _actNewCount = 0, _actPanelOpen = false, _actLoginTs = 0;
 
@@ -1810,6 +1811,81 @@ function saveState(s){
   }
 }
 
+// ── IMPORTAÇÃO DE TAREFAS EXTERNAS (n8n) ─────────────────────
+// n8n faz POST/push simples em suplelive/atividadesExternas (fora do blob
+// principal, então não corre risco de corromper o array appState.atividades).
+// Só a sessão do usuário master processa a fila, usando transaction() para
+// "reivindicar" cada item antes de importar — evita duplicidade se houver
+// mais de uma sessão master aberta ao mesmo tempo.
+function startExternalTasksListener(){
+  if(!db || !fbConnected || !currentUser || !currentUser.master) return;
+  db.ref(FB_EXT_TASKS_PATH).on('child_added', snap => {
+    const key = snap.key;
+    const item = snap.val();
+    if(!item || item._processing || item._imported) return;
+
+    // Reivindica o item atomicamente antes de importar
+    db.ref(FB_EXT_TASKS_PATH+'/'+key+'/_processing').transaction(cur=>{
+      if(cur===true) return; // já sendo processado por outra sessão master
+      return true;
+    }, (err, committed, snapAfter)=>{
+      if(err || !committed || !snapAfter || snapAfter.val()!==true) return;
+      importExternalTask(key, item);
+    });
+  });
+}
+
+function stopExternalTasksListener(){
+  if(db) db.ref(FB_EXT_TASKS_PATH).off('child_added');
+}
+
+function importExternalTask(key, item){
+  try{
+    if(!Array.isArray(appState.atividades)) appState.atividades=[];
+
+    const responsavelKey = item.responsavel && appState.users[item.responsavel] ? item.responsavel : null;
+    if(!responsavelKey){
+      console.warn('[n8n] tarefa externa com responsável inválido, ignorada:', key, item.responsavel);
+      db.ref(FB_EXT_TASKS_PATH+'/'+key).remove();
+      return;
+    }
+    const prioridade = ['urgente','alta','normal'].includes(item.prioridade) ? item.prioridade : 'normal';
+    const vencimento = item.vencimento || '';
+
+    appState.atividades.push({
+      id:'atv_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
+      titulo: (item.titulo||'Tarefa sem título').toString().slice(0,200),
+      descricao: (item.descricao||'').toString().slice(0,1000),
+      responsavel: responsavelKey,
+      vencimento,
+      prioridade,
+      status:'aberta',
+      criadoEm:new Date().toLocaleDateString('pt-BR'),
+      criadoPor:'n8n · '+(item.origem||'automação'),
+      criadoPorKey:'n8n',
+      ordemManual:Date.now(),
+      externalId:key
+    });
+    saveState(appState);
+
+    // Notifica o responsável, igual ao fluxo manual
+    const respUser=appState.users[responsavelKey];
+    const notifMsg = `📌 Nova tarefa atribuída via automação: "${item.titulo||''}"`;
+    db.ref('suplelive/notificacoes/'+responsavelKey).push({
+      msg: notifMsg, ts: Date.now(), lida:false, tipo:'tarefa', de:'n8n'
+    });
+
+    try{ renderAtividades(); }catch(e){}
+
+    // Remove da fila depois de importado com sucesso
+    db.ref(FB_EXT_TASKS_PATH+'/'+key).remove();
+  }catch(e){
+    console.error('[n8n] erro ao importar tarefa externa:', e.message);
+    // Libera o item para nova tentativa
+    db.ref(FB_EXT_TASKS_PATH+'/'+key+'/_processing').set(false);
+  }
+}
+
 let appState = loadLocal();
 
 // ── FIREBASE LISTENER (tempo real) ───────────────────────────
@@ -1991,6 +2067,9 @@ function startFirebaseSync(){
       }
     });
   }
+
+  // Fila de tarefas criadas externamente via n8n — só o master processa
+  startExternalTasksListener();
 
   // Listener único em tempo real — dispara na conexão e em cada mudança
   fbListener = db.ref(FB_PATH).on('value', snap => {
@@ -2356,6 +2435,9 @@ function doLogout(){
   // Desanexa listener de forceLogout antes de limpar currentUser
   if(db && fbConnected && currentUser && !currentUser.master){
     db.ref('suplelive/forceLogout/'+currentUser.key).off('value');
+  }
+  if(db && currentUser && currentUser.master){
+    stopExternalTasksListener();
   }
   currentUser=null;
   clearInterval(syncTimer);
