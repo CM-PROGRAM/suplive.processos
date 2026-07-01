@@ -5959,10 +5959,16 @@ function resetDayIfWeekEnd(){
   if(!currentUser||!currentUser.master){showToast('Apenas o master pode resetar o dia','error');return;}
   const dayNames=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
   const dow=new Date().getDay();
-  const ok=window.confirm('RESETAR DIA\n\nIsso vai arquivar o dia atual ('+dayNames[dow]+') e limpar TODAS as marcações de tarefas.\n\nConfirmar?');
+  const ok=window.confirm('RESETAR DIA\n\nIsso vai arquivar o dia atual ('+dayNames[dow]+') e limpar TODAS as marcações de tarefas.\n\nOs lançamentos de Rastreios, Devoluções e Atendimentos NÃO serão apagados.\n\nConfirmar?');
   if(!ok) return;
   archiveDay(appState);
+  const _devolucoes=appState.tasks.devolucoes;
+  const _atendimentos=appState.tasks.atendimentos;
+  const _rastreios=appState.tasks.rastreios;
   appState.tasks=defaultState().tasks;
+  appState.tasks.devolucoes=_devolucoes;
+  appState.tasks.atendimentos=_atendimentos;
+  appState.tasks.rastreios=_rastreios;
   appState.lastReset=todayStr();
   saveState(appState);
   renderAll();
@@ -5981,9 +5987,17 @@ function resetHistorico(){
 
 function resetDay(){
   if(!currentUser||!currentUser.master){showToast('Apenas o master pode resetar','error');return;}
-  const ok=window.confirm('RESETAR TAREFAS\n\nIsso vai arquivar o dia atual e limpar TODAS as marcações.\n\nConfirmar?');
+  const ok=window.confirm('RESETAR TAREFAS\n\nIsso vai arquivar o dia atual e limpar TODAS as marcações.\n\nOs lançamentos de Rastreios, Devoluções e Atendimentos NÃO serão apagados.\n\nConfirmar?');
   if(!ok) return;
-  archiveDay(appState);appState.tasks=defaultState().tasks;appState.lastReset=todayStr();
+  archiveDay(appState);
+  const _devolucoes=appState.tasks.devolucoes;
+  const _atendimentos=appState.tasks.atendimentos;
+  const _rastreios=appState.tasks.rastreios;
+  appState.tasks=defaultState().tasks;
+  appState.tasks.devolucoes=_devolucoes;
+  appState.tasks.atendimentos=_atendimentos;
+  appState.tasks.rastreios=_rastreios;
+  appState.lastReset=todayStr();
   saveState(appState);renderAll();showToast('Tarefas resetadas para o novo dia','success');
 }
 
