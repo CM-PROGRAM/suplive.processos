@@ -2252,8 +2252,8 @@ function archiveDay(s){
     });
   }
   if(s.tasks){
-    // whatsapp is now grouped
-    (s.tasks.whatsapp||[]).forEach(g=>(g.items||[]).forEach(i=>{total++;if(i.done){done++;if(i.doneAt&&parseInt(i.doneAt.split(':')[0])>=18)late++;}else{pendentes.push(i.text||i.title||'—');}}));
+    // Vendas WhatsApp NÃO entra no histórico: são vendas (ocorrem sob
+    // demanda), não tarefas fixas do dia — não fazem sentido como "pendente".
     (s.tasks.plataformas||[]).forEach(g=>countTasks([g]));
     countTasks(s.tasks.envios||[]);
     (s.tasks.anuncios||[]).forEach(g=>countTasks([g]));
@@ -5626,12 +5626,31 @@ function showPendentesDia(dateKey, h){
     html+='<div style="font-size:12px;color:var(--green);font-family:var(--font-mono);">✓ Todas as tarefas foram concluídas neste dia!</div>';
   } else {
     html+=`<div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);margin-bottom:6px;">${pendentes.length} não concluída${pendentes.length>1?'s':''}:</div>`;
-    html+='<ul style="margin:0;padding-left:16px;list-style:disc;display:flex;flex-direction:column;gap:4px;max-height:220px;overflow-y:auto;">'+
-      pendentes.map(t=>`<li style="font-size:11px;color:var(--text-secondary);font-family:var(--font-mono);line-height:1.4;">${t}</li>`).join('')+
+    html+='<ul style="margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:4px;max-height:220px;overflow-y:auto;">'+
+      pendentes.map((t,i)=>`<li style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-secondary);font-family:var(--font-mono);line-height:1.4;">`+
+        `<button type="button" onclick="concluirPendenteHistorico('${dateKey}',${i})" title="Marcar como concluída (retroativo)" `+
+        `style="flex-shrink:0;width:16px;height:16px;border-radius:4px;border:1px solid var(--green,#22c55e);background:transparent;color:var(--green,#22c55e);font-size:11px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">✓</button>`+
+        `<span>${t}</span></li>`).join('')+
       '</ul>';
   }
   box.innerHTML=html;
   box.style.display='block';
+}
+
+// Corrige o histórico retroativamente: caso uma tarefa marcada como
+// "pendente" no dia arquivado tenha, na verdade, sido concluída (esquecimento
+// de marcar antes do reset), o master pode movê-la para "concluída" direto
+// nesse painel — sem precisar mexer nas tarefas do dia atual.
+function concluirPendenteHistorico(dateKey, idx){
+  if(!currentUser||!currentUser.master){showToast('Apenas o master pode corrigir o histórico','error');return;}
+  const h=appState.weekHistory&&appState.weekHistory[dateKey];
+  if(!h||!Array.isArray(h.pendentes)||!h.pendentes[idx]) return;
+  h.pendentes.splice(idx,1);
+  h.done=(h.done||0)+1;
+  saveState(appState);
+  showPendentesDia(dateKey,h);
+  try{renderDash();}catch(e){}
+  showToast('✓ Marcada como concluída no histórico','success');
 }
 
 function renderDash(){
@@ -8046,11 +8065,16 @@ function atvSetStatusFilter(s) {
     if (!btn) return;
     const isActive = k === s;
     const styles = {
-      all: { bg:'rgba(59,130,246,0.2)', border:'rgba(59,130,246,0.4)', color:'#fff', shadow:'rgba(59,130,246,0.2)' },
-      aberta: { bg:'rgba(245,158,11,0.2)', border:'rgba(245,158,11,0.5)', color:'var(--amber)', shadow:'rgba(245,158,11,0.15)' },
-      andamento: { bg:'rgba(59,130,246,0.2)', border:'rgba(59,130,246,0.5)', color:'var(--blue)', shadow:'rgba(59,130,246,0.15)' },
-      atrasada: { bg:'rgba(239,68,68,0.2)', border:'rgba(239,68,68,0.5)', color:'var(--red)', shadow:'rgba(239,68,68,0.15)' },
-      concluida: { bg:'rgba(34,197,94,0.2)', border:'rgba(34,197,94,0.5)', color:'var(--green)', shadow:'rgba(34,197,94,0.15)' },
+      all: { bg:'rgba(59,130,246,0.2)', border:'rgba(59,130,246,0.4)', color:'#fff', shadow:'rgba(59,130,246,0.2)',
+             bgOff:'rgba(59,130,246,0.12)', borderOff:'rgba(59,130,246,0.35)', colorOff:'var(--blue)' },
+      aberta: { bg:'rgba(245,158,11,0.2)', border:'rgba(245,158,11,0.5)', color:'var(--amber)', shadow:'rgba(245,158,11,0.15)',
+             bgOff:'rgba(245,158,11,0.12)', borderOff:'rgba(245,158,11,0.35)', colorOff:'var(--amber)' },
+      andamento: { bg:'rgba(59,130,246,0.2)', border:'rgba(59,130,246,0.5)', color:'var(--blue)', shadow:'rgba(59,130,246,0.15)',
+             bgOff:'rgba(59,130,246,0.12)', borderOff:'rgba(59,130,246,0.35)', colorOff:'var(--blue)' },
+      atrasada: { bg:'rgba(239,68,68,0.2)', border:'rgba(239,68,68,0.5)', color:'var(--red)', shadow:'rgba(239,68,68,0.15)',
+             bgOff:'rgba(239,68,68,0.12)', borderOff:'rgba(239,68,68,0.35)', colorOff:'var(--red)' },
+      concluida: { bg:'rgba(34,197,94,0.2)', border:'rgba(34,197,94,0.5)', color:'var(--green)', shadow:'rgba(34,197,94,0.15)',
+             bgOff:'rgba(34,197,94,0.12)', borderOff:'rgba(34,197,94,0.35)', colorOff:'var(--green)' },
     };
     const st = styles[k];
     if (isActive) {
@@ -8060,8 +8084,11 @@ function atvSetStatusFilter(s) {
       btn.style.boxShadow = `0 4px 16px ${st.shadow},inset 0 1px 0 rgba(255,255,255,0.12)`;
       btn.style.transform = 'translateY(-1px)';
     } else {
-      btn.style.background = '';
-      btn.style.borderColor = '';
+      // Restaura a cor translúcida original da aba (nunca limpar para
+      // string vazia — isso cai no branco padrão do navegador).
+      btn.style.background = `linear-gradient(135deg,${st.bgOff},${st.bgOff.replace('0.12','0.04')})`;
+      btn.style.borderColor = st.borderOff;
+      btn.style.color = st.colorOff;
       btn.style.transform = '';
       btn.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.06)';
     }
@@ -8147,10 +8174,19 @@ function renderAtividades(){
   ['aberta','andamento','concluida'].forEach(s=>{
     const col=document.getElementById('atv-col-'+s);if(col)col.innerHTML='';
     if(col && currentUser && currentUser.master){
-      col.ondragover=e=>{ e.preventDefault(); };
+      col.ondragover=e=>{
+        e.preventDefault();
+        col.style.background='rgba(255,255,255,0.03)';
+        col.style.borderRadius='var(--radius)';
+      };
+      col.ondragleave=()=>{ col.style.background=''; };
       col.ondrop=e=>{
         e.preventDefault();
-        if(e.target!==col) return; // já tratado pelo drop do card
+        col.style.background='';
+        // stopPropagation() no drop do card já impede que este handler
+        // rode quando o alvo foi um card específico — aqui só tratamos
+        // soltar em qualquer ponto vazio da coluna (não exige e.target===col,
+        // que é frágil e podia silenciosamente ignorar o drop).
         const draggedId=e.dataTransfer.getData('text/plain');
         if(!draggedId) return;
         moveAtividade(draggedId, s, null);
