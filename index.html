@@ -2916,7 +2916,7 @@ function enviarVendaPlanilha(pedido, acao){
   };
   fetch(PLANILHA_VENDAS_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify(payload)
   }).catch(err=>{
     console.error('Falha ao enviar venda para a planilha (Google Sheets):', err);
