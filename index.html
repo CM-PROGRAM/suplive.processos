@@ -2916,6 +2916,7 @@ function enviarVendaPlanilha(pedido, acao){
   };
   fetch(PLANILHA_VENDAS_URL, {
     method: 'POST',
+    mode: 'no-cors',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify(payload)
   }).catch(err=>{
