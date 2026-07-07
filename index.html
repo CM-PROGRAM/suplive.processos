@@ -10169,12 +10169,13 @@ function gerarValoresCredito(){
   const fmt=(n)=>n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
   const regra = getRegraValoresCredito();
 
-  // Sem bloco ``` (fonte proporcional do WhatsApp não alinha colunas com espaços comuns).
-  // Solução: converter letras/números da TABELA para variantes Unicode monoespaçadas
-  // (cada caractere com a mesma largura) E usar "figure space" (U+2007) no preenchimento,
-  // que tem a mesma largura dos caracteres monoespaçados — espaço comum ficaria mais
-  // estreito e desalinharia as colunas.
-  const padEnd=(s,len)=>s.length>=len ? s : s+'\u2007'.repeat(len-s.length);
+  // A tabela vai dentro de um bloco ``` (monoespaçado nativo do WhatsApp). Isso garante
+  // alinhamento perfeito de QUALQUER caractere (letras, números, "R$", vírgula, espaço),
+  // diferente do truque de Unicode monoespaçado + figure-space, que desalinha quando uma
+  // coluna mistura texto puro (ex.: "Total") com símbolos sem variante monoespaçada
+  // (R$, vírgula) — esses símbolos não têm exatamente a mesma largura do figure-space,
+  // então a diferença acumulada desalinha as colunas linha a linha.
+  const padEnd=(s,len)=>s.length>=len ? s : s+' '.repeat(len-s.length);
   const linhaLabel = (n)=> `Preço ${n}x`;
   const linhasDados = [ ['Preço pix', 'R$ '+fmt(base), 'R$ '+fmt(base)] ];
   regra.parcelas.forEach(f=>{
@@ -10185,11 +10186,13 @@ function gerarValoresCredito(){
   const todasLinhas = [ ['', 'Total', 'Parcelas de:'], ...linhasDados ];
   const col0Width = Math.max(...todasLinhas.map(r=>r[0].length)) + 2;
   const col1Width = Math.max(...todasLinhas.map(r=>r[1].length)) + 2;
-  const linhasTexto = todasLinhas.map(r => toMonospace(padEnd(r[0],col0Width) + padEnd(r[1],col1Width) + r[2]));
+  const linhasTexto = todasLinhas.map(r => padEnd(r[0],col0Width) + padEnd(r[1],col1Width) + r[2]);
   const texto =
 `Segue abaixo os valores no Cartão de Crédito em até 3x.
 
-${linhasTexto.join('\n')}`;
+\`\`\`
+${linhasTexto.join('\n')}
+\`\`\``;
   document.getElementById('valcred-texto').value = texto;
 
 
