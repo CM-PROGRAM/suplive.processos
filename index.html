@@ -356,6 +356,12 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
 .status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .status-dot.pending{background:var(--text-muted);}
 .status-dot.done{background:var(--green);}
+/* Indicador circular modernizado (estilo pill com ícone) — usado só na aba Vendas WhatsApp */
+.status-dot-wpp{width:16px;height:16px;border-radius:50%;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 1px rgba(255,255,255,.25);}
+.status-dot-wpp.pending{background:linear-gradient(135deg,rgba(139,143,245,.55),rgba(79,82,214,.5));}
+.status-dot-wpp.pending::after{content:'';width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.9);}
+.status-dot-wpp.done{background:linear-gradient(135deg,#4ade80,#16a34a);}
+.status-dot-wpp.done::after{content:'✓';font-size:9px;font-weight:900;color:#fff;line-height:1;}
 
 /* COMPLETE BUTTON */
 .complete-btn{background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:50px;color:var(--text-muted);cursor:pointer;font-size:11px;font-family:var(--font-sans);font-weight:600;letter-spacing:0.01em;padding:5px 14px;transition:all .18s;white-space:nowrap;position:relative;min-width:102px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);}
@@ -658,9 +664,9 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
           <div style="font-size:11px;color:var(--text-muted);margin-top:4px;font-family:var(--font-mono);" id="wpp-progress-label">0 / 5</div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <div style="background:linear-gradient(135deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);padding:8px 16px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.06);">
-            <div id="wpp-vendas-count" style="font-size:28px;font-weight:700;font-family:var(--font-sans);letter-spacing:-0.04em;color:var(--green);line-height:1.1;">0</div>
-            <div style="font-size:9px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-top:2px;">Vendas hoje</div>
+          <div style="background:linear-gradient(135deg,rgba(255,255,255,0.07),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);padding:5px 12px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.06);">
+            <div id="wpp-vendas-count" style="font-size:20px;font-weight:700;font-family:var(--font-sans);letter-spacing:-0.04em;color:var(--green);line-height:1.1;">0</div>
+            <div style="font-size:8px;color:var(--text-muted);letter-spacing:1.2px;text-transform:uppercase;font-weight:600;margin-top:1px;">Vendas hoje</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;">
             <button class="btn btn-sm" id="wpp-conclude-day" onclick="concludeDay()" style="display:none">✓ Concluir Dia</button>
@@ -1798,8 +1804,22 @@ function loadLocal(){
           if(orc && Array.isArray(orc.btns)){
             orc.btns=orc.btns.filter(b=>b.label!=='Precificação');
             if(!orc.btns.some(b=>b.action==='precificacaoPix')){
-              orc.btns.push({label:'Precificação Pix',action:'precificacaoPix'});
+              orc.btns.push({label:'Valores no PIX',action:'precificacaoPix'});
             }
+            if(!orc.btns.some(b=>b.action==='valoresCredito')){
+              orc.btns.push({label:'Valores C. de Crédito',action:'valoresCredito'});
+            }
+            orc.btns=orc.btns.filter(b=>b.link!=='https://www.suplelive.com.br/');
+            orc.btns.forEach(b=>{
+              if(b.action==='precificacaoPix') b.label='Valores no PIX';
+              if(b.action==='valoresCredito') b.label='Valores C. de Crédito';
+            });
+            const ordemBtns={precificacaoPix:0, valoresCredito:1};
+            orc.btns.sort((a,b)=>(ordemBtns[a.action]??99)-(ordemBtns[b.action]??99));
+          }
+          const frete=g.items?.find(i=>i.id==='wpp_a34');
+          if(frete && Array.isArray(frete.btns) && !frete.btns.some(b=>b.action==='cotacaoFrete')){
+            frete.btns.push({label:'Cotação Frete',action:'cotacaoFrete'});
           }
         }
       });
@@ -2116,8 +2136,22 @@ function applyRemoteState(data){
           if(orc && Array.isArray(orc.btns)){
             orc.btns=orc.btns.filter(b=>b.label!=='Precificação');
             if(!orc.btns.some(b=>b.action==='precificacaoPix')){
-              orc.btns.push({label:'Precificação Pix',action:'precificacaoPix'});
+              orc.btns.push({label:'Valores no PIX',action:'precificacaoPix'});
             }
+            if(!orc.btns.some(b=>b.action==='valoresCredito')){
+              orc.btns.push({label:'Valores C. de Crédito',action:'valoresCredito'});
+            }
+            orc.btns=orc.btns.filter(b=>b.link!=='https://www.suplelive.com.br/');
+            orc.btns.forEach(b=>{
+              if(b.action==='precificacaoPix') b.label='Valores no PIX';
+              if(b.action==='valoresCredito') b.label='Valores C. de Crédito';
+            });
+            const ordemBtns={precificacaoPix:0, valoresCredito:1};
+            orc.btns.sort((a,b)=>(ordemBtns[a.action]??99)-(ordemBtns[b.action]??99));
+          }
+          const frete=g.items?.find(i=>i.id==='wpp_a34');
+          if(frete && Array.isArray(frete.btns) && !frete.btns.some(b=>b.action==='cotacaoFrete')){
+            frete.btns.push({label:'Cotação Frete',action:'cotacaoFrete'});
           }
         }
       });
@@ -2439,27 +2473,28 @@ function t(id,text,sub,link,linkLabel,repeats){
 
 function initWpp(){return[
   {
-    id:'wpp_atend', group:'ATENDIMENTO', icon:'💬',
+    id:'wpp_atend', group:'ATENDIMENTO', icon:'wpp-logo',
     link:'',
     linkLabel:'',
     items:[
       {id:'wpp_a2',text:'Orçamentos',sub:'',link:'',linkLabel:'',done:false,doneBy:null,doneAt:null,owner:'cmandrade',
         btns:[
-          {label:'Site',link:'https://www.suplelive.com.br/'},
-          {label:'Precificação Pix',action:'precificacaoPix'}
+          {label:'Valores no PIX',action:'precificacaoPix'},
+          {label:'Valores C. de Crédito',action:'valoresCredito'}
         ]
       },
       {id:'wpp_a34',text:'Cotação Frete',sub:'',link:'',linkLabel:'',done:false,doneBy:null,doneAt:null,owner:'cmandrade',
         btns:[
           {label:'M. Bem',link:'https://mandabem.com.br/calculador_frete'},
-          {label:'M. Envio',link:'https://melhorenvio.com.br/login'}
+          {label:'M. Envio',link:'https://melhorenvio.com.br/login'},
+          {label:'Cotação Frete',action:'cotacaoFrete'}
         ]
       },
       {id:'wpp_c3',text:'Pagamento Crédito',sub:'',link:'https://app.infinitepay.io/?from=%2Finvoices%2Fcreate%2Fsuccess%3Fslug%3D7hre8RC30z',linkLabel:'Link',done:false,doneBy:null,doneAt:null,owner:'cmandrade'}
     ]
   },
   {
-    id:'wpp_pedido', group:'SUBIR PEDIDO', icon:'📦',
+    id:'wpp_pedido', group:'SUBIR PEDIDO', icon:'wpp-logo',
     link:'',
     linkLabel:'',
     items:[
@@ -2473,7 +2508,7 @@ function initWpp(){return[
     ]
   },
   {
-    id:'wpp_comp', group:'COMPROVANTE', icon:'🧾',
+    id:'wpp_comp', group:'COMPROVANTE', icon:'wpp-logo',
     link:'',
     linkLabel:'',
     items:[
@@ -2787,9 +2822,28 @@ function renderWpp(){
       if(orc && Array.isArray(orc.btns)){
         orc.btns=orc.btns.filter(b=>b.label!=='Precificação');
         if(!orc.btns.some(b=>b.action==='precificacaoPix')){
-          orc.btns.push({label:'Precificação Pix',action:'precificacaoPix'});
+          orc.btns.push({label:'Valores no PIX',action:'precificacaoPix'});
         }
+        if(!orc.btns.some(b=>b.action==='valoresCredito')){
+          orc.btns.push({label:'Valores C. de Crédito',action:'valoresCredito'});
+        }
+        orc.btns=orc.btns.filter(b=>b.link!=='https://www.suplelive.com.br/');
+        orc.btns.forEach(b=>{
+          if(b.action==='precificacaoPix') b.label='Valores no PIX';
+          if(b.action==='valoresCredito') b.label='Valores C. de Crédito';
+        });
+        const ordemBtns={precificacaoPix:0, valoresCredito:1};
+        orc.btns.sort((a,b)=>(ordemBtns[a.action]??99)-(ordemBtns[b.action]??99));
       }
+      const frete=g.items.find(i=>i.id==='wpp_a34');
+      if(frete && Array.isArray(frete.btns) && !frete.btns.some(b=>b.action==='cotacaoFrete')){
+        frete.btns.push({label:'Cotação Frete',action:'cotacaoFrete'});
+      }
+    }
+    // Patch pontual: força o ícone do logo do WhatsApp nos 3 grupos, mesmo
+    // em estados antigos já salvos no Firebase/localStorage com emoji antigo (💬/📦/🧾)
+    if(g.id==='wpp_atend'||g.id==='wpp_pedido'||g.id==='wpp_comp'){
+      g.icon='wpp-logo';
     }
   });
 
@@ -2811,13 +2865,14 @@ function renderWpp(){
     badge.style.cssText='display:inline-flex;align-items:center;gap:8px;padding:5px 16px 5px 5px;border-radius:999px;flex-shrink:0;'+
       (allDone
         ? 'background:linear-gradient(135deg,#4ade80,#16a34a);box-shadow:0 3px 10px rgba(34,197,94,.28),inset 0 1px 0 rgba(255,255,255,.2);'
-        : 'background:linear-gradient(135deg,#e2e8f0,#94a3b8);border:1px solid rgba(255,255,255,.4);box-shadow:0 3px 10px rgba(148,163,184,.25),inset 0 1px 0 rgba(255,255,255,.3);');
+        : 'background:linear-gradient(135deg,rgba(74,222,128,.22),rgba(22,163,74,.14));border:1px solid rgba(34,197,94,.4);box-shadow:0 3px 10px rgba(34,197,94,.15),inset 0 1px 0 rgba(255,255,255,.12);');
     const icon=document.createElement('div');icon.className='task-group-icon';
     icon.style.cssText='width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;'+
-      (allDone?'background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 0 1px 2px rgba(255,255,255,.25);':'background:rgba(255,255,255,.55);color:#1e293b;box-shadow:inset 0 1px 2px rgba(255,255,255,.4);');
-    icon.textContent=allDone?'✓':g.icon;
+      (allDone?'background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 0 1px 2px rgba(255,255,255,.25);':'background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 0 1px 2px rgba(255,255,255,.2);');
+    const WPP_LOGO_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>';
+    icon.innerHTML=allDone?'✓':(g.icon==='wpp-logo'?WPP_LOGO_SVG:g.icon);
     const titleSpan=document.createElement('span');titleSpan.className='task-group-title';
-    titleSpan.style.cssText='font-weight:700;white-space:nowrap;color:'+(allDone?'#fff':'#1e293b')+';';
+    titleSpan.style.cssText='font-weight:700;white-space:nowrap;color:#fff;';
     titleSpan.textContent=g.group;
     badge.appendChild(icon);badge.appendChild(titleSpan);
     const countSpan=document.createElement('span');countSpan.className='task-group-count';
@@ -2856,15 +2911,14 @@ function renderWpp(){
     // Itens de lista normalmente
     listItems.forEach(tk=>{
       const row=document.createElement('div');row.className='task-row';
-      const dot=document.createElement('div');dot.className='status-dot '+(tk.done?'done':'pending');
       const txtw=document.createElement('div');txtw.style.flex='1';
       const txt=document.createElement('div');txt.className='task-text';txt.style.fontWeight='600';
       txt.style.textDecoration=tk.done?'line-through':'none';if(tk.done)txt.style.color='var(--text-muted)';
       txt.textContent=tk.text;txtw.appendChild(txt);
       if(tk.sub){const sub=document.createElement('div');sub.className='wpp-step-sub';sub.textContent=tk.sub;txtw.appendChild(sub);}
       const actions=document.createElement('div');actions.className='task-actions';
-      actions.appendChild(makeCompleteBtn(tk,()=>markWppDone(g.id,tk.id),()=>unmarkWppItem(g.id,tk.id)));
-      row.appendChild(dot);row.appendChild(txtw);row.appendChild(actions);card.appendChild(row);
+      actions.appendChild(makeCompleteBtnWpp(tk,()=>markWppDone(g.id,tk.id),()=>unmarkWppItem(g.id,tk.id)));
+      row.appendChild(txtw);row.appendChild(actions);card.appendChild(row);
     });
 
     // Itens como cards 3D em grid
@@ -2881,10 +2935,9 @@ function renderWpp(){
         const shine=document.createElement('div');shine.style.cssText='position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);pointer-events:none;';c.appendChild(shine);
         // Title
         const titleRow=document.createElement('div');titleRow.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:12px;';
-        const statusDot=document.createElement('div');statusDot.className='status-dot '+(isDone?'done':'pending');statusDot.style.flexShrink='0';
-        const label=document.createElement('div');label.style.cssText='font-size:13px;font-weight:700;color:'+(isDone?'var(--text-muted)':'var(--text-primary)')+';letter-spacing:-0.01em;text-decoration:'+(isDone?'line-through':'none')+';flex:1;';
+        const label=document.createElement('div');label.style.cssText='font-size:13px;font-weight:700;color:'+(isDone?'var(--text-muted)':'#fff')+';letter-spacing:-0.01em;text-decoration:'+(isDone?'line-through':'none')+';flex:1;'+(isDone?'':'background:rgba(234,179,8,0.12);padding:3px 10px;border-radius:6px;');
         label.textContent=tk.text;
-        titleRow.appendChild(statusDot);titleRow.appendChild(label);c.appendChild(titleRow);
+        titleRow.appendChild(label);c.appendChild(titleRow);
         // Buttons or link
         if(tk.btns&&tk.btns.length){
           const btnsWrap=document.createElement('div');btnsWrap.style.cssText='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;';
@@ -2892,20 +2945,22 @@ function renderWpp(){
             const a=document.createElement('a');
             if(b.action){ a.href='javascript:void(0)'; a.onclick=(ev)=>{ev.preventDefault();executarAcaoBotao(b.action);}; }
             else { a.href=b.link; a.target='_blank'; }
-            a.style.cssText='display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(34,197,94,0.18),rgba(34,197,94,0.07));border:1px solid rgba(34,197,94,0.35);border-radius:50px;color:#86efac;font-size:11px;font-weight:600;padding:4px 12px;text-decoration:none;transition:all .15s;font-family:var(--font-sans);white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);';
-            a.onmouseover=()=>{a.style.background='linear-gradient(135deg,rgba(34,197,94,0.3),rgba(34,197,94,0.12))';a.style.borderColor='rgba(34,197,94,0.6)';a.style.transform='translateY(-1px)';};
-            a.onmouseout=()=>{a.style.background='linear-gradient(135deg,rgba(34,197,94,0.18),rgba(34,197,94,0.07))';a.style.borderColor='rgba(34,197,94,0.35)';a.style.transform='';};
-            a.innerHTML=(b.action?'🧮 ':'↗ ')+b.label;btnsWrap.appendChild(a);
+            a.style.cssText='display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(139,143,245,0.16),rgba(79,82,214,0.09));border:1px solid rgba(139,143,245,0.3);border-radius:50px;color:#c7cafa;font-size:11px;font-weight:600;padding:3px 12px 3px 3px;text-decoration:none;transition:all .15s;font-family:var(--font-sans);white-space:nowrap;box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);';
+            a.onmouseover=()=>{a.style.background='linear-gradient(135deg,rgba(139,143,245,0.28),rgba(79,82,214,0.16))';a.style.borderColor='rgba(139,143,245,0.55)';a.style.transform='translateY(-1px)';};
+            a.onmouseout=()=>{a.style.background='linear-gradient(135deg,rgba(139,143,245,0.16),rgba(79,82,214,0.09))';a.style.borderColor='rgba(139,143,245,0.3)';a.style.transform='';};
+            const iconInner = '↗';
+            a.innerHTML=`<span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.14);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;box-shadow:inset 0 1px 1px rgba(255,255,255,.2);">${iconInner}</span>${b.label}`;
+            btnsWrap.appendChild(a);
           });
           c.appendChild(btnsWrap);
         } else if(tk.link){
           const a=document.createElement('a');a.href=tk.link;a.target='_blank';
-          a.style.cssText='display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(34,197,94,0.18),rgba(34,197,94,0.07));border:1px solid rgba(34,197,94,0.35);border-radius:50px;color:#86efac;font-size:11px;font-weight:600;padding:4px 12px;text-decoration:none;margin-bottom:10px;font-family:var(--font-sans);box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);';
-          a.innerHTML='↗ '+(tk.linkLabel||'Abrir');c.appendChild(a);
+          a.style.cssText='display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(139,143,245,0.16),rgba(79,82,214,0.09));border:1px solid rgba(139,143,245,0.3);border-radius:50px;color:#c7cafa;font-size:11px;font-weight:600;padding:3px 12px 3px 3px;text-decoration:none;margin-bottom:10px;font-family:var(--font-sans);box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);';
+          a.innerHTML=`<span style="width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.14);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;box-shadow:inset 0 1px 1px rgba(255,255,255,.2);">↗</span>${tk.linkLabel||'Abrir'}`;c.appendChild(a);
         }
         // Concluir button
-        const compBtn=makeCompleteBtn(tk,()=>markWppDone(g.id,tk.id),()=>unmarkWppItem(g.id,tk.id));
-        compBtn.style.width='100%';compBtn.style.borderRadius='50px';
+        const compBtn=makeCompleteBtnWpp(tk,()=>markWppDone(g.id,tk.id),()=>unmarkWppItem(g.id,tk.id));
+        compBtn.style.width='100%';compBtn.style.borderRadius='50px';compBtn.style.justifyContent='center';
         c.appendChild(compBtn);
         grid.appendChild(c);
       });
@@ -4884,6 +4939,84 @@ function showFloatTip(btn,text,color){
   tip.style.visibility='visible';
 }
 function hideFloatTip(){ if(_floatTip) _floatTip.style.display='none'; }
+
+// ── Botão "Concluir/Concluído" modernizado (estilo pill + ícone circular) ──
+// Usado SOMENTE na aba Vendas WhatsApp (renderWpp). O restante do app continua
+// usando makeCompleteBtn() sem alteração, para não impactar outras abas.
+function makeCompleteBtnWpp(task, onMarkDone, onUnmark){
+  if(!onUnmark) onUnmark = onMarkDone;
+  const btn=document.createElement('button');
+  btn.style.cssText='border:none;cursor:pointer;font-family:var(--font-sans);display:inline-flex;align-items:center;gap:8px;border-radius:999px;transition:all .15s;';
+
+  function iconCircle(bg,inner){
+    return `<span style="width:18px;height:18px;border-radius:50%;background:${bg};display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 1px 1px rgba(255,255,255,.25);">${inner}</span>`;
+  }
+
+  function renderDone(){
+    const locked=!currentUser.master && !!task.doneBy && task.doneBy!==currentUser.name;
+    btn.className='complete-btn done';
+    btn.style.background='linear-gradient(135deg,#4ade80,#16a34a)';
+    btn.style.border='1px solid rgba(255,255,255,.25)';
+    btn.style.boxShadow='0 3px 10px rgba(34,197,94,.3),inset 0 1px 0 rgba(255,255,255,.2)';
+    btn.style.color='#fff';
+    btn.style.fontWeight='700';
+    btn.style.fontSize='11px';
+    btn.style.padding='5px 14px 5px 5px';
+    btn.style.minWidth='102px';
+    btn.style.justifyContent='center';
+    const check='<svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="#16a34a" stroke-width="2"><path d="M2 5.2L4.2 7.4L8 3"/></svg>';
+    btn.innerHTML=iconCircle('rgba(255,255,255,.9)',check)+`<span>Concluído${locked?' 🔒':''}</span>`;
+    if(locked){
+      btn.style.opacity='0.75';
+      btn.style.cursor='not-allowed';
+      btn.onclick=e=>{e.stopPropagation();showToast('Somente o master pode desmarcar esta tarefa','error');};
+    } else {
+      btn.onclick=e=>{
+        e.stopPropagation();
+        task.done=false;
+        task.doneBy=null;
+        task.doneAt=null;
+        hideFloatTip();
+        renderPending();
+        onUnmark();
+      };
+    }
+    const who=task.doneBy||'?';
+    const when=task.doneAt||'';
+    const tipTxt=who+(when?' · '+when:'')+(locked?' · Bloqueado':'');
+    btn.onmouseenter=()=>showFloatTip(btn,tipTxt,locked?'var(--amber)':'var(--green)');
+    btn.onmouseleave=hideFloatTip;
+  }
+
+  function renderPending(){
+    btn.className='complete-btn';
+    btn.style.background='transparent';
+    btn.style.border='1px solid rgba(255,255,255,.22)';
+    btn.style.boxShadow='none';
+    btn.style.color='var(--text-secondary)';
+    btn.style.fontWeight='700';
+    btn.style.fontSize='11px';
+    btn.style.padding='5px 14px';
+    btn.style.minWidth='102px';
+    btn.style.justifyContent='center';
+    btn.innerHTML='<span>Concluir</span>';
+    btn.style.opacity='1';
+    btn.style.cursor='pointer';
+    btn.onmouseenter=()=>{btn.style.borderColor='rgba(255,255,255,.4)';btn.style.color='#fff';};
+    btn.onmouseleave=()=>{btn.style.borderColor='rgba(255,255,255,.22)';btn.style.color='var(--text-secondary)';};
+    btn.onclick=e=>{
+      e.stopPropagation();
+      task.done=true;
+      task.doneBy=currentUser.name;
+      task.doneAt=nowTimeStr();
+      renderDone();
+      onMarkDone();
+    };
+  }
+
+  if(task.done){ renderDone(); } else { renderPending(); }
+  return btn;
+}
 
 function makeCompleteBtn(task, onMarkDone, onUnmark){
   // onMarkDone: chamado quando o usuário clica 'Concluir' (marca como feito)
@@ -9597,14 +9730,19 @@ function salvarEdicaoVenda(){
 /* ===== Dispatcher genérico para botões de "ação" (não-link) nos cards de tarefas ===== */
 function executarAcaoBotao(action){
   if(action==='precificacaoPix') abrirModalPrecificacaoPix();
+  if(action==='valoresCredito') abrirModalValoresCredito();
+  if(action==='cotacaoFrete') abrirModalCotacaoFrete();
 }
 </script>
 
 <div id="modal-precificacao-pix-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
   <div style="background:linear-gradient(135deg,rgba(24,27,36,0.98),rgba(13,14,18,0.99));border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:28px;width:400px;max-width:94vw;box-shadow:0 20px 60px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.08);backdrop-filter:blur(24px);position:relative;">
     <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);border-radius:var(--radius-lg) var(--radius-lg) 0 0;pointer-events:none;"></div>
+
+    <button id="precpix-copy-corner" onclick="copiarPrecificacaoPix()" title="Copiar texto todo" style="display:none;position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,rgba(34,197,94,0.22),rgba(34,197,94,0.08));border:1px solid rgba(34,197,94,0.4);color:#86efac;font-size:13px;cursor:pointer;align-items:center;justify-content:center;transition:all .15s;" onmouseover="this.style.background='rgba(34,197,94,0.32)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(34,197,94,0.22),rgba(34,197,94,0.08))'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-      <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,rgba(34,197,94,0.3),rgba(34,197,94,0.1));border:1px solid rgba(34,197,94,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🧮</div>
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,rgba(34,197,94,0.25),rgba(34,197,94,0.1));border:1px solid rgba(34,197,94,0.35);display:flex;align-items:center;justify-content:center;"></div>
       <div>
         <div style="font-size:15px;font-weight:700;color:var(--text-primary);">Precificação Pix</div>
         <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">Gerar texto de desconto p/ WhatsApp</div>
@@ -9614,9 +9752,18 @@ function executarAcaoBotao(action){
 
     <div id="precpix-form">
       <label style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;">Valor bruto do produto no site (R$) *</label>
-      <input type="text" id="precpix-valor-base" placeholder="Ex: 259,99" style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-mono);font-size:14px;padding:10px 13px;outline:none;width:100%;box-sizing:border-box;transition:border-color .2s,box-shadow .2s;" onfocus="this.style.borderColor='rgba(34,197,94,0.6)';this.style.boxShadow='0 0 16px rgba(34,197,94,0.15)'" onblur="this.style.borderColor='var(--glass-border)';this.style.boxShadow=''" oninput="fmtValorModal(this)" onkeydown="if(event.key==='Enter')gerarPrecificacaoPix()">
+      <input type="text" id="precpix-valor-base" placeholder="Ex: 259,99" style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-mono);font-size:14px;padding:10px 13px;outline:none;width:100%;box-sizing:border-box;transition:border-color .2s,box-shadow .2s;" onfocus="this.style.borderColor='rgba(34,197,94,0.6)';this.style.boxShadow='0 0 16px rgba(34,197,94,0.15)'" onblur="this.style.borderColor='var(--glass-border)';this.style.boxShadow=''" oninput="fmtValorModal(this);atualizarFormulaPix()" onkeydown="if(event.key==='Enter')gerarPrecificacaoPix()">
       <div id="precpix-error" style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:#fca5a5;font-family:var(--font-mono);margin-top:12px;"></div>
-      <button onclick="gerarPrecificacaoPix()" style="width:100%;margin-top:16px;background:linear-gradient(135deg,rgba(34,197,94,0.8),rgba(34,197,94,0.6));border:1px solid rgba(34,197,94,0.6);border-radius:50px;color:#fff;font-family:var(--font-sans);font-size:13px;font-weight:700;padding:11px;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(34,197,94,0.25),inset 0 1px 0 rgba(255,255,255,0.15);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">🧮 Gerar Texto</button>
+      <button onclick="gerarPrecificacaoPix()" style="width:100%;margin-top:16px;background:linear-gradient(135deg,rgba(34,197,94,0.35),rgba(34,197,94,0.22));border:1px solid rgba(34,197,94,0.45);border-radius:50px;color:#fff;font-family:var(--font-sans);font-size:13px;font-weight:700;padding:11px;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(34,197,94,0.12),inset 0 1px 0 rgba(255,255,255,0.1);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Gerar Texto</button>
+
+      <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:14px;">
+        <button id="precpix-gear-btn" onclick="togglePrecpixMasterPanel()" title="Regra de desconto (MASTER)" style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));border:1px solid var(--glass-border);color:#a5d8ff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;" onmouseover="this.style.color='#d0ecff';this.style.borderColor='rgba(165,216,255,0.4)'" onmouseout="this.style.color='#a5d8ff';this.style.borderColor='var(--glass-border)'">⚙</button>
+      </div>
+      <div id="precpix-master-panel" style="display:none;margin-top:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:var(--radius);padding:12px;">
+        <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">⚙ Regra de desconto (MASTER)</div>
+        <div id="precpix-faixas-editor"></div>
+        <button onclick="salvarRegraDescontoPix()" style="width:100%;margin-top:10px;background:linear-gradient(135deg,rgba(255,255,255,0.1),rgba(255,255,255,0.04));border:1px solid var(--glass-border);border-radius:50px;color:var(--text-primary);font-family:var(--font-sans);font-size:12px;font-weight:600;padding:8px;cursor:pointer;">💾 Salvar regra</button>
+      </div>
     </div>
 
     <div id="precpix-resultado" style="display:none;">
@@ -9624,7 +9771,7 @@ function executarAcaoBotao(action){
       <textarea id="precpix-texto" readonly style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-mono);font-size:12.5px;line-height:1.6;padding:12px 13px;outline:none;width:100%;box-sizing:border-box;height:190px;resize:none;"></textarea>
       <div style="display:flex;gap:10px;margin-top:14px;">
         <button onclick="voltarPrecificacaoPix()" style="flex:1;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:50px;color:var(--text-muted);font-family:var(--font-sans);font-size:13px;font-weight:600;padding:11px;cursor:pointer;transition:all .15s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='var(--text-primary)'" onmouseout="this.style.borderColor='var(--glass-border)';this.style.color='var(--text-muted)'">← Editar valor</button>
-        <button onclick="copiarPrecificacaoPix()" style="flex:2;background:linear-gradient(135deg,rgba(34,197,94,0.8),rgba(34,197,94,0.6));border:1px solid rgba(34,197,94,0.6);border-radius:50px;color:#fff;font-family:var(--font-sans);font-size:13px;font-weight:700;padding:11px;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(34,197,94,0.25),inset 0 1px 0 rgba(255,255,255,0.15);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">📋 Copiar</button>
+        <button onclick="copiarPrecificacaoPix()" style="flex:2;background:linear-gradient(135deg,rgba(34,197,94,0.35),rgba(34,197,94,0.22));border:1px solid rgba(34,197,94,0.45);border-radius:50px;color:#fff;font-family:var(--font-sans);font-size:13px;font-weight:700;padding:11px;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(34,197,94,0.12),inset 0 1px 0 rgba(255,255,255,0.1);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Copiar</button>
       </div>
     </div>
 
@@ -9632,6 +9779,92 @@ function executarAcaoBotao(action){
   </div>
 </div>
 <script>
+// ── REGRA DE DESCONTO PIX (editável por MASTER) ──────────────
+// Estrutura: appState.regraDescontoPix = { faixas: [{qtd:1,pct:10}, {qtd:2,pct:15}, {qtd:3,pct:20}] }
+// pct = percentual de desconto sobre o valor base, aplicado por unidade na faixa.
+function getRegraDescontoPix(){
+  if(!appState.regraDescontoPix || !Array.isArray(appState.regraDescontoPix.faixas) || !appState.regraDescontoPix.faixas.length){
+    appState.regraDescontoPix = { faixas: [ {qtd:1,pct:10}, {qtd:2,pct:15}, {qtd:3,pct:20} ] };
+  }
+  return appState.regraDescontoPix;
+}
+
+function renderPrecpixMasterPanel(){
+  const isMaster = currentUser && currentUser.master;
+  const gearBtn = document.getElementById('precpix-gear-btn');
+  const panel = document.getElementById('precpix-master-panel');
+  if(!panel || !gearBtn) return;
+  if(!isMaster){
+    gearBtn.parentElement.style.display='none';
+    panel.style.display='none';
+    return;
+  }
+  gearBtn.parentElement.style.display='flex';
+  panel.style.display='none'; // começa fechado, só abre ao clicar na engrenagem
+  const regra = getRegraDescontoPix();
+  const editor = document.getElementById('precpix-faixas-editor');
+  editor.innerHTML = regra.faixas.map((f,i)=>`
+    <div style="margin-bottom:10px;padding-bottom:10px;${i<regra.faixas.length-1?'border-bottom:1px solid rgba(255,255,255,0.06);':''}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <div style="width:60px;font-size:12px;color:var(--text-primary);font-family:var(--font-mono);">${f.qtd} un.</div>
+        <input type="number" min="0" max="100" step="1" value="${f.pct}" data-faixa-idx="${i}" class="precpix-pct-input" oninput="atualizarFormulaPix()"
+          style="flex:1;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:6px;color:var(--text-primary);font-family:var(--font-mono);font-size:13px;padding:6px 8px;outline:none;">
+        <div style="font-size:12px;color:var(--text-muted);">% OFF</div>
+      </div>
+      <div id="precpix-formula-${i}" style="font-size:10.5px;color:var(--text-muted);font-family:var(--font-mono);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 8px;white-space:pre;overflow-x:auto;"></div>
+    </div>
+  `).join('');
+  atualizarFormulaPix();
+}
+
+function togglePrecpixMasterPanel(){
+  const isMaster = currentUser && currentUser.master;
+  if(!isMaster) return;
+  const panel = document.getElementById('precpix-master-panel');
+  if(!panel) return;
+  const abrir = panel.style.display==='none';
+  panel.style.display = abrir ? 'block' : 'none';
+  if(abrir) atualizarFormulaPix();
+}
+
+// Mostra a fórmula "estilo planilha" (célula = referência × percentual) para
+// cada faixa, recalculando ao vivo conforme o MASTER edita o % ou o valor base.
+function atualizarFormulaPix(){
+  const regra = getRegraDescontoPix();
+  const baseRaw = (document.getElementById('precpix-valor-base')?.value||'').trim();
+  const base = parseFloat(baseRaw.replace(/\./g,'').replace(',','.'))||0;
+  const fmt=(n)=>n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  regra.faixas.forEach((f,i)=>{
+    const inp = document.querySelector(`.precpix-pct-input[data-faixa-idx="${i}"]`);
+    const pct = inp ? (parseFloat(inp.value)||0) : f.pct;
+    const el = document.getElementById(`precpix-formula-${i}`);
+    if(!el) return;
+    if(base>0){
+      const preco = base*(1-pct/100);
+      el.textContent = `= A1 * (1 - B1/100)\n= ${fmt(base)} * (1 - ${pct}/100)\n= R$ ${fmt(preco)}`;
+    } else {
+      el.textContent = `= A1 * (1 - B1/100)\nA1 = Preço base (site) | B1 = ${pct}% desconto`;
+    }
+  });
+}
+
+function salvarRegraDescontoPix(){
+  const isMaster = currentUser && currentUser.master;
+  if(!isMaster) return;
+  const regra = getRegraDescontoPix();
+  document.querySelectorAll('.precpix-pct-input').forEach(inp=>{
+    const idx = parseInt(inp.getAttribute('data-faixa-idx'),10);
+    const pct = parseFloat(inp.value);
+    if(regra.faixas[idx] && !isNaN(pct) && pct>=0 && pct<=100){
+      regra.faixas[idx].pct = pct;
+    }
+  });
+  appState.regraDescontoPix = regra;
+  saveState(appState);
+  atualizarFormulaPix();
+  showToast('✓ Regra de desconto salva!','success');
+}
+
 function abrirModalPrecificacaoPix(){
   const overlay=document.getElementById('modal-precificacao-pix-overlay');
   if(!overlay) return;
@@ -9639,6 +9872,8 @@ function abrirModalPrecificacaoPix(){
   document.getElementById('precpix-error').style.display='none';
   document.getElementById('precpix-form').style.display='block';
   document.getElementById('precpix-resultado').style.display='none';
+  document.getElementById('precpix-copy-corner').style.display='none';
+  renderPrecpixMasterPanel();
   overlay.style.display='flex';
   setTimeout(()=>{ document.getElementById('precpix-valor-base').focus(); },100);
 }
@@ -9649,6 +9884,7 @@ function fecharModalPrecificacaoPix(){
 function voltarPrecificacaoPix(){
   document.getElementById('precpix-form').style.display='block';
   document.getElementById('precpix-resultado').style.display='none';
+  document.getElementById('precpix-copy-corner').style.display='none';
   setTimeout(()=>{ document.getElementById('precpix-valor-base').focus(); document.getElementById('precpix-valor-base').select(); },50);
 }
 function gerarPrecificacaoPix(){
@@ -9665,27 +9901,400 @@ function gerarPrecificacaoPix(){
   errEl.style.display='none';
 
   const fmt=(n)=>n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const preco1 = base*0.90; // 10% OFF
-  const preco2 = base*0.85; // 15% OFF (cada)
-  const preco3 = base*0.80; // 20% OFF (cada)
+  const regra = getRegraDescontoPix();
+
+  const linhas = regra.faixas.map(f=>{
+    const preco = base*(1-f.pct/100);
+    const cada = f.qtd>1 ? ' cada' : '';
+    return `•  ${f.qtd} un.    ${f.pct}% OFF   R$ ${fmt(preco)}${cada}`;
+  }).join('\n');
 
   const texto =
-`Comprando pelo WhatsApp temos desconto:
+`Preço normal (Site): R$ ${fmt(base)}
 
-Sem desconto: R$ ${fmt(base)} (preço direto em nosso site)
+Preços especiais por aqui, no PIX:
 
-1 unidade: R$ ${fmt(preco1)} — 10% OFF
-2 unidades: R$ ${fmt(preco2)} cada — 15% OFF
-3 unidades: R$ ${fmt(preco3)} cada — 20% OFF
+${linhas}
 
-*valores no pix, cartão consulte condições`;
+Valores acima no PIX. Consulte condições para cartão.
+
+Qual quantidade você deseja reservar?`;
 
   document.getElementById('precpix-texto').value=texto;
   document.getElementById('precpix-form').style.display='none';
   document.getElementById('precpix-resultado').style.display='block';
+  document.getElementById('precpix-copy-corner').style.display='flex';
 }
 function copiarPrecificacaoPix(){
   const textarea=document.getElementById('precpix-texto');
+  textarea.select();
+  textarea.setSelectionRange(0,999999);
+  navigator.clipboard.writeText(textarea.value).then(()=>{
+    showToast('📋 Texto copiado!','success');
+  }).catch(()=>{
+    try{ document.execCommand('copy'); showToast('📋 Texto copiado!','success'); }
+    catch(e){ showToast('⚠ Não foi possível copiar automaticamente. Selecione e copie manualmente.','warn'); }
+  });
+}
+</script>
+
+<div id="modal-valores-credito-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+  <div style="background:linear-gradient(135deg,rgba(24,27,36,0.98),rgba(13,14,18,0.99));border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:28px;width:400px;max-width:94vw;box-shadow:0 20px 60px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.08);backdrop-filter:blur(24px);position:relative;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);border-radius:var(--radius-lg) var(--radius-lg) 0 0;pointer-events:none;"></div>
+
+    <button id="valcred-copy-corner" onclick="copiarTextoValoresCredito()" title="Copiar texto" style="display:none;position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,rgba(59,130,246,0.22),rgba(59,130,246,0.08));border:1px solid rgba(59,130,246,0.4);color:#93c5fd;font-size:13px;cursor:pointer;align-items:center;justify-content:center;transition:all .15s;" onmouseover="this.style.background='rgba(59,130,246,0.32)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(59,130,246,0.22),rgba(59,130,246,0.08))'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,rgba(59,130,246,0.25),rgba(59,130,246,0.1));border:1px solid rgba(59,130,246,0.35);display:flex;align-items:center;justify-content:center;"></div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--text-primary);">Valores C. de Crédito</div>
+        <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">Gerar tabela de parcelas p/ WhatsApp</div>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--glass-border);margin:16px 0;"></div>
+
+    <div id="valcred-form">
+      <label style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px;">Valor do orçamento no Pix (R$) *</label>
+      <input type="text" id="valcred-valor-base" placeholder="Ex: 253,99" style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-mono);font-size:14px;padding:10px 13px;outline:none;width:100%;box-sizing:border-box;transition:border-color .2s,box-shadow .2s;" onfocus="this.style.borderColor='rgba(59,130,246,0.6)';this.style.boxShadow='0 0 16px rgba(59,130,246,0.15)'" onblur="this.style.borderColor='var(--glass-border)';this.style.boxShadow=''" oninput="fmtValorModal(this);atualizarFormulaValcred()" onkeydown="if(event.key==='Enter')gerarValoresCredito()">
+      <div id="valcred-error" style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:#fca5a5;font-family:var(--font-mono);margin-top:12px;"></div>
+      <button onclick="gerarValoresCredito()" style="width:100%;margin-top:16px;background:linear-gradient(135deg,rgba(59,130,246,0.35),rgba(59,130,246,0.22));border:1px solid rgba(59,130,246,0.45);border-radius:50px;color:#fff;font-family:var(--font-sans);font-size:13px;font-weight:700;padding:11px;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(59,130,246,0.12),inset 0 1px 0 rgba(255,255,255,0.1);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Gerar Tabela</button>
+
+      <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:14px;">
+        <button id="valcred-gear-btn" onclick="toggleValcredMasterPanel()" title="Regra de acréscimo (MASTER)" style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03));border:1px solid var(--glass-border);color:#a5d8ff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;" onmouseover="this.style.color='#d0ecff';this.style.borderColor='rgba(165,216,255,0.4)'" onmouseout="this.style.color='#a5d8ff';this.style.borderColor='var(--glass-border)'">⚙</button>
+      </div>
+      <div id="valcred-master-panel" style="display:none;margin-top:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.15);border-radius:var(--radius);padding:12px;">
+        <div style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">⚙ Regra de acréscimo por parcela (MASTER)</div>
+        <div id="valcred-faixas-editor"></div>
+        <button onclick="salvarRegraValoresCredito()" style="width:100%;margin-top:10px;background:linear-gradient(135deg,rgba(255,255,255,0.1),rgba(255,255,255,0.04));border:1px solid var(--glass-border);border-radius:50px;color:var(--text-primary);font-family:var(--font-sans);font-size:12px;font-weight:600;padding:8px;cursor:pointer;">💾 Salvar regra</button>
+      </div>
+    </div>
+
+    <div id="valcred-resultado" style="display:none;">
+      <label style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px;">Texto gerado (confira antes de enviar)</label>
+
+      <textarea id="valcred-texto" readonly style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-mono);font-size:12.5px;line-height:1.6;padding:12px 13px;outline:none;width:100%;box-sizing:border-box;height:170px;resize:none;white-space:pre;"></textarea>
+      <button onclick="copiarTextoValoresCredito()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,rgba(59,130,246,0.35),rgba(59,130,246,0.22));border:1px solid rgba(59,130,246,0.45);border-radius:50px;color:#fff;font-family:var(--font-sans);font-size:13px;font-weight:700;padding:11px;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(59,130,246,0.12),inset 0 1px 0 rgba(255,255,255,0.1);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">📋 Copiar texto</button>
+
+      <div style="margin-top:14px;">
+        <button onclick="voltarValoresCredito()" style="width:100%;background:transparent;border:none;color:var(--text-muted);font-family:var(--font-sans);font-size:12px;padding:8px;cursor:pointer;transition:color .15s;" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-muted)'">← Editar valor</button>
+      </div>
+    </div>
+
+    <button onclick="fecharModalValoresCredito()" style="width:100%;margin-top:10px;background:transparent;border:none;color:var(--text-muted);font-family:var(--font-sans);font-size:12px;padding:6px;cursor:pointer;">Fechar</button>
+  </div>
+</div>
+<script>
+// ── REGRA DE ACRÉSCIMO NO CARTÃO DE CRÉDITO (editável por MASTER) ──────────
+// Estrutura: appState.regraCartaoCredito = { parcelas: [{n:1,pct:5}, {n:2,pct:9.57}, {n:3,pct:11}] }
+// n = quantidade de parcelas | pct = % de acréscimo sobre o valor pix, aplicado ao TOTAL daquela opção.
+// Valores default calculados a partir da planilha de referência (B2*1,05 / B2*1,0957 / B2*1,11).
+function getRegraValoresCredito(){
+  if(!appState.regraCartaoCredito || !Array.isArray(appState.regraCartaoCredito.parcelas) || !appState.regraCartaoCredito.parcelas.length){
+    appState.regraCartaoCredito = { parcelas: [ {n:1,pct:5}, {n:2,pct:9.57}, {n:3,pct:11} ] };
+  }
+  return appState.regraCartaoCredito;
+}
+
+function renderValcredMasterPanel(){
+  const isMaster = currentUser && currentUser.master;
+  const gearBtn = document.getElementById('valcred-gear-btn');
+  const panel = document.getElementById('valcred-master-panel');
+  if(!panel || !gearBtn) return;
+  if(!isMaster){
+    gearBtn.parentElement.style.display='none';
+    panel.style.display='none';
+    return;
+  }
+  gearBtn.parentElement.style.display='flex';
+  panel.style.display='none'; // começa fechado, só abre ao clicar na engrenagem
+  const regra = getRegraValoresCredito();
+  const editor = document.getElementById('valcred-faixas-editor');
+  editor.innerHTML = regra.parcelas.map((f,i)=>`
+    <div style="margin-bottom:10px;padding-bottom:10px;${i<regra.parcelas.length-1?'border-bottom:1px solid rgba(255,255,255,0.06);':''}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <div style="width:60px;font-size:12px;color:var(--text-primary);font-family:var(--font-mono);">${f.n}x</div>
+        <input type="number" min="0" max="100" step="0.01" value="${f.pct}" data-faixa-idx="${i}" class="valcred-pct-input" oninput="atualizarFormulaValcred()"
+          style="flex:1;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:6px;color:var(--text-primary);font-family:var(--font-mono);font-size:13px;padding:6px 8px;outline:none;">
+        <div style="font-size:12px;color:var(--text-muted);">% acrésc.</div>
+      </div>
+      <div id="valcred-formula-${i}" style="font-size:10.5px;color:var(--text-muted);font-family:var(--font-mono);background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:6px 8px;white-space:pre;overflow-x:auto;"></div>
+    </div>
+  `).join('');
+  atualizarFormulaValcred();
+}
+
+function toggleValcredMasterPanel(){
+  const isMaster = currentUser && currentUser.master;
+  if(!isMaster) return;
+  const panel = document.getElementById('valcred-master-panel');
+  if(!panel) return;
+  const abrir = panel.style.display==='none';
+  panel.style.display = abrir ? 'block' : 'none';
+  if(abrir) atualizarFormulaValcred();
+}
+
+// Mostra a fórmula "estilo planilha" (célula = referência × percentual) para
+// cada parcela, recalculando ao vivo conforme o MASTER edita o % ou o valor base.
+function atualizarFormulaValcred(){
+  const regra = getRegraValoresCredito();
+  const baseRaw = (document.getElementById('valcred-valor-base')?.value||'').trim();
+  const base = parseFloat(baseRaw.replace(/\./g,'').replace(',','.'))||0;
+  const fmt=(n)=>n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  regra.parcelas.forEach((f,i)=>{
+    const inp = document.querySelector(`.valcred-pct-input[data-faixa-idx="${i}"]`);
+    const pct = inp ? (parseFloat(inp.value)||0) : f.pct;
+    const el = document.getElementById(`valcred-formula-${i}`);
+    if(!el) return;
+    if(base>0){
+      const total = base*(1+pct/100);
+      el.textContent = `= A1 * (1 + B1/100)\n= ${fmt(base)} * (1 + ${pct}/100)\n= R$ ${fmt(total)}`;
+    } else {
+      el.textContent = `= A1 * (1 + B1/100)\nA1 = Preço pix | B1 = ${pct}% acréscimo`;
+    }
+  });
+}
+
+function salvarRegraValoresCredito(){
+  const isMaster = currentUser && currentUser.master;
+  if(!isMaster) return;
+  const regra = getRegraValoresCredito();
+  document.querySelectorAll('.valcred-pct-input').forEach(inp=>{
+    const idx = parseInt(inp.getAttribute('data-faixa-idx'),10);
+    const pct = parseFloat(inp.value);
+    if(regra.parcelas[idx] && !isNaN(pct) && pct>=0 && pct<=100){
+      regra.parcelas[idx].pct = pct;
+    }
+  });
+  appState.regraCartaoCredito = regra;
+  saveState(appState);
+  atualizarFormulaValcred();
+  showToast('✓ Regra de acréscimo salva!','success');
+}
+
+function abrirModalValoresCredito(){
+  const overlay=document.getElementById('modal-valores-credito-overlay');
+  if(!overlay) return;
+  document.getElementById('valcred-valor-base').value='';
+  document.getElementById('valcred-error').style.display='none';
+  document.getElementById('valcred-form').style.display='block';
+  document.getElementById('valcred-resultado').style.display='none';
+  document.getElementById('valcred-copy-corner').style.display='none';
+  renderValcredMasterPanel();
+  overlay.style.display='flex';
+  setTimeout(()=>{ document.getElementById('valcred-valor-base').focus(); },100);
+}
+function fecharModalValoresCredito(){
+  const overlay=document.getElementById('modal-valores-credito-overlay');
+  if(overlay) overlay.style.display='none';
+}
+function voltarValoresCredito(){
+  document.getElementById('valcred-form').style.display='block';
+  document.getElementById('valcred-resultado').style.display='none';
+  document.getElementById('valcred-copy-corner').style.display='none';
+  setTimeout(()=>{ document.getElementById('valcred-valor-base').focus(); document.getElementById('valcred-valor-base').select(); },50);
+}
+// Converte letras (A-Z, a-z) e dígitos (0-9) para as variantes Unicode "Mathematical
+// Monospace" (mesma largura sempre) — permite colunas alinhadas no WhatsApp sem usar
+// bloco de código (```). Acentos (ç, ã, é...) são decompostos (NFD) e o acento
+// permanece "flutuando" sobre a letra convertida; símbolos (R$, vírgula, ponto, espaço)
+// não têm variante monoespaçada e continuam normais (não atrapalha o alinhamento pois
+// aparecem sempre na mesma posição relativa em cada linha).
+function toMonospace(text){
+  let out='';
+  for(const ch of text.normalize('NFD')){
+    const code = ch.codePointAt(0);
+    if(code>=65&&code<=90) out += String.fromCodePoint(0x1D670+(code-65));       // A-Z
+    else if(code>=97&&code<=122) out += String.fromCodePoint(0x1D68A+(code-97)); // a-z
+    else if(code>=48&&code<=57) out += String.fromCodePoint(0x1D7F6+(code-48)); // 0-9
+    else out += ch;
+  }
+  return out;
+}
+function gerarValoresCredito(){
+  const inputEl=document.getElementById('valcred-valor-base');
+  const errEl=document.getElementById('valcred-error');
+  const raw=(inputEl.value||'').trim();
+  const base=parseFloat(raw.replace(/\./g,'').replace(',','.'))||0;
+  if(!raw || base<=0){
+    errEl.textContent='⚠ Informe um valor válido.';
+    errEl.style.display='block';
+    inputEl.focus();
+    return;
+  }
+  errEl.style.display='none';
+
+  const fmt=(n)=>n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const regra = getRegraValoresCredito();
+
+  // Sem bloco ``` (fonte proporcional do WhatsApp não alinha colunas com espaços comuns).
+  // Solução: converter letras/números da TABELA para variantes Unicode monoespaçadas
+  // (cada caractere com a mesma largura) E usar "figure space" (U+2007) no preenchimento,
+  // que tem a mesma largura dos caracteres monoespaçados — espaço comum ficaria mais
+  // estreito e desalinharia as colunas.
+  const padEnd=(s,len)=>s.length>=len ? s : s+'\u2007'.repeat(len-s.length);
+  const linhaLabel = (n)=> `Preço ${n}x`;
+  const linhasDados = [ ['Preço pix', 'R$ '+fmt(base), 'R$ '+fmt(base)] ];
+  regra.parcelas.forEach(f=>{
+    const total = base*(1+f.pct/100);
+    const porParcela = total/f.n;
+    linhasDados.push([ linhaLabel(f.n), 'R$ '+fmt(total), 'R$ '+fmt(porParcela) ]);
+  });
+  const todasLinhas = [ ['', 'Total', 'Parcelas de:'], ...linhasDados ];
+  const col0Width = Math.max(...todasLinhas.map(r=>r[0].length)) + 2;
+  const col1Width = Math.max(...todasLinhas.map(r=>r[1].length)) + 2;
+  const linhasTexto = todasLinhas.map(r => toMonospace(padEnd(r[0],col0Width) + padEnd(r[1],col1Width) + r[2]));
+  const texto =
+`Segue abaixo os valores no Cartão de Crédito em até 3x.
+
+${linhasTexto.join('\n')}`;
+  document.getElementById('valcred-texto').value = texto;
+
+
+  document.getElementById('valcred-form').style.display='none';
+  document.getElementById('valcred-resultado').style.display='block';
+  document.getElementById('valcred-copy-corner').style.display='flex';
+}
+function copiarTextoValoresCredito(){
+  const textarea=document.getElementById('valcred-texto');
+  textarea.select();
+  textarea.setSelectionRange(0,999999);
+  navigator.clipboard.writeText(textarea.value).then(()=>{
+    showToast('📋 Texto copiado!','success');
+  }).catch(()=>{
+    try{ document.execCommand('copy'); showToast('📋 Texto copiado!','success'); }
+    catch(e){ showToast('⚠ Não foi possível copiar automaticamente. Selecione e copie manualmente.','warn'); }
+  });
+}
+</script>
+
+<div id="modal-cotacao-frete-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:3000;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+  <div style="background:linear-gradient(135deg,rgba(24,27,36,0.98),rgba(13,14,18,0.99));border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:28px;width:420px;max-width:94vw;box-shadow:0 20px 60px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.08);backdrop-filter:blur(24px);position:relative;">
+    <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);border-radius:var(--radius-lg) var(--radius-lg) 0 0;pointer-events:none;"></div>
+
+    <button id="cotfrete-copy-corner" onclick="copiarCotacaoFrete()" title="Copiar texto" style="display:none;position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,rgba(59,130,246,0.22),rgba(59,130,246,0.08));border:1px solid rgba(59,130,246,0.4);color:#93c5fd;font-size:13px;cursor:pointer;align-items:center;justify-content:center;transition:all .15s;" onmouseover="this.style.background='rgba(59,130,246,0.32)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(59,130,246,0.22),rgba(59,130,246,0.08))'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,rgba(59,130,246,0.25),rgba(59,130,246,0.1));border:1px solid rgba(59,130,246,0.35);display:flex;align-items:center;justify-content:center;"></div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--text-primary);">Cotação Frete</div>
+        <div style="font-size:11px;color:var(--text-muted);font-family:var(--font-mono);">Gerar mensagem de fretes p/ WhatsApp</div>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--glass-border);margin:16px 0;"></div>
+
+    <div id="cotfrete-form">
+      <div style="display:flex;gap:8px;margin-bottom:6px;padding:0 2px;">
+        <div style="width:118px;font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;">Transportadora</div>
+        <div style="flex:1;font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;">Valor cotado (R$)</div>
+        <div style="width:62px;font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;">Dias</div>
+      </div>
+      <div id="cotfrete-linhas"></div>
+      <div style="font-size:10.5px;color:var(--text-muted);font-family:var(--font-mono);margin-top:4px;">* Informe o valor cotado na transportadora — R$ 5,00 é somado automaticamente em cada frete.</div>
+      <div id="cotfrete-error" style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);border-radius:var(--radius);padding:8px 12px;font-size:12px;color:#fca5a5;font-family:var(--font-mono);margin-top:12px;"></div>
+      <button onclick="gerarCotacaoFrete()" style="width:100%;margin-top:16px;background:linear-gradient(135deg,rgba(59,130,246,0.35),rgba(59,130,246,0.22));border:1px solid rgba(59,130,246,0.45);border-radius:50px;color:#fff;font-family:var(--font-sans);font-size:13px;font-weight:700;padding:11px;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(59,130,246,0.12),inset 0 1px 0 rgba(255,255,255,0.1);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Gerar Mensagem</button>
+    </div>
+
+    <div id="cotfrete-resultado" style="display:none;">
+      <label style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:8px;">Texto gerado (confira antes de enviar)</label>
+
+      <textarea id="cotfrete-texto" readonly style="background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-mono);font-size:12.5px;line-height:1.6;padding:12px 13px;outline:none;width:100%;box-sizing:border-box;height:210px;resize:none;white-space:pre;"></textarea>
+      <button onclick="copiarCotacaoFrete()" style="width:100%;margin-top:12px;background:linear-gradient(135deg,rgba(59,130,246,0.35),rgba(59,130,246,0.22));border:1px solid rgba(59,130,246,0.45);border-radius:50px;color:#fff;font-family:var(--font-sans);font-size:13px;font-weight:700;padding:11px;cursor:pointer;transition:all .15s;box-shadow:0 4px 20px rgba(59,130,246,0.12),inset 0 1px 0 rgba(255,255,255,0.1);" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">📋 Copiar texto</button>
+
+      <div style="margin-top:14px;">
+        <button onclick="voltarCotacaoFrete()" style="width:100%;background:transparent;border:none;color:var(--text-muted);font-family:var(--font-sans);font-size:12px;padding:8px;cursor:pointer;transition:color .15s;" onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-muted)'">← Editar valores</button>
+      </div>
+    </div>
+
+    <button onclick="fecharModalCotacaoFrete()" style="width:100%;margin-top:10px;background:transparent;border:none;color:var(--text-muted);font-family:var(--font-sans);font-size:12px;padding:6px;cursor:pointer;">Fechar</button>
+  </div>
+</div>
+<script>
+// ── COTAÇÃO DE FRETE ──────────────────────────────────────────────────────
+// Transportadoras fixas. "diasDefault" só preenche o campo inicialmente (o
+// usuário pode alterar os dias a cada cotação). MARGEM_FRETE é somada em cima
+// do valor cotado; arredondamento: se o resultado tiver centavos acima de 50,
+// arredonda pra cima pro próximo número inteiro.
+const FRETE_TRANSPORTADORAS = [
+  {id:'jt', nome:'J&T', diasDefault:7},
+  {id:'loggi', nome:'LOGGI', diasDefault:7},
+  {id:'jadlog', nome:'JADLOG', diasDefault:7},
+  {id:'correiospac', nome:'CORREIOS PAC', diasDefault:6},
+  {id:'correiossedex', nome:'CORREIOS SEDEX', diasDefault:2}
+];
+const MARGEM_FRETE = 5;
+
+function arredondarValorFrete(valor){
+  const inteiro = Math.floor(valor);
+  const centavos = valor - inteiro;
+  return centavos > 0.5 ? inteiro + 1 : valor;
+}
+
+function renderCotfreteForm(){
+  const wrap = document.getElementById('cotfrete-linhas');
+  wrap.innerHTML = FRETE_TRANSPORTADORAS.map(t => `
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+      <div style="width:118px;font-size:12.5px;color:var(--text-primary);font-family:var(--font-mono);">${t.nome}</div>
+      <input type="text" id="cotfrete-valor-${t.id}" placeholder="Ex: 20,00" style="flex:1;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-mono);font-size:13px;padding:8px 10px;outline:none;width:100%;box-sizing:border-box;transition:border-color .2s,box-shadow .2s;" onfocus="this.style.borderColor='rgba(59,130,246,0.6)';this.style.boxShadow='0 0 16px rgba(59,130,246,0.15)'" onblur="this.style.borderColor='var(--glass-border)';this.style.boxShadow=''" oninput="fmtValorModal(this)">
+      <input type="number" min="0" id="cotfrete-dias-${t.id}" value="${t.diasDefault}" style="width:62px;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius);color:var(--text-primary);font-family:var(--font-mono);font-size:13px;padding:8px 6px;outline:none;text-align:center;box-sizing:border-box;">
+    </div>
+  `).join('');
+}
+
+function abrirModalCotacaoFrete(){
+  document.getElementById('modal-cotacao-frete-overlay').style.display='flex';
+  document.getElementById('cotfrete-form').style.display='block';
+  document.getElementById('cotfrete-resultado').style.display='none';
+  document.getElementById('cotfrete-copy-corner').style.display='none';
+  document.getElementById('cotfrete-error').style.display='none';
+  renderCotfreteForm();
+}
+
+function fecharModalCotacaoFrete(){
+  document.getElementById('modal-cotacao-frete-overlay').style.display='none';
+}
+
+function voltarCotacaoFrete(){
+  document.getElementById('cotfrete-form').style.display='block';
+  document.getElementById('cotfrete-resultado').style.display='none';
+  document.getElementById('cotfrete-copy-corner').style.display='none';
+}
+
+function gerarCotacaoFrete(){
+  const fmt=(n)=>n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const errEl=document.getElementById('cotfrete-error');
+  let temErro=false;
+
+  const linhas = FRETE_TRANSPORTADORAS.map(t=>{
+    const rawValor=(document.getElementById('cotfrete-valor-'+t.id).value||'').trim();
+    const base=parseFloat(rawValor.replace(/\./g,'').replace(',','.'))||0;
+    const dias=parseInt(document.getElementById('cotfrete-dias-'+t.id).value,10)||0;
+    if(!rawValor || base<=0 || !dias) temErro=true;
+    const valorFinal = arredondarValorFrete(base + MARGEM_FRETE);
+    return `R$ ${fmt(valorFinal)} ${dias} Dias úteis ${t.nome}`;
+  });
+
+  if(temErro){
+    errEl.textContent='⚠ Preencha o valor e os dias de todas as transportadoras.';
+    errEl.style.display='block';
+    return;
+  }
+  errEl.style.display='none';
+
+  const texto =
+`COTAÇÃO DE FRETE
+
+${linhas.join('\n')}
+
+Qual dessas opções de frete você prefere para o seu pedido?`;
+
+  document.getElementById('cotfrete-texto').value = texto;
+  document.getElementById('cotfrete-form').style.display='none';
+  document.getElementById('cotfrete-resultado').style.display='block';
+  document.getElementById('cotfrete-copy-corner').style.display='flex';
+}
+
+function copiarCotacaoFrete(){
+  const textarea=document.getElementById('cotfrete-texto');
   textarea.select();
   textarea.setSelectionRange(0,999999);
   navigator.clipboard.writeText(textarea.value).then(()=>{
