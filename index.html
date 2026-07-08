@@ -5914,8 +5914,22 @@ function gerarPlanilhaBaixas(){
   const all = [..._drogData.pacheco,..._drogData.saopaulo];
   if(!all.length){ showToast('Importe pelo menos um arquivo primeiro','error'); return; }
 
+  const filter = (document.getElementById('drog-filter-status')||{}).value||'';
   const wb   = XLSX.utils.book_new();
   const cols  = ['Plataforma','(DadoPedido) MarketPlace ID','(DadoPedido) Data da Compra','(DadoPedido) Status','(DadoCliente) Nome','(DadoEntrega) Código de Rastreamento Objeto Correios'];
+
+  // Se houver um status selecionado (via clique no Resumo dos Pedidos ou no filtro), gera SOMENTE esse status
+  if(filter){
+    const filtrados = all.filter(r=>r.status===filter);
+    if(!filtrados.length){ showToast(`Nenhum pedido com status "${filter}"`, 'error'); return; }
+    const dataFiltrado = [cols, ...filtrados.map(r=>[r.plataforma, r.id, r.data||'', r.status, r.cliente, r.rastreio])];
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(dataFiltrado), filter.substring(0,31));
+
+    const date = new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
+    XLSX.writeFile(wb, `Baixas_DPSP_${filter}_${date}.xlsx`);
+    showToast(`✅ Planilha gerada com ${filtrados.length} pedidos (${filter})`, 'success');
+    return;
+  }
 
   // Sheet 1: Todos
   const dataAll = [cols, ...all.map(r=>[r.plataforma, r.id, r.data||'', r.status, r.cliente, r.rastreio])];
@@ -8214,9 +8228,12 @@ function toggleAteRastreio(){
 }
 
 /* ===== Sistema genérico de opções customizáveis (+ / −) ===== */
+function getRemovedBaseKey(stateKey){ return stateKey+'__removedBase'; }
 function getAllCustomOpts(baseList, stateKey){
+  const removedBase=(appState[getRemovedBaseKey(stateKey)]||[]);
+  const baseAtivos=baseList.filter(b=>!removedBase.some(r=>r.toLowerCase()===b.toLowerCase()));
   const custom=(appState[stateKey]||[]);
-  return baseList.concat(custom.filter(m=>!baseList.some(b=>b.toLowerCase()===m.toLowerCase())));
+  return baseAtivos.concat(custom.filter(m=>!baseAtivos.some(b=>b.toLowerCase()===m.toLowerCase())));
 }
 function renderCustomOpts(selectId, baseList, stateKey, selected){
   const sel=document.getElementById(selectId);
@@ -8245,7 +8262,18 @@ function removeCustomOpt(selectId, baseList, stateKey, label, renderFn){
   const sel=document.getElementById(selectId);
   const val=sel?sel.value:'';
   if(!val){showToast('Selecione um(a) '+label.toLowerCase()+' para excluir','warn');return;}
-  if(baseList.some(b=>b.toLowerCase()===val.toLowerCase())){showToast(label+'s padrão não podem ser excluídos(as)','warn');return;}
+  const isBase=baseList.some(b=>b.toLowerCase()===val.toLowerCase());
+  if(isBase){
+    if(!confirm('"'+val+'" é um(a) '+label.toLowerCase()+' padrão do sistema.\nExcluir mesmo assim?')) return;
+    const removedKey=getRemovedBaseKey(stateKey);
+    const removedBase=(appState[removedKey]||[]);
+    if(!removedBase.some(r=>r.toLowerCase()===val.toLowerCase())) removedBase.push(val);
+    appState[removedKey]=removedBase;
+    saveState(appState);
+    renderFn('');
+    showToast('✓ Excluído(a)','success');
+    return;
+  }
   const custom=(appState[stateKey]||[]);
   const idx=custom.findIndex(m=>m.toLowerCase()===val.toLowerCase());
   if(idx===-1){showToast(label+' não encontrado(a) na lista','warn');return;}
@@ -8481,8 +8509,10 @@ function renamePagOpt(selectId){
 
 function getAllAteMotivos(){
   const base=['Pedido não entregue','Cancelamento','Extravio','Endereço errado'];
+  const removedBase=(appState.customMotivosAte__removedBase||[]);
+  const baseAtivos=base.filter(b=>!removedBase.some(r=>r.toLowerCase()===b.toLowerCase()));
   const custom=(appState.customMotivosAte||[]);
-  return base.concat(custom.filter(m=>!base.includes(m)));
+  return baseAtivos.concat(custom.filter(m=>!baseAtivos.some(b=>b.toLowerCase()===m.toLowerCase())));
 }
 
 function renderAteMotivoOptions(selected){
@@ -8499,7 +8529,16 @@ function removeAteMotivo(){
   const val=sel?sel.value:'';
   if(!val){showToast('Selecione um motivo para excluir','warn');return;}
   const base=['Pedido não entregue','Cancelamento','Extravio','Endereço errado'];
-  if(base.includes(val)){showToast('Motivos padrão não podem ser excluídos','warn');return;}
+  if(base.includes(val)){
+    if(!confirm('"'+val+'" é um motivo padrão do sistema.\nExcluir mesmo assim?')) return;
+    const removedBase=(appState.customMotivosAte__removedBase||[]);
+    if(!removedBase.some(r=>r.toLowerCase()===val.toLowerCase())) removedBase.push(val);
+    appState.customMotivosAte__removedBase=removedBase;
+    saveState(appState);
+    renderAteMotivoOptions('');
+    showToast('✓ Motivo excluído','success');
+    return;
+  }
   const custom=(appState.customMotivosAte||[]);
   const idx=custom.findIndex(m=>m.toLowerCase()===val.toLowerCase());
   if(idx===-1){showToast('Motivo não encontrado na lista','warn');return;}
