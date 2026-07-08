@@ -3029,10 +3029,6 @@ function renderWpp(){
   if(excluirBtn) excluirBtn.style.display=(currentUser&&currentUser.master&&vendasHoje>0)?'inline-block':'none';
   const cbtn=document.getElementById('wpp-conclude-day');
   if(cbtn) cbtn.style.display='none';
-  // Abrir modal automaticamente quando todas as tarefas estiverem concluídas
-  if(totalAll>0 && doneAll===totalAll){
-    setTimeout(()=>abrirModalVenda(),300);
-  }
   // Render lista de pedidos
   renderHistoricoWpp();
 }
@@ -3327,7 +3323,13 @@ function markWppDone(groupId,itemId){
   tk.done=true;tk.doneBy=currentUser.name;tk.doneAt=nowTimeStr();
   showToast('✓ Concluído','success');logActivity('concluiu',tk.text,'WhatsApp');
   saveState(appState);renderWpp();
-  // O modal é disparado automaticamente pelo renderWpp quando totalAll===doneAll
+  // Abre o modal de venda SOMENTE para o usuário que concluiu o último item aqui
+  // (ação local, não disparada pelo renderWpp — evita abrir para todos os usuários conectados)
+  let totalAll=0,doneAll=0;
+  (appState.tasks.whatsapp||[]).forEach(gr=>{ if(gr&&Array.isArray(gr.items)){ totalAll+=gr.items.length; doneAll+=gr.items.filter(i=>i.done).length; } });
+  if(totalAll>0 && doneAll===totalAll){
+    setTimeout(()=>abrirModalVenda(),300);
+  }
 }
 function unmarkWppItem(groupId,itemId){
   if(!currentUser.master && !currentUser.perms.includes('whatsapp')){showToast('Acesso restrito','error');return;}
