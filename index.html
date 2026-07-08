@@ -3036,7 +3036,7 @@ function renderWpp(){
 /* ===== Integração Google Sheets (Apps Script) → Planilha "Registro de Vendas WhatsApp" =====
    Cole aqui a URL do App da Web gerada pelo Google Apps Script (Extensões > Apps Script > Implantar).
    Deixe como '' para desativar o envio (nenhuma chamada é feita se estiver vazio). */
-const PLANILHA_VENDAS_URL = 'https://script.google.com/macros/s/AKfycby1L3QTXxS5uRz91tMhYSzdVMVfXAil2gsB2ScwZanuNp58Hvoa-BOIJ1RFYM7ZXtaSjQ/exec';
+const PLANILHA_VENDAS_URL = 'https://script.google.com/macros/s/AKfycbzpMlENHS1XDTyGckkWeQTV3H0v-ymmEyv4u6YLPcV2jMA2ouH33aTnSVdufFEc3Lh_hw/exec';
 
 function enviarVendaPlanilha(pedido, acao){
   if(!PLANILHA_VENDAS_URL) return; // integração não configurada ainda
@@ -3044,6 +3044,7 @@ function enviarVendaPlanilha(pedido, acao){
     acao, // 'criar' | 'editar' | 'excluir'
     id: pedido.id,
     numPedido: pedido.num,
+    numPedidoAntigo: pedido.numPedidoAntigo || pedido.num,
     valor: pedido.valor,
     formaPagamento: pedido.pag,
     data: pedido.data,
@@ -9809,6 +9810,8 @@ function salvarEdicaoVenda(){
   const idx = (appState.pedidosWpp||[]).findIndex(p => p.id === id);
   if(idx === -1){ showErr('⚠ Venda não encontrada.'); return; }
 
+  const numAntigo = appState.pedidosWpp[idx].num;
+
   appState.pedidosWpp[idx].num   = num;
   appState.pedidosWpp[idx].data  = dataVenda;
   appState.pedidosWpp[idx].valor = valor;
@@ -9817,7 +9820,7 @@ function salvarEdicaoVenda(){
   saveState(appState);
   fecharModalEditarVenda();
   renderHistoricoWpp();
-  enviarVendaPlanilha(appState.pedidosWpp[idx], 'editar');
+  enviarVendaPlanilha({...appState.pedidosWpp[idx], numPedidoAntigo:numAntigo}, 'editar');
   showToast('✓ Venda #'+num+' atualizada!','success');
 }
 
