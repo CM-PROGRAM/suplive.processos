@@ -1035,6 +1035,11 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
         </div>
         <button class="btn btn-sm" onclick="openAteModal()" id="btn-new-ate" style="display:none;--bc:255,90,60;">+ Criar</button>
       </div>
+      <div style="margin-bottom:14px;">
+        <input id="ate-search" type="text" placeholder="🔎 Buscar por nome, pedido base ou nº atendimento..." oninput="renderAte()"
+          style="width:100%;box-sizing:border-box;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:50px;color:var(--text-primary);font-size:12px;font-family:var(--font-sans);padding:10px 18px;outline:none;box-shadow:inset 0 2px 6px rgba(0,0,0,0.2);"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--glass-border)'">
+      </div>
       <div id="ate-stats-panel" style="margin-bottom:16px;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:14px;box-shadow:0 4px 24px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.07);backdrop-filter:blur(12px);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
           <span style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-primary);font-family:var(--font-mono);">📊 Atendimentos por Plataforma</span>
@@ -9652,8 +9657,10 @@ function renderAte(){
   const all=appState.tasks.atendimentos||[];
   all.forEach((d,idx)=>{ if(typeof d.ordemManual!=='number') d.ordemManual=idx; });
   all.sort((a,b)=>(a.ordemManual||0)-(b.ordemManual||0));
-  const active=all.filter(d=>d.workflow!=='finalizado'&&(!ateFiltroPlataforma||d.plataforma===ateFiltroPlataforma));
-  const finalizados=all.filter(d=>d.workflow==='finalizado');
+  const _ateQ=(document.getElementById('ate-search')?.value||'').trim().toLowerCase();
+  const _ateMatch=d=>!_ateQ || [d.cliente,d.nped,d.natend].some(v=>(v||'').toString().toLowerCase().includes(_ateQ));
+  const active=all.filter(d=>d.workflow!=='finalizado'&&(!ateFiltroPlataforma||d.plataforma===ateFiltroPlataforma)).filter(_ateMatch);
+  const finalizados=all.filter(d=>d.workflow==='finalizado').filter(_ateMatch);
 
   const canAte = isMaster || (currentUser && (currentUser.perms||[]).includes('atendimentos'));
   const btnNew=document.getElementById('btn-new-ate');
@@ -9698,11 +9705,19 @@ function renderAte(){
   if(finCards){
     finCards.innerHTML='';
     finalizados.forEach(d=>{const c=buildAteCard(d,true);if(c)finCards.appendChild(c);});
+    // Ao buscar, abre a pasta de finalizados para não esconder resultados
+    if(_ateQ && finalizados.length>0){
+      finCards.style.display='grid';
+      const _chev=document.getElementById('ate-fin-chevron'); if(_chev) _chev.style.transform='rotate(90deg)';
+      const _sep=document.getElementById('ate-fin-separator'); if(_sep) _sep.style.display='block';
+    }
   }
 
   if(active.length===0){
     empty.style.display='block';
-    empty.textContent=ateFiltroPlataforma?`Nenhum atendimento em aberto para "${ateFiltroPlataforma}".`:'Nenhum atendimento registrado.';
+    empty.textContent = _ateQ
+      ? (finalizados.length>0 ? 'Nenhum atendimento em aberto para esta busca (veja em Finalizados).' : 'Nenhum atendimento encontrado para esta busca.')
+      : (ateFiltroPlataforma?`Nenhum atendimento em aberto para "${ateFiltroPlataforma}".`:'Nenhum atendimento registrado.');
     return;
   }
   empty.style.display='none';
@@ -9796,6 +9811,7 @@ function buildAteCard(d,isFinalizado){
     r.appendChild(l);r.appendChild(v);card.appendChild(r);
   }
 
+  infoRow('Cliente',d.cliente);
   infoRow('Motivo',d.motivo);
   infoRow('Prazo Retorno', d.prazo, undefined, true);
   infoRow('Responsável',d.criadoPor);
