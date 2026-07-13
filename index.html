@@ -1731,7 +1731,8 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
           </select>
         </div>
       </div>
-      <div class="input-group">
+      <button type="button" id="ate-coment-btn" onclick="ateMostrarComentario()" class="btn btn-sm" style="width:100%;--bc:139,92,246;">💬 Incluir comentários</button>
+      <div class="input-group" id="ate-coment-wrap" style="display:none;">
         <label style="display:flex;align-items:center;justify-content:space-between;">
           <span>Comentário do dia</span>
           <span id="ate-ultima-data" style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);"></span>
@@ -9054,7 +9055,7 @@ function renderDevStats(){
 }
 
 /* ===== ATENDIMENTOS GERAL ===== */
-const ATE_PLATAFORMAS=['Melhor Envio','Manda Bem','LOJA INTEGRADA','SHP SUPLENIUM','SHP PRIMEVITAMINAS','M.L VITALIFE','M.L VXSHOP','MAGALU 4VITA','DROG. S. PAULO','DROG. PACHECO','WEB CONTINENTAL','RD MARKETPLACE'];
+const ATE_PLATAFORMAS=['Melhor Envio','Manda Bem','Base','LOJA INTEGRADA','SHP SUPLENIUM','SHP PRIMEVITAMINAS','M.L VITALIFE','M.L VXSHOP','MAGALU 4VITA','DROG. S. PAULO','DROG. PACHECO','WEB CONTINENTAL','RD MARKETPLACE'];
 const ATE_RASTREIO_PLTS=['Manda Bem','Melhor Envio'];
 
 const ATE_STATUS_CONFIG={
@@ -9340,7 +9341,7 @@ function atvTituloChanged(){
 }
 
 /* --- Atendimentos: Plataforma (nomes padronizados iguais à aba "Central de Tarefas") --- */
-const ATE_PLT_BASE=['Melhor Envio','Manda Bem','SHP SUPLENIUM','SHP PRIMEVITAMINAS','M.L VITALIFE','M.L VXSHOP','MAGALU 4VITA','DROG. S. PAULO','DROG. PACHECO','WEB CONTINENTAL','RD MARKETPLACE','WhatsApp (ChatWoot)'];
+const ATE_PLT_BASE=['Melhor Envio','Manda Bem','Base','SHP SUPLENIUM','SHP PRIMEVITAMINAS','M.L VITALIFE','M.L VXSHOP','MAGALU 4VITA','DROG. S. PAULO','DROG. PACHECO','WEB CONTINENTAL','RD MARKETPLACE','WhatsApp (ChatWoot)'];
 // Migração dos nomes antigos (formato livre) para o novo padrão — usada para registros já salvos
 const ATE_PLT_MIGRACAO={
   'Shopee Suplenium':'SHP SUPLENIUM',
@@ -9510,6 +9511,7 @@ function addAteMotivo(){
 function openAteModal(id){
   const overlay=document.getElementById('ate-modal-overlay');
   overlay.style.display='block';
+  ateResetComentario();
   ateUpdateHora();
   renderAteMotivoOptions('');
   renderAtePlataformaOptions('');
@@ -9540,7 +9542,9 @@ function openAteModal(id){
     }
   } else {
     ['ate-plataforma','ate-motivo'].forEach(id=>document.getElementById(id).value='');
-    ['ate-cliente','ate-nped','ate-natend','ate-link','ate-atendente','ate-prazo','ate-rastreio-cod','ate-rastreio-link','ate-data'].forEach(id=>document.getElementById(id).value='');
+    ['ate-cliente','ate-nped','ate-natend','ate-link','ate-atendente','ate-prazo','ate-rastreio-cod','ate-rastreio-link','ate-data','ate-ultima-desc'].forEach(id=>document.getElementById(id).value='');
+    const _cnt=document.getElementById('ate-ultima-desc-count'); if(_cnt) _cnt.textContent='150 restantes';
+    const _dl=document.getElementById('ate-ultima-data'); if(_dl) _dl.textContent='';
     const statusSelNew=document.getElementById('ate-status');
     if(statusSelNew) statusSelNew.value='aberto';
     ateLoadTopicos([]);
@@ -9548,6 +9552,23 @@ function openAteModal(id){
   }
 }
 function closeAteModal(){ document.getElementById('ate-modal-overlay').style.display='none'; }
+
+// Revela o campo de comentário (fica recolhido atrás do botão "Incluir comentários")
+function ateMostrarComentario(){
+  const wrap=document.getElementById('ate-coment-wrap');
+  const btn=document.getElementById('ate-coment-btn');
+  if(wrap) wrap.style.display='block';
+  if(btn) btn.style.display='none';
+  const ta=document.getElementById('ate-ultima-desc');
+  if(ta) ta.focus();
+}
+// Recolhe o comentário atrás do botão (chamado ao abrir o modal)
+function ateResetComentario(){
+  const wrap=document.getElementById('ate-coment-wrap');
+  const btn=document.getElementById('ate-coment-btn');
+  if(wrap) wrap.style.display='none';
+  if(btn) btn.style.display='block';
+}
 
 function saveAte(){
   const plt=document.getElementById('ate-plataforma').value;
@@ -9846,11 +9867,12 @@ const ATE_STAT_TILE_COLORS={
   'SHP PRIMEVITAMINAS': '#fb923c', // laranja claro
   'M.L VXSHOP':         '#fde047', // amarelo claro
   'M.L VITALIFE':       '#fde047', // amarelo claro
-  'Melhor Envio':       '#b8860b',
-  'Manda Bem':          '#8b1a1a'
+  'Melhor Envio':       '#e8edf8', // branco
+  'Manda Bem':          '#ef4444', // vermelho
+  'Base':               '#94a3b8'  // cinza-azulado (sistema)
 };
 // Ordem de exibição no painel (mesma sequência do grid de Integração)
-const ATE_STAT_ORDER=['LOJA INTEGRADA','RD MARKETPLACE','WEB CONTINENTAL','MAGALU 4VITA','DROG. PACHECO','DROG. S. PAULO','SHP SUPLENIUM','SHP PRIMEVITAMINAS','M.L VXSHOP','M.L VITALIFE','Melhor Envio','Manda Bem'];
+const ATE_STAT_ORDER=['LOJA INTEGRADA','RD MARKETPLACE','WEB CONTINENTAL','MAGALU 4VITA','DROG. PACHECO','DROG. S. PAULO','SHP SUPLENIUM','SHP PRIMEVITAMINAS','M.L VXSHOP','M.L VITALIFE','Melhor Envio','Manda Bem','Base'];
 
 function renderAteStats(){
   const statsGrid=document.getElementById('ate-stats-grid');
@@ -9880,7 +9902,7 @@ function renderAteStats(){
     tile.onmouseover=()=>{tile.style.borderColor=_hexA(c,0.9);tile.style.boxShadow=`0 0 14px ${_hexA(c,0.45)}`;tile.style.transform='translateY(-1px)';};
     tile.onmouseout=()=>{tile.style.borderColor=_hexA(c,ativo?0.95:0.5);tile.style.boxShadow=ativo?`0 0 14px ${_hexA(c,0.5)}`:'none';tile.style.transform='';};
     const nm=document.createElement('span');
-    nm.style.cssText='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+    nm.style.cssText='white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;';
     nm.textContent=plt;
     tile.appendChild(nm);
     const cnt=document.createElement('span');
