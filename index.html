@@ -1573,14 +1573,15 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
         <label style="display:flex;align-items:center;justify-content:space-between;"><span>Título</span><span id="atv-titulo-admin-btns" style="display:flex;gap:4px;"><button type="button" onclick="addAtvTitulo()" title="Adicionar novo título" class="btn-orb v-add" style="width:20px;height:20px;"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button><button type="button" onclick="removeAtvTitulo()" title="Excluir título selecionado" class="btn-orb v-danger" style="width:20px;height:20px;"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg></button><button type="button" onclick="defAtvPrazo()" title="Definir prazo (dias) para este título" class="btn-orb v-open" style="width:20px;height:20px;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg></button></span></label>
         <select id="atv-titulo" onchange="atvTituloChanged()"></select>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div class="input-group">
-          <label>SKU</label>
-          <input type="text" id="atv-sku" placeholder="Ex: 12345" autocomplete="off">
-        </div>
-        <div class="input-group">
-          <label>Nome do produto</label>
-          <input type="text" id="atv-nome-produto" placeholder="Ex: Whey Protein 900g" autocomplete="off">
+      <div class="input-group">
+        <label>Identificador</label>
+        <div style="display:flex;gap:8px;align-items:stretch;">
+          <select id="atv-id-tipo" style="flex:0 0 130px;">
+            <option value="SKU">SKU</option>
+            <option value="MLB">MLB</option>
+            <option value="Código">Código</option>
+          </select>
+          <input type="text" id="atv-sku" placeholder="Ex: 12345" autocomplete="off" style="flex:1;min-width:0;">
         </div>
       </div>
       <div class="input-group">
@@ -1596,9 +1597,14 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
         <input type="hidden" id="atv-responsavel">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div class="input-group">
+        <div class="input-group" style="position:relative;">
           <label>Data de vencimento</label>
-          <input type="date" id="atv-vencimento">
+          <input type="hidden" id="atv-vencimento">
+          <button type="button" id="atv-venc-trigger" onclick="atvOpenCal()" style="width:100%;text-align:left;background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius);color:var(--text-primary);font-size:13px;font-family:var(--font-sans);padding:10px 12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <span id="atv-venc-label" style="color:var(--text-muted);">Selecionar data</span>
+            <span style="font-size:14px;">📅</span>
+          </button>
+          <div id="atv-cal-popover" style="display:none;position:absolute;bottom:calc(100% + 6px);left:0;z-index:60;width:280px;max-width:88vw;background:linear-gradient(135deg,rgba(28,31,42,0.99),rgba(15,16,22,0.99));border:1px solid var(--glass-border);border-radius:14px;box-shadow:0 16px 48px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.06);padding:12px;backdrop-filter:blur(20px);"></div>
         </div>
         <div class="input-group">
           <label>Prioridade</label>
@@ -9394,7 +9400,82 @@ function atvTituloChanged(){
     vencEl.disabled=false;
     vencEl.style.opacity='';
   }
+  try{ atvSyncVencDisplay(); }catch(e){}
 }
+
+// ── Calendário customizado do vencimento ──────────────────────
+let _atvCalView = new Date();
+function atvSyncVencDisplay(){
+  const inp=document.getElementById('atv-vencimento');
+  const lbl=document.getElementById('atv-venc-label');
+  const trig=document.getElementById('atv-venc-trigger');
+  if(!inp||!lbl) return;
+  if(inp.value){
+    const d=new Date(inp.value+'T00:00:00');
+    lbl.textContent=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    lbl.style.color='var(--text-primary)';
+  } else {
+    lbl.textContent='Selecionar data';
+    lbl.style.color='var(--text-muted)';
+  }
+  if(trig){
+    const locked=inp.disabled;
+    trig.style.opacity=locked?'0.6':'';
+    trig.style.cursor=locked?'not-allowed':'pointer';
+  }
+}
+function atvOpenCal(){
+  const inp=document.getElementById('atv-vencimento');
+  const pop=document.getElementById('atv-cal-popover');
+  if(!inp||!pop) return;
+  if(inp.disabled) return;
+  if(pop.style.display==='block'){ pop.style.display='none'; return; }
+  _atvCalView = inp.value ? new Date(inp.value+'T00:00:00') : new Date();
+  atvRenderCal();
+  pop.style.display='block';
+}
+function atvCloseCal(){ const pop=document.getElementById('atv-cal-popover'); if(pop) pop.style.display='none'; }
+function atvCalNav(delta){ _atvCalView.setDate(1); _atvCalView.setMonth(_atvCalView.getMonth()+delta); atvRenderCal(); }
+function atvCalPick(iso){
+  const inp=document.getElementById('atv-vencimento');
+  if(inp) inp.value=iso;
+  atvSyncVencDisplay();
+  atvCloseCal();
+}
+function atvRenderCal(){
+  const pop=document.getElementById('atv-cal-popover');
+  if(!pop) return;
+  const view=_atvCalView, y=view.getFullYear(), mo=view.getMonth();
+  const inp=document.getElementById('atv-vencimento');
+  const selIso=inp?inp.value:'';
+  const meses=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const inicio=new Date(y,mo,1).getDay();
+  const diasNoMes=new Date(y,mo+1,0).getDate();
+  const _hd=new Date(); const hojeIso=_hd.getFullYear()+'-'+String(_hd.getMonth()+1).padStart(2,'0')+'-'+String(_hd.getDate()).padStart(2,'0');
+  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <button type="button" onclick="atvCalNav(-1)" style="background:rgba(255,255,255,.06);border:1px solid var(--glass-border);color:var(--text-primary);width:26px;height:26px;border-radius:8px;cursor:pointer;font-size:14px;line-height:1;">‹</button>
+    <span style="font-size:13px;font-weight:700;color:var(--text-primary);">${meses[mo]} ${y}</span>
+    <button type="button" onclick="atvCalNav(1)" style="background:rgba(255,255,255,.06);border:1px solid var(--glass-border);color:var(--text-primary);width:26px;height:26px;border-radius:8px;cursor:pointer;font-size:14px;line-height:1;">›</button>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px;">`;
+  ['D','S','T','Q','Q','S','S'].forEach(d=>{ html+=`<div style="text-align:center;font-size:10px;font-weight:700;color:var(--text-muted);padding:2px 0;">${d}</div>`; });
+  html+='</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;">';
+  for(let i=0;i<inicio;i++) html+='<div></div>';
+  for(let dia=1;dia<=diasNoMes;dia++){
+    const iso=y+'-'+String(mo+1).padStart(2,'0')+'-'+String(dia).padStart(2,'0');
+    const isSel=iso===selIso, isHoje=iso===hojeIso;
+    html+=`<button type="button" onclick="atvCalPick('${iso}')" style="aspect-ratio:1;border-radius:8px;border:1px solid ${isSel?'transparent':(isHoje?'var(--accent-dim)':'transparent')};background:${isSel?'linear-gradient(135deg,#6d5efc,#4f52d6)':'transparent'};color:${isSel?'#fff':'var(--text-primary)'};font-size:12px;font-weight:${isSel?'700':'500'};cursor:pointer;" onmouseover="if(this.style.background==='transparent')this.style.background='rgba(255,255,255,.08)'" onmouseout="if(!${isSel})this.style.background='transparent'">${dia}</button>`;
+  }
+  html+='</div>';
+  pop.innerHTML=html;
+}
+document.addEventListener('click',function(e){
+  const pop=document.getElementById('atv-cal-popover');
+  const trig=document.getElementById('atv-venc-trigger');
+  if(pop&&pop.style.display==='block'&&!pop.contains(e.target)&&trig&&!trig.contains(e.target)){
+    pop.style.display='none';
+  }
+});
 
 /* --- Atendimentos: Plataforma (nomes padronizados iguais à aba "Central de Tarefas") --- */
 const ATE_PLT_BASE=['Melhor Envio','Manda Bem','Base','SHP SUPLENIUM','SHP PRIMEVITAMINAS','M.L VITALIFE','M.L VXSHOP','MAGALU 4VITA','DROG. S. PAULO','DROG. PACHECO','WEB CONTINENTAL','RD MARKETPLACE','WhatsApp (ChatWoot)'];
@@ -11221,7 +11302,7 @@ function openAtvModal(id){
 
   // Campos editáveis: exclusivo do master (colaboradores só visualizam)
   const podeEditarCampos = isMasterUser;
-  ['atv-titulo','atv-sku','atv-nome-produto','atv-vencimento','atv-prioridade'].forEach(fid=>{
+  ['atv-titulo','atv-id-tipo','atv-sku','atv-vencimento','atv-prioridade'].forEach(fid=>{
     const el=document.getElementById(fid);
     if(el) el.disabled = !podeEditarCampos;
     if(el) el.style.opacity = podeEditarCampos ? '' : '0.5';
@@ -11241,19 +11322,28 @@ function openAtvModal(id){
 
   if(id && a){
     renderAtvTituloOptions(a.titulo||'Entrada Produto');
-    document.getElementById('atv-sku').value=a.sku||'';
-    document.getElementById('atv-nome-produto').value=a.nomeProduto||'';
     _atvMktpConcluidos={...(a.marketplacesConcluidos||{})};
-    // Tarefa vinda de uma solicitação (Integração/Imagens): mostra só a
-    // plataforma que o solicitante escolheu
+    // Identificador (SKU/MLB/Código) e restrição de marketplace — auto a partir
+    // da solicitação de origem (Integração/Imagens)
+    let _idTipo=a.skuTipo||'SKU';
+    let _idVal=a.sku||'';
     _atvMktpRestrict=null;
     let _atvMktSel=a.marketplace||'';
     if(a.origemIntegId||a.origemImgId){
       const _srcList=a.origemIntegId?(appState.integracoes||[]):(appState.imagensReq||[]);
       const _src=_srcList.find(x=>x.id===(a.origemIntegId||a.origemImgId));
-      const _k=integToAtvMkt(_src);
-      if(_k){ _atvMktpRestrict=[_k]; if(!_atvMktSel) _atvMktSel=_k; }
+      if(_src){
+        const _k=integToAtvMkt(_src);
+        if(_k){ _atvMktpRestrict=[_k]; if(!_atvMktSel) _atvMktSel=_k; }
+        // Mercado Livre → MLB preenchido; demais plataformas → SKU
+        if(!a.skuTipo && !_idVal){
+          if(_src.tipo==='ml' || _src.mlb){ _idTipo='MLB'; _idVal=_src.mlb||''; }
+          else { _idTipo='SKU'; _idVal=_src.sku||''; }
+        }
+      }
     }
+    const _idTipoEl=document.getElementById('atv-id-tipo'); if(_idTipoEl) _idTipoEl.value=_idTipo;
+    document.getElementById('atv-sku').value=_idVal;
     renderAtvMarketplaceOptions(_atvMktSel);
     if(sel)sel.value=a.responsavel||'';
     document.getElementById('atv-vencimento').value=a.vencimento||'';
@@ -11268,10 +11358,11 @@ function openAtvModal(id){
     // Trava o vencimento se a regra automática se aplicar
     atvTituloChanged();
     if(a.vencimento) document.getElementById('atv-vencimento').value=a.vencimento;
+    atvSyncVencDisplay();
   } else {
     renderAtvTituloOptions('Entrada Produto');
+    const _idTipoEl=document.getElementById('atv-id-tipo'); if(_idTipoEl) _idTipoEl.value='SKU';
     document.getElementById('atv-sku').value='';
-    document.getElementById('atv-nome-produto').value='';
     _atvMktpConcluidos={};
     _atvMktpRestrict=null;
     renderAtvMarketplaceOptions('');
@@ -11301,10 +11392,10 @@ function saveAtividade(){
   if(!currentUser||!currentUser.master){showToast('Apenas o master pode criar ou editar tarefas','warn');return;}
   const titulo=document.getElementById('atv-titulo').value.trim();
   const sku=document.getElementById('atv-sku').value.trim();
-  const nomeProduto=document.getElementById('atv-nome-produto').value.trim();
+  const skuTipo=document.getElementById('atv-id-tipo')?.value||'SKU';
   const marketplace=document.getElementById('atv-marketplace').value;
   const marketplacesConcluidos={..._atvMktpConcluidos};
-  const descricao=[sku?('SKU: '+sku):'',nomeProduto?('Produto: '+nomeProduto):'',marketplace?('Marketplace: '+marketplace):''].filter(Boolean).join(' · ');
+  const descricao=[sku?(skuTipo+': '+sku):'',marketplace?('Marketplace: '+marketplace):''].filter(Boolean).join(' · ');
   const responsaveis = (window._atvGetRespSelecionados ? window._atvGetRespSelecionados() : []).slice();
   const responsavel = responsaveis[0] || '';
   let vencimento=document.getElementById('atv-vencimento').value;
@@ -11338,7 +11429,7 @@ function saveAtividade(){
     if(idx>-1){
       if(podeEditarTarefa){
         // Master ou criador edita tudo + pode salvar comentário
-        appState.atividades[idx]={...anterior,titulo,descricao,sku,nomeProduto,marketplace,marketplacesConcluidos,responsavel,responsaveis,vencimento,prioridade,
+        appState.atividades[idx]={...anterior,titulo,descricao,sku,skuTipo,marketplace,marketplacesConcluidos,responsavel,responsaveis,vencimento,prioridade,
           ...(comentario?{comentario,comentarioAutor,comentarioEm}:{})};
       } else {
         // Responsável só salva comentário
@@ -11349,7 +11440,7 @@ function saveAtividade(){
     showToast(podeEditarTarefa?'Tarefa atualizada':'Comentário salvo','success');
   } else {
     appState.atividades.push({
-      id:'atv_'+Date.now(),titulo,descricao,sku,nomeProduto,marketplace,marketplacesConcluidos,responsavel,responsaveis,vencimento,prioridade,
+      id:'atv_'+Date.now(),titulo,descricao,sku,skuTipo,marketplace,marketplacesConcluidos,responsavel,responsaveis,vencimento,prioridade,
       status:'aberta',criadoEm:new Date().toLocaleDateString('pt-BR'),criadoPor:currentUser.name,criadoPorKey:currentUser.key,
       ordemManual:Date.now()
     });
