@@ -1595,10 +1595,6 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
         <input type="text" id="entrada-produto" placeholder="Nome do produto">
       </div>
       <div class="input-group">
-        <label>Atribuir</label>
-        <select id="entrada-atribuir"><option value="">— Selecionar —</option></select>
-      </div>
-      <div class="input-group">
         <label style="display:flex;justify-content:space-between;"><span>Considerações</span></label>
         <div style="display:flex;gap:8px;">
           <textarea id="entrada-cons-input" maxlength="250" rows="2" placeholder="Escreva um comentário..." style="flex:1;"></textarea>
@@ -1684,10 +1680,6 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
             <input type="text" id="integ-codigo-num" oninput="codigoNumInput('integ')" placeholder="Número" style="width:100%;box-sizing:border-box;">
           </div>
         </div>
-      </div>
-      <div class="input-group">
-        <label>Atribuir</label>
-        <select id="integ-atribuir"><option value="">— Selecionar —</option></select>
       </div>
       <div class="input-group">
         <label style="display:flex;justify-content:space-between;"><span>Considerações</span></label>
@@ -1776,10 +1768,6 @@ header{background:linear-gradient(135deg,rgba(19,21,28,0.95) 0%,rgba(13,14,18,0.
             <input type="text" id="img-codigo-num" oninput="codigoNumInput('img')" placeholder="Número" style="width:100%;box-sizing:border-box;">
           </div>
         </div>
-      </div>
-      <div class="input-group">
-        <label>Atribuir</label>
-        <select id="img-atribuir"><option value="">— Selecionar —</option></select>
       </div>
       <div class="input-group">
         <label style="display:flex;justify-content:space-between;"><span>Considerações</span></label>
@@ -6273,7 +6261,8 @@ function criarTarefaAutoIntegracao(item){
     origemIntegId:item.id,
     prioridade:'normal',
     vencimento:new Date().toISOString().slice(0,10),
-    responsavel:item.atribuir||'',
+    responsavel:(item.responsaveis&&item.responsaveis[0])||'',
+    responsaveis:item.responsaveis||[],
     status:'aberta',
     criadoPor:item.criadoPor||currentUser.name,
     criadoPorKey:item.criadoPorKey||currentUser.key,
@@ -6291,7 +6280,8 @@ function criarTarefaAutoImagem(item){
     origemImgId:item.id,
     prioridade:'normal',
     vencimento:new Date().toISOString().slice(0,10),
-    responsavel:item.atribuir||'',
+    responsavel:(item.responsaveis&&item.responsaveis[0])||'',
+    responsaveis:item.responsaveis||[],
     status:'aberta',
     criadoPor:item.criadoPor||currentUser.name,
     criadoPorKey:item.criadoPorKey||currentUser.key,
@@ -11360,14 +11350,6 @@ function _renderMktGrid(containerId,onClick,showCanva,showAtacado){
   });
 }
 
-function _populateUserSelect(selId,selected){
-  const sel=document.getElementById(selId);
-  if(!sel) return;
-  sel.innerHTML='<option value="">— Selecionar —</option>'+
-    Object.entries(appState.users).map(([k,u])=>`<option value="${k}">${u.name}</option>`).join('');
-  sel.value=selected||'';
-}
-
 // ══════════════════════════════════════════════════════════════
 // Componentes genéricos reutilizáveis pelos cards de Entrada,
 // Integração e Imagens (mesmo modelo visual do card de Tarefas
@@ -11620,7 +11602,6 @@ function openIntegModal(mkt,id){
   document.getElementById('integ-mkt-label').textContent = marketplace;
   _renderVariacaoField('integ-variacao-field','integ-variacao',marketplace, item?item.variacao:'');
   document.getElementById('integ-modal-title').textContent = item ? 'Editar Solicitação' : 'Solicitar Integração';
-  _populateUserSelect('integ-atribuir', item?item.atribuir:'');
   _mktAbrirCamposComuns('integ',item);
   const statusField=document.getElementById('integ-status-field');
   const delWrap=document.getElementById('integ-delete-wrap');
@@ -11640,7 +11621,6 @@ document.getElementById('integ-modal-overlay').onclick=e=>{if(e.target===e.curre
 function saveIntegracao(){
   const editId=document.getElementById('integ-edit-id').value;
   const marketplace=document.getElementById('integ-mkt-value').value;
-  const atribuir=document.getElementById('integ-atribuir').value;
   const variacao=(MKT_VARIACOES[marketplace]) ? (document.getElementById('integ-variacao').value||'') : '';
   const codigo=codigoGetValue('integ');
   const consideracoes=considGet('integ');
@@ -11664,14 +11644,14 @@ function saveIntegracao(){
       const anterior=appState.integracoes[idx];
       const novoStatus=document.getElementById('integ-status').value;
       const statusMudouParaConcluido = novoStatus==='concluida' && anterior.status!=='concluida';
-      appState.integracoes[idx]={...anterior,...derivados,atribuir,responsaveis,vencimento,prioridade,consideracoes,variacao,status:novoStatus,
+      appState.integracoes[idx]={...anterior,...derivados,responsaveis,vencimento,prioridade,consideracoes,variacao,status:novoStatus,
         ...(statusMudouParaConcluido?{concluidoEm:new Date().toLocaleDateString('pt-BR'),concluidoPor:currentUser.name}:{})};
       if(statusMudouParaConcluido){ notifyCriadorConcluida(appState.integracoes[idx],'Integração','integracao'); confRegistrarIntegracaoConcluida(appState.integracoes[idx]); }
     }
     showToast('Solicitação atualizada','success');
   } else {
     const novoItem={
-      id:'integ_'+Date.now(),marketplace,...derivados,atribuir,responsaveis,vencimento,prioridade,consideracoes,variacao,status:'aberta',
+      id:'integ_'+Date.now(),marketplace,...derivados,responsaveis,vencimento,prioridade,consideracoes,variacao,status:'aberta',
       criadoEm:new Date().toLocaleDateString('pt-BR'),criadoPor:currentUser.name,criadoPorKey:currentUser.key,
       ordemManual:Date.now()
     };
@@ -11708,6 +11688,13 @@ function _mktCodigoLabel(it){
   const valor=it.codigoValor || it.mlb || it.sku || it.nome || '—';
   return tipo+': '+valor;
 }
+// Nome(s) do(s) colaborador(es) responsável(is) de uma solicitação Entrada/Integração/Imagens
+function _mktResponsavelLabel(it){
+  let keys=getAtvResponsaveis(it);
+  if(!keys.length && it.atribuir) keys=[it.atribuir];
+  if(!keys.length) return 'Não atribuído';
+  return keys.map(k=>(appState.users[k]||{}).name||k).join(', ');
+}
 
 function renderIntegracoes(){
   _renderMktGrid('integ-grid', m=>openIntegModal(m,null), false, false);
@@ -11724,7 +11711,6 @@ function renderIntegracoes(){
       const hay=[it.variacao,it.marketplace,it.sku,it.mlb,it.codigoValor,it.criadoPor].map(x=>(x||'').toString().toLowerCase()).join(' ');
       if(!hay.includes(q)) return;
     }
-    const atribuidoNome = appState.users[it.atribuir] ? appState.users[it.atribuir].name : 'Não atribuído';
     const card=document.createElement('div');
     card.style.cssText='background:#1a1d2b;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s;';
     card.onmouseover=()=>{card.style.borderColor='rgba(255,255,255,0.14)';};
@@ -11735,7 +11721,7 @@ function renderIntegracoes(){
         <span style="font-size:13.5px;font-weight:800;color:#f1f3f9;">${it.variacao||it.marketplace}</span>
         ${_statusBadgeHtml(it.status)}
       </div>
-      <div style="font-size:11px;color:#9aa1b0;">${_mktCodigoLabel(it)} · Atribuído: ${atribuidoNome}</div>
+      <div style="font-size:11px;color:#9aa1b0;">${_mktCodigoLabel(it)} · Responsável: ${_mktResponsavelLabel(it)}</div>
       <div style="font-size:9.5px;color:#7d8494;margin-top:4px;">Solicitado por ${it.criadoPor||'—'} · ${it.criadoEm||''}</div>`;
     if(it.status==='concluida'){ listC.appendChild(card); nC++; } else { listA.appendChild(card); nA++; }
   });
@@ -11757,7 +11743,6 @@ function openEntradaModal(mkt,id){
   _renderVariacaoField('entrada-variacao-field','entrada-variacao',marketplace, item?item.variacao:'');
   document.getElementById('entrada-modal-title').textContent = item ? 'Editar Solicitação' : 'Solicitar Entrada';
   document.getElementById('entrada-produto').value = item ? (item.produto||'') : '';
-  _populateUserSelect('entrada-atribuir', item?item.atribuir:'');
   _mktAbrirCamposComuns('entrada',item);
   const statusField=document.getElementById('entrada-status-field');
   const delWrap=document.getElementById('entrada-delete-wrap');
@@ -11778,7 +11763,6 @@ function saveEntradaReq(){
   const editId=document.getElementById('entrada-edit-id').value;
   const marketplace=document.getElementById('entrada-mkt-value').value;
   const produto=(document.getElementById('entrada-produto').value||'').trim();
-  const atribuir=document.getElementById('entrada-atribuir').value;
   const variacao=(MKT_VARIACOES[marketplace]) ? (document.getElementById('entrada-variacao').value||'') : '';
   const codigo=codigoGetValue('entrada');
   const consideracoes=considGet('entrada');
@@ -11802,14 +11786,14 @@ function saveEntradaReq(){
       const anterior=appState.entradas[idx];
       const novoStatus=document.getElementById('entrada-status').value;
       const statusMudouParaConcluido = novoStatus==='concluida' && anterior.status!=='concluida';
-      appState.entradas[idx]={...anterior,...derivados,produto,atribuir,responsaveis,vencimento,prioridade,consideracoes,variacao,status:novoStatus,
+      appState.entradas[idx]={...anterior,...derivados,produto,responsaveis,vencimento,prioridade,consideracoes,variacao,status:novoStatus,
         ...(statusMudouParaConcluido?{concluidoEm:new Date().toLocaleDateString('pt-BR'),concluidoPor:currentUser.name}:{})};
       if(statusMudouParaConcluido){ notifyCriadorConcluida(appState.entradas[idx],'Entrada','entrada'); }
     }
     showToast('Solicitação atualizada','success');
   } else {
     const novoItem={
-      id:'entrada_'+Date.now(),marketplace,...derivados,produto,atribuir,responsaveis,vencimento,prioridade,consideracoes,variacao,status:'aberta',
+      id:'entrada_'+Date.now(),marketplace,...derivados,produto,responsaveis,vencimento,prioridade,consideracoes,variacao,status:'aberta',
       criadoEm:new Date().toLocaleDateString('pt-BR'),criadoPor:currentUser.name,criadoPorKey:currentUser.key,
       ordemManual:Date.now()
     };
@@ -11847,7 +11831,6 @@ function renderEntradas(){
       const hay=[it.variacao,it.marketplace,it.sku,it.mlb,it.codigoValor,it.produto,it.criadoPor].map(x=>(x||'').toString().toLowerCase()).join(' ');
       if(!hay.includes(q)) return;
     }
-    const atribuidoNome = appState.users[it.atribuir] ? appState.users[it.atribuir].name : 'Não atribuído';
     const card=document.createElement('div');
     card.style.cssText='background:#1a1d2b;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s;';
     card.onmouseover=()=>{card.style.borderColor='rgba(255,255,255,0.14)';};
@@ -11858,7 +11841,7 @@ function renderEntradas(){
         <span style="font-size:13.5px;font-weight:800;color:#f1f3f9;">${it.variacao||it.marketplace}</span>
         ${_statusBadgeHtml(it.status)}
       </div>
-      <div style="font-size:11px;color:#9aa1b0;">${_mktCodigoLabel(it)}${it.produto?' · '+it.produto:''} · Atribuído: ${atribuidoNome}</div>
+      <div style="font-size:11px;color:#9aa1b0;">${_mktCodigoLabel(it)}${it.produto?' · '+it.produto:''} · Responsável: ${_mktResponsavelLabel(it)}</div>
       <div style="font-size:9.5px;color:#7d8494;margin-top:4px;">Solicitado por ${it.criadoPor||'—'} · ${it.criadoEm||''}</div>`;
     if(it.status==='concluida'){ listC.appendChild(card); nC++; } else { listA.appendChild(card); nA++; }
   });
@@ -11878,7 +11861,6 @@ function openImgModal(mkt,id){
   document.getElementById('img-mkt-label').textContent = marketplace;
   _renderVariacaoField('img-variacao-field','img-variacao',marketplace, item?item.variacao:'');
   document.getElementById('img-modal-title').textContent = item ? 'Editar Solicitação' : 'Solicitar Imagens';
-  _populateUserSelect('img-atribuir', item?item.atribuir:'');
   _mktAbrirCamposComuns('img',item);
   const statusField=document.getElementById('img-status-field');
   const delWrap=document.getElementById('img-delete-wrap');
@@ -11898,7 +11880,6 @@ document.getElementById('img-modal-overlay').onclick=e=>{if(e.target===e.current
 function saveImagemReq(){
   const editId=document.getElementById('img-edit-id').value;
   const marketplace=document.getElementById('img-mkt-value').value;
-  const atribuir=document.getElementById('img-atribuir').value;
   const variacao=(MKT_VARIACOES[marketplace]) ? (document.getElementById('img-variacao').value||'') : '';
   const codigo=codigoGetValue('img');
   const consideracoes=considGet('img');
@@ -11922,14 +11903,14 @@ function saveImagemReq(){
       const anterior=appState.imagensReq[idx];
       const novoStatus=document.getElementById('img-status').value;
       const statusMudouParaConcluido = novoStatus==='concluida' && anterior.status!=='concluida';
-      appState.imagensReq[idx]={...anterior,...derivados,atribuir,responsaveis,vencimento,prioridade,consideracoes,variacao,status:novoStatus,
+      appState.imagensReq[idx]={...anterior,...derivados,responsaveis,vencimento,prioridade,consideracoes,variacao,status:novoStatus,
         ...(statusMudouParaConcluido?{concluidoEm:new Date().toLocaleDateString('pt-BR'),concluidoPor:currentUser.name}:{})};
       if(statusMudouParaConcluido){ notifyCriadorConcluida(appState.imagensReq[idx],'Imagens','imagens'); confRegistrarImagemConcluida(appState.imagensReq[idx]); }
     }
     showToast('Solicitação atualizada','success');
   } else {
     const novoItem={
-      id:'img_'+Date.now(),marketplace,...derivados,atribuir,responsaveis,vencimento,prioridade,consideracoes,variacao,status:'aberta',
+      id:'img_'+Date.now(),marketplace,...derivados,responsaveis,vencimento,prioridade,consideracoes,variacao,status:'aberta',
       criadoEm:new Date().toLocaleDateString('pt-BR'),criadoPor:currentUser.name,criadoPorKey:currentUser.key,
       ordemManual:Date.now()
     };
@@ -11968,7 +11949,6 @@ function renderImagens(){
       const hay=[it.variacao,it.marketplace,it.sku,it.codigoValor,it.criadoPor].map(x=>(x||'').toString().toLowerCase()).join(' ');
       if(!hay.includes(q)) return;
     }
-    const atribuidoNome = appState.users[it.atribuir] ? appState.users[it.atribuir].name : 'Não atribuído';
     const card=document.createElement('div');
     card.style.cssText='background:#1a1d2b;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s;';
     card.onmouseover=()=>{card.style.borderColor='rgba(255,255,255,0.14)';};
@@ -11979,7 +11959,7 @@ function renderImagens(){
         <span style="font-size:13.5px;font-weight:800;color:#f1f3f9;">${it.variacao||it.marketplace}</span>
         ${_statusBadgeHtml(it.status)}
       </div>
-      <div style="font-size:11px;color:#9aa1b0;">${_mktCodigoLabel(it)} · Atribuído: ${atribuidoNome}</div>
+      <div style="font-size:11px;color:#9aa1b0;">${_mktCodigoLabel(it)} · Responsável: ${_mktResponsavelLabel(it)}</div>
       <div style="font-size:9.5px;color:#7d8494;margin-top:4px;">Solicitado por ${it.criadoPor||'—'} · ${it.criadoEm||''}</div>`;
     if(it.status==='concluida'){ listC.appendChild(card); nC++; } else { listA.appendChild(card); nA++; }
   });
