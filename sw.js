@@ -1,5 +1,5 @@
 const CACHE = 'suplelive-v3';
-const ASSETS = ['/Live.Operations/', '/Live.Operations/index.html'];
+const ASSETS = ['/live.operations/', '/live.operations/index.html'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
