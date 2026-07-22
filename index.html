@@ -1892,7 +1892,7 @@ document.addEventListener('DOMContentLoaded',_loThemeIcon);
       </div>
       <div class="input-group">
         <div style="background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(255,255,255,.01));border:1px solid var(--glass-border);border-radius:var(--radius);overflow:hidden;">
-          <div style="background:linear-gradient(135deg,#a89552,#6b5e2e);padding:8px 14px;font-size:12px;font-weight:800;letter-spacing:.4px;color:#fff;">Marketplace</div>
+          <div id="atv-mkt-header" style="background:linear-gradient(135deg,#a89552,#6b5e2e);padding:8px 14px;font-size:12px;font-weight:800;letter-spacing:.4px;color:#fff;">Marketplace</div>
           <div id="atv-marketplace-grid" style="display:flex;flex-wrap:wrap;gap:6px;padding:12px;"></div>
         </div>
         <input type="hidden" id="atv-marketplace">
@@ -9632,7 +9632,8 @@ const ATV_MARKETPLACE_LINKS={
   'MAGALU VIXSUPPS':'https://seller.magalu.com/products/',
   'MAGALU 4VITA':'https://seller.magalu.com/products/',
   'DROG. PACHECO':'https://marketplace.drogariaspacheco.com.br/v3/produto/gerenciar',
-  'DROG. S. PAULO':'https://marketplace.drogariasaopaulo.com.br/v3/produto/gerenciar'
+  'DROG. S. PAULO':'https://marketplace.drogariasaopaulo.com.br/v3/produto/gerenciar',
+  'BASE':'https://panel-u.baselinker.com/inventory_products'
 };
 const ATV_MARKETPLACE_CORES={
   'IMAGENS':'#b794f6',
@@ -9783,6 +9784,15 @@ function atvVencimentoEntradaISO(){
   const d = noHorario ? new Date() : addBusinessDays(new Date(),1);
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
+// Ajusta as opções do Identificador (Entrada: SKU + Nome Produto; demais: SKU/MLB/Código)
+function _atvSetIdTipoOptions(entrada){
+  const sel=document.getElementById('atv-id-tipo'); if(!sel) return;
+  const atual=sel.value;
+  const opts = entrada ? ['SKU','Nome Produto'] : ['SKU','MLB','Código'];
+  sel.innerHTML=opts.map(o=>`<option value="${o}">${o}</option>`).join('');
+  sel.value = opts.includes(atual) ? atual : opts[0];
+}
+function _atvSetMktHeader(txt){ const h=document.getElementById('atv-mkt-header'); if(h) h.textContent=txt; }
 function aplicarPadraoEntrada(){
   try{ _atvSelectPrior('urgente'); }catch(e){}
   const vencEl=document.getElementById('atv-vencimento');
@@ -9791,7 +9801,11 @@ function aplicarPadraoEntrada(){
   const com=document.getElementById('atv-comentario');
   if(com){ com.value=ENTRADA_COMENTARIO;
     const cnt=document.getElementById('atv-comentario-count'); if(cnt) cnt.textContent=(150-com.value.length)+' restantes'; }
-  _atvMktpRestrict=null;
+  // Identificador: apenas SKU e Nome Produto
+  _atvSetIdTipoOptions(true);
+  // Plataforma: apenas a Base
+  _atvSetMktHeader('Plataforma Base');
+  _atvMktpRestrict=['BASE'];
   try{ renderAtvMarketplaceOptions(); }catch(e){}
   try{ atvSyncVencDisplay(); }catch(e){}
 }
@@ -9800,6 +9814,10 @@ function atvTituloChanged(){
   const vencEl=document.getElementById('atv-vencimento');
   if(!vencEl) return;
   if(titulo==='Entrada'){ aplicarPadraoEntrada(); return; }
+  // Não-Entrada: restaura identificador e cabeçalho padrão; libera a restrição da Base
+  _atvSetIdTipoOptions(false);
+  _atvSetMktHeader('Marketplace');
+  if(Array.isArray(_atvMktpRestrict) && _atvMktpRestrict.length===1 && _atvMktpRestrict[0]==='BASE'){ _atvMktpRestrict=null; try{ renderAtvMarketplaceOptions(); }catch(e){} }
   const prazo=getAtvPrazo(titulo);
   if(prazo!==null){
     const d=addBusinessDays(new Date(), prazo);
