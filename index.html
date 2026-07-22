@@ -10788,8 +10788,8 @@ function renderAtividades(){
       const o=document.createElement('option');o.value=k;o.textContent=u.name;fColab.appendChild(o);
     });
   }
-  // Colaborador só vê as próprias tarefas — o filtro por colaborador só serve ao master
-  if(fColab) fColab.style.display=(currentUser&&currentUser.master)?'':'none';
+  // Filtro por colaborador disponível para todos os usuários
+  if(fColab) fColab.style.display='';
 
   const filterColab=fColab?fColab.value:'';
   const filterPrior=fPrior?fPrior.value:'';
@@ -10804,8 +10804,8 @@ function renderAtividades(){
   let total=0;
 
   appState.atividades.forEach(a=>{
-    // Colaboradores veem apenas as tarefas atribuídas a eles; o master vê todas
-    if(!currentUser.master && !getAtvResponsaveis(a).includes(currentUser.key)) return;
+    // Todos veem todas as tarefas (visualização). A ação/edição fica restrita
+    // ao master ou ao colaborador responsável (canAct / permissões do modal).
     if(filterColab && !getAtvResponsaveis(a).includes(filterColab)) return;
     if(filterPrior && a.prioridade!==filterPrior) return;
 
@@ -10942,7 +10942,7 @@ function renderAtividades(){
     }
     // Clique em qualquer parte do card (fora dos botões de ação) abre a tela da tarefa
     // — exceto quando a tarefa veio de um Atendimento vencido: nesse caso, vai direto pro atendimento
-    const isMine2 = a.responsavel === currentUser.key;
+    const isMine2 = getAtvResponsaveis(a).includes(currentUser.key);
     const isCriador2 = a.criadoPorKey === currentUser.key;
     const podeEditar2 = currentUser.master || isCriador2;
     if(podeEditar2 || isMine2){
